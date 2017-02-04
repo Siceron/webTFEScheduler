@@ -166,10 +166,10 @@ class executescheduler:
             tfe.session=i["session"]
         return "ok"
         
-
 class scheduler:
     def GET(self):
-        return render.scheduler()
+        tfes = Tfe.select()
+        return render.scheduler(tfes)
 
 class informations:
     def GET(self):

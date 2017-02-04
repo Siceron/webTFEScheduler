@@ -1,112 +1,189 @@
+$def with (tfes)
 <!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
 <html>
 <head>
-<meta charset='utf-8' />
-<link href='static/plugins/fullcalendar-scheduler-1.5.0/lib/fullcalendar.min.css' rel='stylesheet' />
-<link href='static/plugins/fullcalendar-scheduler-1.5.0/lib/fullcalendar.print.min.css' rel='stylesheet' media='print' />
-<link href='static/plugins/fullcalendar-scheduler-1.5.0/scheduler.min.css' rel='stylesheet' />
-<script src='static/plugins/fullcalendar-scheduler-1.5.0/lib/moment.min.js'></script>
-<script src='static/plugins/fullcalendar-scheduler-1.5.0/lib/jquery.min.js'></script>
-<script src='static/plugins/fullcalendar-scheduler-1.5.0/lib/jquery-ui.min.js'></script>
-<script src='static/plugins/fullcalendar-scheduler-1.5.0/lib/fullcalendar.min.js'></script>
-<script src='static/plugins/fullcalendar-scheduler-1.5.0/scheduler.min.js'></script>
-<script src='static/plugins/fullcalendar-scheduler-1.5.0/lib/locale/fr.js'></script>
-<script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>TFE Scheduler</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="static/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+        page. However, you can choose any other skin. Make sure you
+        apply the skin class to the body tag so the changes take effect.
+  -->
+  <link rel="stylesheet" href="static/dist/css/skins/skin-blue.min.css">
 
-	$$(function() { // document ready
+  <link href='static/plugins/fullcalendar-scheduler-1.5.0/lib/fullcalendar.min.css' rel='stylesheet' />
+  <link href='static/plugins/fullcalendar-scheduler-1.5.0/lib/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+  <link href='static/plugins/fullcalendar-scheduler-1.5.0/scheduler.min.css' rel='stylesheet' />
+  <script src='static/plugins/fullcalendar-scheduler-1.5.0/lib/moment.min.js'></script>
+  <script src="static/plugins/jQuery/jquery-2.2.3.min.js"></script>
+  <script src='static/plugins/fullcalendar-scheduler-1.5.0/lib/jquery-ui.min.js'></script>
+  <script src='static/plugins/fullcalendar-scheduler-1.5.0/lib/fullcalendar.min.js'></script>
+  <script src='static/plugins/fullcalendar-scheduler-1.5.0/scheduler.min.js'></script>
+  <script src='static/plugins/fullcalendar-scheduler-1.5.0/lib/locale/fr.js'></script>
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <script>
+
+  $$(function() { // document ready
 
 
-		/* initialize the external events
-		-----------------------------------------------------------------*/
+    /* initialize the external events
+    -----------------------------------------------------------------*/
 
-		$$('#external-events .fc-event').each(function() {
+    $$('#external-events .fc-event').each(function() {
 
-			// store data so the calendar knows to render an event upon drop
-			$$(this).data('event', {
-				title: $$.trim($$(this).text()), // use the element's text as the event title
-				stick: true // maintain when user navigates (see docs on the renderEvent method)
-			});
+      // store data so the calendar knows to render an event upon drop
+      $$(this).data('event', {
+        title: $$.trim($$(this).text()), // use the element's text as the event title
+        stick: true // maintain when user navigates (see docs on the renderEvent method)
+      });
 
-			// make the event draggable using jQuery UI
-			$$(this).draggable({
-				zIndex: 999,
-				revert: true,      // will cause the event to go back to its
-				revertDuration: 0  //  original position after the drag
-			});
+      // make the event draggable using jQuery UI
+      $$(this).draggable({
+        zIndex: 999,
+        revert: true,      // will cause the event to go back to its
+        revertDuration: 0  //  original position after the drag
+      });
 
-		});
+    });
 
 
-		/* initialize the calendar
-		-----------------------------------------------------------------*/
+    /* initialize the calendar
+    -----------------------------------------------------------------*/
 
-		$$('#calendar').fullCalendar({
-			schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-			now: '2017-06-24',
-			editable: true, // enable draggable events
-			droppable: true, // this allows things to be dropped onto the calendar
-			dragRevertDuration: 0,
-			aspectRatio: 1.8,
-			scrollTime: '08:00', // undo default 6am scrollTime
-			minTime: "08:00",
-			maxTime: "20:00",
-			header: {
-				left: '',
-				center: 'title',
-				right: ''
-			},
-			defaultView: 'timelineThreeDays',
-			views: {
-				timelineThreeDays: {
-					type: 'timeline',
-					duration: { days: 3 }
-				}
-			},
-			resourceLabelText: 'Rooms',
-			resources: [
-				{ id: 'a', title: 'Auditorium A' },
-				{ id: 'b', title: 'Auditorium B', eventColor: 'green' },
-				{ id: 'c', title: 'Auditorium C', eventColor: 'orange' },
-				{ id: 'd', title: 'Auditorium D', children: [
-					{ id: 'd1', title: 'Room D1' },
-					{ id: 'd2', title: 'Room D2' }
-				] },
-				{ id: 'e', title: 'Auditorium E' },
-				{ id: 'f', title: 'Auditorium F', eventColor: 'red' },
-				{ id: 'g', title: 'Auditorium G' },
-				{ id: 'h', title: 'Auditorium H' },
-				{ id: 'i', title: 'Auditorium I' },
-				{ id: 'j', title: 'Auditorium J' },
-				{ id: 'k', title: 'Auditorium K' },
-				{ id: 'l', title: 'Auditorium L' },
-				{ id: 'm', title: 'Auditorium M' },
-				{ id: 'n', title: 'Auditorium N' },
-				{ id: 'o', title: 'Auditorium O' },
-				{ id: 'p', title: 'Auditorium P' },
-				{ id: 'q', title: 'Auditorium Q' },
-				{ id: 'r', title: 'Auditorium R' },
-				{ id: 's', title: 'Auditorium S' },
-				{ id: 't', title: 'Auditorium T' },
-				{ id: 'u', title: 'Auditorium U' },
-				{ id: 'v', title: 'Auditorium V' },
-				{ id: 'w', title: 'Auditorium W' },
-				{ id: 'x', title: 'Auditorium X' },
-				{ id: 'y', title: 'Auditorium Y' },
-				{ id: 'z', title: 'Auditorium Z' }
-			],
-			eventClick: function(event, element) {
+    var tab = new Array();
+    for(var i=0; i<12; i++)
+      tab[i] = new Array();
+    tab[0][0] = '2017-06-24T08:00:00'
+    tab[0][1] = '2017-06-24T10:30:00'
+    tab[1][0] = '2017-06-24T10:45:00'
+    tab[1][1] = '2017-06-24T13:15:00'
+    tab[2][0] = '2017-06-24T14:00:00'
+    tab[2][1] = '2017-06-24T16:30:00'
+    tab[3][0] = '2017-06-24T16:45:00'
+    tab[3][1] = '2017-06-24T19:30:00'
+    tab[4][0] = '2017-06-25T08:00:00'
+    tab[4][1] = '2017-06-25T10:30:00'
+    tab[5][0] = '2017-06-25T10:45:00'
+    tab[5][1] = '2017-06-25T13:15:00'
+    tab[6][0] = '2017-06-25T14:00:00'
+    tab[6][1] = '2017-06-25T16:30:00'
+    tab[7][0] = '2017-06-25T16:45:00'
+    tab[7][1] = '2017-06-25T19:30:00'
+    tab[8][0] = '2017-06-26T08:00:00'
+    tab[8][1] = '2017-06-26T10:30:00'
+    tab[9][0] = '2017-06-26T10:45:00'
+    tab[9][1] = '2017-06-26T13:15:00'
+    tab[10][0] = '2017-06-26T14:00:00'
+    tab[10][1] = '2017-06-26T16:30:00'
+    tab[11][0] = '2017-06-26T16:45:00'
+    tab[11][1] = '2017-06-26T19:30:00'
 
-        		event.title = "CLICKED!";
+    var eventlist = Array();
+    var i = 0;
+    $for tfe in tfes:
+      $if tfe.session != -1:
+        eventlist[i] = {id: i+1, resourceId: ''+Math.floor($tfe.session/12), start:tab[$tfe.session%12][0], end:tab[$tfe.session%12][1], title: '$tfe.code'}
+        i++;    
 
-        		$$('#calendar').fullCalendar('updateEvent',event);
+    $$('#calendar').fullCalendar({
+      schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+      now: '2017-06-24',
+      editable: true, // enable draggable events
+      eventDurationEditable: false,
+      droppable: true, // this allows things to be dropped onto the calendar
+      dragRevertDuration: 0,
+      defaultTimedEventDuration: '02:30:00',
+      aspectRatio: 1.8,
+      scrollTime: '08:00', // undo default 6am scrollTime
+      minTime: "08:00",
+      maxTime: "20:00",
+      header: {
+        left: '',
+        center: 'title',
+        right: ''
+      },
+      defaultView: 'timelineThreeDays',
+      views: {
+        timelineThreeDays: {
+          type: 'timeline',
+          duration: { days: 3 },
+          slotDuration: '00:15',
+          slotWidth: 10
+        }
+      },
+      businessHours: [
+        {
+            start: '08:00',
+            end: '10:30',
+            dow: [0, 1, 2, 3, 4, 5, 6]
+        },
+        {
+            start: '10:45',
+            end: '13:15',
+            dow: [0, 1, 2, 3, 4, 5, 6]
+        },
+        {
+            start: '14:00',
+            end: '16:30',
+            dow: [0, 1, 2, 3, 4, 5, 6]
+        },
+        {
+            start: '16:45',
+            end: '19:30',
+            dow: [0, 1, 2, 3, 4, 5, 6]
+        }
+      ],
+      eventConstraint: 'businessHours',
+      resourceAreaWidth: '15%',
+      resourceLabelText: 'Rooms',
+      resources: [
+        { id: '0', title: 'Auditorium A' },
+        { id: '1', title: 'Auditorium B', eventColor: 'green' },
+        { id: '2', title: 'Auditorium C', eventColor: 'orange' },
+        { id: '3', title: 'Auditorium D'}, 
+        { id: '4', title: 'Auditorium E' },
+        { id: '5', title: 'Auditorium F', eventColor: 'red' },
+        { id: '6', title: 'Auditorium G' },
+        { id: '7', title: 'Auditorium H' },
+        { id: '8', title: 'Auditorium I' },
+        { id: '9', title: 'Auditorium J' },
+        { id: '10', title: 'Auditorium K' }
+      ],
+      events: eventlist,
+      eventClick: function(event, element) {
 
-    		},
-			drop: function(date, jsEvent, ui, resourceId) {
-				console.log('drop', date.format(), resourceId);
+            event.title = "CLICKED!";
 
-				$$(this).remove();
-			},
-			eventDragStop: function( event, jsEvent, ui, view ) {
+            $$('#calendar').fullCalendar('updateEvent',event);
+
+        },
+      drop: function(date, jsEvent, ui, resourceId) {
+        console.log('drop', date.format(), resourceId);
+
+        $$(this).remove();
+      },
+      eventDragStop: function( event, jsEvent, ui, view ) {
                 
                 if(isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
                     $$('#calendar').fullCalendar('removeEvents', event._id);
@@ -119,15 +196,15 @@
                     el.data('event', { title: event.title, id :event.id, stick: true });
                 }
             },
-			eventReceive: function(event) { // called when a proper external event is dropped
-				console.log('eventReceive', event);
-			},
-			eventDrop: function(event) { // called when an event (already on the calendar) is moved
-				console.log('eventDrop', event);
-			}
-		});
+      eventReceive: function(event) { // called when a proper external event is dropped
+        console.log('eventReceive', event);
+      },
+      eventDrop: function(event) { // called when an event (already on the calendar) is moved
+        console.log('eventDrop', event);
+      }
+    });
 
-		var isEventOverDiv = function(x, y) {
+    var isEventOverDiv = function(x, y) {
 
             var external_events = $$( '#external-events' );
             var offset = external_events.offset();
@@ -143,72 +220,192 @@
 
         }
 
-	});
+  });
 
 </script>
 <style>
+    
+  #wrap {
+    width: 1100px;
+    margin: 0 auto;
+  }
+    
+  #external-events {
+    float: left;
+    width: 150px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    background: #eee;
+    text-align: left;
+  }
+    
+  #external-events h4 {
+    font-size: 16px;
+    margin-top: 0;
+    padding-top: 1em;
+  }
+    
+  #external-events .fc-event {
+    margin: 10px 0;
+    cursor: pointer;
+  }
+    
+  #external-events p {
+    margin: 1.5em 0;
+    font-size: 11px;
+    color: #666;
+  }
+    
+  #external-events p input {
+    margin: 0;
+    vertical-align: middle;
+  }
 
-	body {
-		margin-top: 40px;
-		text-align: center;
-		font-size: 14px;
-		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-	}
-		
-	#wrap {
-		width: 1100px;
-		margin: 0 auto;
-	}
-		
-	#external-events {
-		float: left;
-		width: 150px;
-		padding: 0 10px;
-		border: 1px solid #ccc;
-		background: #eee;
-		text-align: left;
-	}
-		
-	#external-events h4 {
-		font-size: 16px;
-		margin-top: 0;
-		padding-top: 1em;
-	}
-		
-	#external-events .fc-event {
-		margin: 10px 0;
-		cursor: pointer;
-	}
-		
-	#external-events p {
-		margin: 1.5em 0;
-		font-size: 11px;
-		color: #666;
-	}
-		
-	#external-events p input {
-		margin: 0;
-		vertical-align: middle;
-	}
-
-	#calendar {
-		float: right;
-		width: 900px;
-	}
+  #calendar {
+    float: right;
+    width: 900px;
+  }
 
 </style>
 </head>
-<body>
-	<div id='wrap'>
+<!--
+BODY TAG OPTIONS:
+=================
+Apply one or more of the following classes to get the
+desired effect
+|---------------------------------------------------------|
+| SKINS         | skin-blue                               |
+|               | skin-black                              |
+|               | skin-purple                             |
+|               | skin-yellow                             |
+|               | skin-red                                |
+|               | skin-green                              |
+|---------------------------------------------------------|
+|LAYOUT OPTIONS | fixed                                   |
+|               | layout-boxed                            |
+|               | layout-top-nav                          |
+|               | sidebar-collapse                        |
+|               | sidebar-mini                            |
+|---------------------------------------------------------|
+-->
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <!-- Main Header -->
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="#" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>TFE</b></span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>TFE</b> Scheduler</span>
+    </a>
+
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-static-top" role="navigation">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- User Account Menu -->
+          <li class="dropdown user user-menu">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <!-- The user image in the navbar-->
+              <img src="static/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <!-- hidden-xs hides the username on small devices so only the image appears. -->
+              <span class="hidden-xs">Secrétaire 2</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- The user image in the menu -->
+              <li class="user-header">
+                <img src="static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+
+                <p>
+                  Secrétaire 2 - Secrétaire
+                  <small>Member since Nov. 2012</small>
+                </p>
+              </li>
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="#" class="btn btn-default btn-flat">Profile</a>
+                </div>
+                <div class="pull-right">
+                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+          <li>
+            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+
+      <!-- Sidebar Menu -->
+      <ul class="sidebar-menu">
+        <li class="header">Menu</li>
+        <!-- Optionally, you can add icons to the links -->
+        <li><a href="/"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+        <!-- <li><a href="#"><i class="fa fa-list"></i> <span>My TFE list</span></a></li>
+        <li><a href="#"><i class="fa fa-calendar-check-o"></i> <span>Disnponibilities</span></a></li> -->
+        <li><a href="informations"><i class="fa fa-table"></i> <span>TFE informations</span></a></li>
+        <li class="active treeview">
+          <a href="#"><i class="fa fa-calendar"></i> <span>Schedule</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <!-- <li><a href="#"><i class="fa fa-circle-o"></i>My schedule</a></li> -->
+            <li class="active"><a href="#"><i class="fa fa-circle-o"></i>General schedule</a></li>
+          </ul>
+        </li>
+      </ul>
+      <!-- /.sidebar-menu -->
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Schedule
+        <small>General</small>
+      </h1>
+      <!-- 
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+        <li class="active">Here</li>
+      </ol>
+      -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div id='wrap'>
 
         <div id='external-events'>
           <div id='external-events-listing'>
             <h4>Mémoires</h4>
-            <div class='fc-event'>My Event 1</div>
-            <div class='fc-event'>My Event 2</div>
-            <div class='fc-event'>My Event 3</div>
-            <div class='fc-event'>My Event 4</div>
-            <div class='fc-event'>My Event 5</div>
+            $for tfe in tfes:
+              $if tfe.session == -1:
+                <div class='fc-event'>$tfe.code</div>
           </div>
         </div>
 
@@ -217,5 +414,50 @@
         <div style='clear:both'></div>
 
     </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <!-- To the right -->
+    <div class="pull-right hidden-xs">
+      Version 0.1
+    </div>
+    <!-- Default to the left -->
+    <strong>Copyright &copy; 2016 <a href="http://www.uclouvain.be">UCL</a>.</strong> All rights reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <form method="post">
+        <h3 class="control-sidebar-heading">General Settings</h3>
+
+        <div class="form-group">
+          <label class="control-sidebar-subheading">
+            Report panel usage
+            <input type="checkbox" class="pull-right" checked>
+          </label>
+
+          <p>
+            Some information about this general settings option
+          </p>
+        </div>
+        <!-- /.form-group -->
+      </form>
+    </div>
+  </aside>
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+<script src="static/bootstrap/js/bootstrap.min.js"></script>
+<!-- AdminLTE App -->
+<script src="static/dist/js/app.min.js"></script>
 </body>
 </html>
