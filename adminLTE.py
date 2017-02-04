@@ -3,6 +3,9 @@ import csv
 import sys
 from models import *
 from subprocess import Popen, PIPE, STDOUT
+import json
+from pprint import pprint
+from random import randint
 
 render = web.template.render('templates/')
 
@@ -32,7 +35,20 @@ def load_sqlo(handler=None):
     finally:
         trans.commit(close=True)
 
+def get_rand_bool():
+    if(randint(0,3) == 0):
+        return False
+    else:
+        return True
+
+def get_rand_disp():
+    disponibility = Disponibility(session_0=get_rand_bool(), session_1=get_rand_bool(), session_2=get_rand_bool(), session_3=get_rand_bool(),\
+        session_4=get_rand_bool(), session_5=get_rand_bool(), session_6=get_rand_bool(), session_7=get_rand_bool(), session_8=get_rand_bool(),\
+        session_9=get_rand_bool(), session_10=get_rand_bool(), session_11=get_rand_bool())
+    return disponibility
+
 class index:
+
     def GET(self):
         return render.starter()
 
@@ -46,6 +62,10 @@ class index:
             fout = open(filedir +'/'+ filename,'wb') # creates the file where the uploaded file should be stored
             fout.write(x.myfile.file.read()) # writes the uploaded file to the newly created file.
             fout.close() # closes the file, upload complete.
+
+        random_disp = False
+        if 'randomdisp' in x:
+            random_disp = True
 
         """ Read csv file """
         header = True
@@ -74,25 +94,35 @@ class index:
                             for prom in row[3].split(" - "):
                                 prom_name = prom.split(", ")
                                 if Advisor.select(Advisor.q.email == emails[email_count]).count() == 0:
-                                    disponibility = Disponibility()
-                                    promoteur = Advisor(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=disponibility)
-                                    tfe_rel_advisor = Tfe_rel_advisor(tfe=memoire, advisor=promoteur)
+                                    if random_disp==True:
+                                        promoteur = Advisor(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=get_rand_disp())
+                                        tfe_rel_advisor = Tfe_rel_advisor(tfe=memoire, advisor=promoteur)
+                                    else:
+                                        promoteur = Advisor(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=Disponibility())
+                                        tfe_rel_advisor = Tfe_rel_advisor(tfe=memoire, advisor=promoteur)
                                 email_count += 1
                             for lect in row[4].split(" - "):
                                 lect_name = lect.split(", ")
                                 if len(lect_name) == 2:
                                     if Reader.select(Reader.q.email == emails[email_count]).count() == 0:
-                                        disponibility = Disponibility()
                                         if len(lect_name) == 2:
                                             lect_descr = lect_name[1].split(' ')
-                                            lecteur = Reader(email=emails[email_count], last_name=lect_name[0],name=lect_descr[0], disponibility=disponibility)
-                                            tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
+                                            if random_disp==True:
+                                                lecteur = Reader(email=emails[email_count], last_name=lect_name[0],name=lect_descr[0], disponibility=get_rand_disp())
+                                                tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
+                                            else:
+                                                lecteur = Reader(email=emails[email_count], last_name=lect_name[0],name=lect_descr[0], disponibility=Disponibility())
+                                                tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
                                             email_count += 1
                                         else:
                                             lect_name = lect.split(' ')
                                             if len(lect_name) == 4 or len(lect_name) == 3:
-                                                lecteur = Reader(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=disponibility)
-                                                tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
+                                                if random_disp==True:
+                                                    lecteur = Reader(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=get_rand_disp())
+                                                    tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
+                                                else:
+                                                    lecteur = Reader(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=Disponibility())
+                                                    tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
                                                 email_count += 1
                                             else:
                                                 print("discarded : "+row[0])
@@ -127,6 +157,13 @@ class executescheduler:
         proc.wait()
         for line in proc.stdout:
             print(line)
+
+        with open('output.JSON') as data_file:    
+            data = json.load(data_file)
+
+        for i in data:
+            tfe = Tfe.select(Tfe.q.code == i["code"])[0]
+            tfe.session=i["session"]
         return "ok"
         
 
