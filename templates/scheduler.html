@@ -62,10 +62,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       $$(this).draggable({
         zIndex: 999,
         revert: true,      // will cause the event to go back to its
-        revertDuration: 0,  //  original position after the drag
-        helper: 'clone',
-        appendTo: '#external-events',
-        cursor: 'move'
+        revertDuration: 0
       });
 
     });
@@ -77,30 +74,30 @@ scratch. This page gets rid of all links and provides the needed markup only.
     var tab = new Array();
     for(var i=0; i<12; i++)
       tab[i] = new Array();
-    tab[0][0] = '2017-06-24T08:00:00'
-    tab[0][1] = '2017-06-24T10:30:00'
-    tab[1][0] = '2017-06-24T10:45:00'
-    tab[1][1] = '2017-06-24T13:15:00'
-    tab[2][0] = '2017-06-24T14:00:00'
-    tab[2][1] = '2017-06-24T16:30:00'
-    tab[3][0] = '2017-06-24T16:45:00'
-    tab[3][1] = '2017-06-24T19:30:00'
-    tab[4][0] = '2017-06-25T08:00:00'
-    tab[4][1] = '2017-06-25T10:30:00'
-    tab[5][0] = '2017-06-25T10:45:00'
-    tab[5][1] = '2017-06-25T13:15:00'
-    tab[6][0] = '2017-06-25T14:00:00'
-    tab[6][1] = '2017-06-25T16:30:00'
-    tab[7][0] = '2017-06-25T16:45:00'
-    tab[7][1] = '2017-06-25T19:30:00'
-    tab[8][0] = '2017-06-26T08:00:00'
-    tab[8][1] = '2017-06-26T10:30:00'
-    tab[9][0] = '2017-06-26T10:45:00'
-    tab[9][1] = '2017-06-26T13:15:00'
-    tab[10][0] = '2017-06-26T14:00:00'
-    tab[10][1] = '2017-06-26T16:30:00'
-    tab[11][0] = '2017-06-26T16:45:00'
-    tab[11][1] = '2017-06-26T19:30:00'
+    tab[0][0] = '2017-06-26T08:00:00'
+    tab[0][1] = '2017-06-26T10:30:00'
+    tab[1][0] = '2017-06-26T10:45:00'
+    tab[1][1] = '2017-06-26T13:15:00'
+    tab[2][0] = '2017-06-26T14:00:00'
+    tab[2][1] = '2017-06-26T16:30:00'
+    tab[3][0] = '2017-06-26T16:45:00'
+    tab[3][1] = '2017-06-26T19:15:00'
+    tab[4][0] = '2017-06-27T08:00:00'
+    tab[4][1] = '2017-06-27T10:30:00'
+    tab[5][0] = '2017-06-27T10:45:00'
+    tab[5][1] = '2017-06-27T13:15:00'
+    tab[6][0] = '2017-06-27T14:00:00'
+    tab[6][1] = '2017-06-27T16:30:00'
+    tab[7][0] = '2017-06-27T16:45:00'
+    tab[7][1] = '2017-06-27T19:15:00'
+    tab[8][0] = '2017-06-28T08:00:00'
+    tab[8][1] = '2017-06-28T10:30:00'
+    tab[9][0] = '2017-06-28T10:45:00'
+    tab[9][1] = '2017-06-28T13:15:00'
+    tab[10][0] = '2017-06-28T14:00:00'
+    tab[10][1] = '2017-06-28T16:30:00'
+    tab[11][0] = '2017-06-28T16:45:00'
+    tab[11][1] = '2017-06-28T19:15:00'
 
     var eventlist = Array();
     var i = 0;
@@ -111,7 +108,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $$('#calendar').fullCalendar({
       schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-      now: '2017-06-24',
+      now: '2017-06-26',
       editable: true, // enable draggable events
       eventDurationEditable: false,
       droppable: true, // this allows things to be dropped onto the calendar
@@ -153,7 +150,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         },
         {
             start: '16:45',
-            end: '19:30',
+            end: '19:15',
             dow: [0, 1, 2, 3, 4, 5, 6]
         }
       ],
@@ -164,14 +161,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
         { id: '0', title: 'Auditorium A' },
         { id: '1', title: 'Auditorium B', eventColor: 'green' },
         { id: '2', title: 'Auditorium C', eventColor: 'orange' },
-        { id: '3', title: 'Auditorium D'}, 
-        { id: '4', title: 'Auditorium E' },
-        { id: '5', title: 'Auditorium F', eventColor: 'red' },
-        { id: '6', title: 'Auditorium G' },
-        { id: '7', title: 'Auditorium H' },
-        { id: '8', title: 'Auditorium I' },
-        { id: '9', title: 'Auditorium J' },
-        { id: '10', title: 'Auditorium K' }
+        { id: '3', title: 'Auditorium D', eventColor: 'brown'}, 
+        { id: '4', title: 'Auditorium E', eventColor: 'red'}
       ],
       events: eventlist,
       eventClick: function(event, element) {
@@ -239,7 +230,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     el.draggable({
                       zIndex: 999,
                       revert: true, 
-                      revertDuration: 0
+                      revertDuration: 0,
+                      helper: 'clone'
                     });
                     el.data('event', { title: event.title, id :event.id, stick: true });
                 }
