@@ -14,7 +14,8 @@ urls = (
     '/', 'index',
     '/scheduler', 'scheduler',
     '/informations', 'informations',
-    '/executescheduler', 'executescheduler'
+    '/executescheduler', 'executescheduler',
+    '/show_tfe_details', 'show_tfe_details'
 )
 
 def load_sqlo(handler=None):
@@ -101,6 +102,8 @@ class index:
                                     else:
                                         promoteur = Advisor(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=Disponibility())
                                         tfe_rel_advisor = Tfe_rel_advisor(tfe=memoire, advisor=promoteur)
+                                else:
+                                    tfe_rel_advisor = Tfe_rel_advisor(tfe=memoire, advisor=Advisor.select(Advisor.q.email == emails[email_count])[0])
                                 email_count += 1
                             for lect in row[4].split(" - "):
                                 lect_name = lect.split(", ")
@@ -128,6 +131,7 @@ class index:
                                             else:
                                                 print("discarded : "+row[0])
                                     else:
+                                        tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=Reader.select(Reader.q.email == emails[email_count])[0])
                                         email_count += 1
                             """print(row[0])
                             print(row[1])
@@ -169,6 +173,35 @@ class executescheduler:
             tfe.session=i["session"]
         
         return "ok"
+
+class show_tfe_details:
+    def POST(self):
+        x = web.input()
+        tfe = Tfe.select(Tfe.q.code==x.code)[0]
+
+        students_data = Tfe_rel_student.select(Tfe_rel_student.q.tfe==tfe)
+        students = []
+        for rel in students_data:
+            students.append(rel.student.email)
+
+        advisors_data = Tfe_rel_advisor.select(Tfe_rel_advisor.q.tfe==tfe)
+        advisors = []
+        for rel in advisors_data:
+            advisors.append(rel.advisor.email)
+
+        readers_data = Tfe_rel_reader.select(Tfe_rel_reader.q.tfe==tfe)
+        readers = []
+        for rel in readers_data:
+            readers.append(rel.reader.email)
+
+        result = {
+            "title" : tfe.title,
+            "students" : students,
+            "advisors" : advisors,
+            "readers" : readers
+        }
+        return json.dumps(result)
+
         
 class scheduler:
     def GET(self):

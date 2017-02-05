@@ -176,7 +176,52 @@ scratch. This page gets rid of all links and provides the needed markup only.
       events: eventlist,
       eventClick: function(event, element) {
 
-            event.title = "CLICKED!";
+            $$.ajax({
+              url : 'show_tfe_details',
+              type : 'POST',
+              data : 'code=' + event.title,
+              dataType : 'json'
+            }).done(function( msg ) {
+              document.getElementById("modalTitle").innerHTML=event.title+" : "+msg.title;
+
+              // student list
+              var ul = document.getElementById("studentList");
+              while (ul.lastChild) {
+                ul.removeChild(ul.lastChild);
+              }
+              for(var i=0 ; i<msg.students.length; i++){
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(msg.students[i]));
+                li.setAttribute("class", "list-group-item");
+                ul.appendChild(li);
+              }
+
+              // advisor list
+              var ul = document.getElementById("advisorList");
+              while (ul.lastChild) {
+                ul.removeChild(ul.lastChild);
+              }
+              for(var i=0 ; i<msg.advisors.length; i++){
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(msg.advisors[i]));
+                li.setAttribute("class", "list-group-item");
+                ul.appendChild(li);
+              }
+
+              // reader list
+              var ul = document.getElementById("readerList");
+              while (ul.lastChild) {
+                ul.removeChild(ul.lastChild);
+              }
+              for(var i=0 ; i<msg.readers.length; i++){
+                var li = document.createElement("li");
+                li.appendChild(document.createTextNode(msg.readers[i]));
+                li.setAttribute("class", "list-group-item");
+                ul.appendChild(li);
+              }
+            });
+
+            $$('#tfeDetails').modal('show');
 
             $$('#calendar').fullCalendar('updateEvent',event);
 
@@ -299,7 +344,7 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
 <div class="wrapper">
 
   <!-- Main Header -->
@@ -419,6 +464,31 @@ desired effect
                 <div class='fc-event'>$tfe.code</div>
           </div>
         </div>
+
+        <div class="modal fade" id="tfeDetails" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalTitle">Modal title</h4>
+              </div>
+              <div class="modal-body">
+                <p>Etudiants :</p>
+                <ul class="list-group" id="studentList">
+                </ul>
+                <p>Promoteurs :</p>
+                <ul class="list-group" id="advisorList">
+                </ul>
+                <p>Lecteurs :</p>
+                <ul class="list-group" id="readerList">
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div><!-- /.modal-content -->
+          </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
 
         <div id='calendar'></div>
 

@@ -279,7 +279,10 @@ desired effect
 
     var pleaseWait = $$('#pleaseWaitDialog');
 
-    pleaseWait.modal('show');
+    pleaseWait.modal({
+      backdrop: 'static',
+      keyboard: false
+    });
 
     $$.ajax({
       url: "executescheduler"
