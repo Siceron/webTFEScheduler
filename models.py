@@ -73,7 +73,7 @@ class Advisor(SQLObject):
 	email = StringCol(unique=True)
 	name = StringCol()
 	last_name = StringCol()
-	faculty = StringCol(default=None)
+	faculty = StringCol(default='UNK')
 	disponibility = ForeignKey('Disponibility')
 
 class Reader(SQLObject):
@@ -84,7 +84,7 @@ class Reader(SQLObject):
 	email = StringCol(unique=True)
 	name = StringCol()
 	last_name = StringCol()
-	faculty = StringCol(default=None)
+	faculty = StringCol(default='UNK')
 	disponibility = ForeignKey('Disponibility')
 
 class Tfe(SQLObject):

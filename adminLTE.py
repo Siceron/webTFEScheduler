@@ -2,6 +2,7 @@ import web
 import csv
 import sys
 from models import *
+from json_utils import *
 from subprocess import Popen, PIPE, STDOUT
 import json
 from pprint import pprint
@@ -153,7 +154,9 @@ class index:
 
 class executescheduler:
     def GET(self):
-        proc = Popen(["java", "-jar", "scheduler/TFEScheduler.jar", "scheduler/Test.JSON", "1"], stdout=PIPE, stderr=STDOUT)
+        with open("input.JSON", "w") as outfile:
+            json.dump(create_input_json(), outfile, indent=4)
+        proc = Popen(["java", "-jar", "scheduler/TFEScheduler.jar", "input.JSON", "1"], stdout=PIPE, stderr=STDOUT)
         proc.wait()
         for line in proc.stdout:
             print(line)
@@ -164,6 +167,7 @@ class executescheduler:
         for i in data:
             tfe = Tfe.select(Tfe.q.code == i["code"])[0]
             tfe.session=i["session"]
+        
         return "ok"
         
 class scheduler:
