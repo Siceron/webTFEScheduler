@@ -62,7 +62,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
       $$(this).draggable({
         zIndex: 999,
         revert: true,      // will cause the event to go back to its
-        revertDuration: 0  //  original position after the drag
+        revertDuration: 0,  //  original position after the drag
+        helper: 'clone',
+        appendTo: '#external-events',
+        cursor: 'move'
       });
 
     });
@@ -191,7 +194,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     el.draggable({
                       zIndex: 999,
                       revert: true, 
-                      revertDuration: 0 
+                      revertDuration: 0
                     });
                     el.data('event', { title: event.title, id :event.id, stick: true });
                 }
@@ -231,12 +234,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
   }
     
   #external-events {
+    margin-top: 2cm;
     float: left;
     width: 150px;
     padding: 0 10px;
     border: 1px solid #ccc;
     background: #eee;
     text-align: left;
+    overflow: hidden;
+  }
+
+  #external-events-listing{
+    max-height: 450px;
+    overflow-y: scroll;
   }
     
   #external-events h4 {
@@ -401,8 +411,8 @@ desired effect
       <div id='wrap'>
 
         <div id='external-events'>
+          <h4>Mémoires</h4>
           <div id='external-events-listing'>
-            <h4>Mémoires</h4>
             $for tfe in tfes:
               $if tfe.session == -1:
                 <div class='fc-event'>$tfe.code</div>
