@@ -62,7 +62,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
       $$(this).draggable({
         zIndex: 999,
         revert: true,      // will cause the event to go back to its
-        revertDuration: 0
+        revertDuration: 0,
+        helper: 'clone'
       });
 
     });
