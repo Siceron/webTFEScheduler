@@ -2,6 +2,7 @@ import web
 import csv
 import sys
 import os
+import math
 from models import *
 from json_utils import *
 from subprocess import Popen, PIPE, STDOUT
@@ -53,7 +54,9 @@ def get_rand_disp():
 class index:
 
     def GET(self):
-        return render.starter()
+        tfe_nbr = Tfe.select().count()
+        rooms = math.ceil(tfe_nbr/(3*12))
+        return render.starter(rooms)
 
     def POST(self):
         """ Store csv file """
@@ -180,10 +183,11 @@ class index:
         raise web.seeother('/')
 
 class executescheduler:
-    def GET(self):
+    def POST(self):
+        x = web.input()
         with open("input.JSON", "w") as outfile:
-            json.dump(create_input_json(), outfile, indent=4)
-        proc = Popen(["java", "-jar", "scheduler/TFEScheduler.jar", "input.JSON", "1"], stdout=PIPE, stderr=STDOUT)
+            json.dump(create_input_json(x.rooms), outfile, indent=4)
+        proc = Popen(["java", "-jar", "scheduler/TFEScheduler.jar", "input.JSON", x.time], stdout=PIPE, stderr=STDOUT)
         proc.wait()
         for line in proc.stdout:
             print(line)
@@ -194,7 +198,7 @@ class executescheduler:
         for i in data:
             tfe = Tfe.select(Tfe.q.code == i["code"])[0]
             tfe.session=i["session"]
-        
+
         return "ok"
 
 class show_tfe_details:

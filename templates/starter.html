@@ -1,3 +1,4 @@
+$def with (rooms)
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -12,6 +13,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
   <link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
+  <!-- bootstrap slider -->
+  <link rel="stylesheet" href="static/plugins/bootstrap-slider/slider.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
   <!-- Ionicons -->
@@ -23,6 +26,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         apply the skin class to the body tag so the changes take effect.
   -->
   <link rel="stylesheet" href="static/dist/css/skins/skin-blue.min.css">
+  <link rel="stylesheet" href="static/dist/css/starter.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -195,7 +199,12 @@ desired effect
             <div class="box-header with-border">
               <h3 class="box-title">Execute scheduler</h3>
             </div>
-            <div class="box-body">
+            <div class="box-body" id="scheduler-body">
+              <p> Nombre d'auditoires :</p>
+              <input class="slider slider-horizontal" id="roomsNbr" data-slider-id="green" type="text" data-slider-min="$rooms" data-slider-max="20" data-slider-step="1" data-slider-value="$rooms"/>
+              <p> Temps :</p>
+              <input class="slider slider-horizontal" id="schedulerTime" data-slider-id="red" type="text" data-slider-min="1" data-slider-max="60" data-slider-step="1" data-slider-value="1"/>
+
                 <div class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
                     <div class="modal-content">
@@ -203,6 +212,7 @@ desired effect
                           <h1>Processing...</h1>
                       </div>
                       <div class="modal-body">
+                        <p id="messageTimeout"></p>
                         <div class="progress progress-sm active">
                           <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                           </div>
@@ -213,9 +223,12 @@ desired effect
                 </div>
               </div>
             <!-- /.box-header -->
-              <div class="box-footer">
-                <button class="btn btn-primary" onclick="scheduler()">Go</button>
-              </div>
+            <div class="box-footer">
+            $if rooms == 0:
+              <button class="btn btn-primary" disabled onclick="scheduler()">Go</button>
+            $else:
+              <button class="btn btn-primary" onclick="scheduler()">Go</button>
+            </div>
             </form>
           </div>
           <!-- /.box -->
@@ -270,14 +283,39 @@ desired effect
 <script src="static/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="static/bootstrap/js/bootstrap.min.js"></script>
+<!-- Bootstrap slider -->
+<script src="static/plugins/bootstrap-slider/bootstrap-slider.js"></script>
 <!-- AdminLTE App -->
 <script src="static/dist/js/app.min.js"></script>
 
 <script type="text/javascript">
 
+  var schedulerTime = new Slider('#schedulerTime', {
+    formatter: function(value) {
+      return value + " min";
+    }
+  });
+
+  var roomsNbr = new Slider('#roomsNbr', {
+    formatter: function(value) {
+      return value + " auditoires";
+    }
+  });
+
   function scheduler() {
 
     var pleaseWait = $$('#pleaseWaitDialog');
+
+    var countdow = (document.getElementById('schedulerTime').value * 60)-1;
+    var x = setInterval(function() {
+      var minutes = Math.floor(countdow / 60);
+      var seconds = Math.floor(countdow % 60);
+      document.getElementById("messageTimeout").innerHTML = "Temps restant : " + minutes + " min " + seconds + " sec";
+      countdow -= 1;
+      if (countdow < 0) {
+        clearInterval(x);
+      }
+    },1000);
 
     pleaseWait.modal({
       backdrop: 'static',
@@ -285,7 +323,9 @@ desired effect
     });
 
     $$.ajax({
-      url: "executescheduler"
+      url: "executescheduler",
+      type : 'POST',
+      data: {time: document.getElementById('schedulerTime').value, rooms: document.getElementById('roomsNbr').value}
     }).done(function( msg ) {
       pleaseWait.modal('hide');
     });

@@ -140,16 +140,16 @@ def secretaries_json():
     ]
     return secretaries_as_dict
 
-def create_input_json():
+def create_input_json(rooms):
 
     advisors = advisors_json()
     readers = readers_json()
     secretaries = secretaries_json()
     tfes = tfes_json()
     json = {
-        "sessionNumber": 60,
+        "sessionNumber": int(rooms)*12,
         "sessionDays": 3,
-        "sessionRooms": 5,
+        "sessionRooms": int(rooms),
         "secretaries": secretaries,
         "advisors" : advisors,
         "readers" : readers,

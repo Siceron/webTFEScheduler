@@ -63,7 +63,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
         zIndex: 999,
         revert: true,      // will cause the event to go back to its
         revertDuration: 0,
-        helper: 'clone'
+        cursorAt:{
+          left: Math.floor($$(this).width() / 2),
+          top: Math.floor($$(this).height() / 2)
+        }
       });
 
     });
@@ -232,7 +235,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                       zIndex: 999,
                       revert: true, 
                       revertDuration: 0,
-                      helper: 'clone'
+                      helper: 'clone',
+                      cursorAt:{
+                        left: Math.floor($$(this).width() / 2),
+                        top: Math.floor($$(this).height() / 2)
+                      }
                     });
                     el.data('event', { title: event.title, id :event.id, stick: true });
                 }
@@ -344,7 +351,7 @@ desired effect
   <header class="main-header">
 
     <!-- Logo -->
-    <a href="#" class="logo">
+    <a href="/" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>TFE</b></span>
       <!-- logo for regular state and mobile devices -->
