@@ -82,6 +82,17 @@ def tfes_json():
         tfes_as_dict.append(tfe_as_dict)
     return tfes_as_dict
 
+def fixed_json():
+    fixeds_as_dict = []
+    for tfe in Tfe.select():
+        if tfe.session != -1:
+            fixed_as_dict = {
+                "code" : tfe.code,
+                "session" : tfe.session
+            }
+            fixeds_as_dict.append(fixed_as_dict)
+    return fixeds_as_dict
+
 def secretaries_json():
     secretaries_as_dict = [
         {
@@ -146,6 +157,7 @@ def create_input_json(rooms):
     readers = readers_json()
     secretaries = secretaries_json()
     tfes = tfes_json()
+    fixed = fixed_json()
     json = {
         "sessionNumber": int(rooms)*12,
         "sessionDays": 3,
@@ -155,6 +167,6 @@ def create_input_json(rooms):
         "readers" : readers,
         "tfes" : tfes,
         "banned" : [],
-        "fixed" : []
+        "fixed" : fixed
     }
     return json
