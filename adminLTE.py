@@ -17,7 +17,8 @@ urls = (
     '/scheduler', 'scheduler',
     '/informations', 'informations',
     '/executescheduler', 'executescheduler',
-    '/show_tfe_details', 'show_tfe_details'
+    '/show_tfe_details', 'show_tfe_details',
+    '/set_session', 'set_session'
 )
 
 def load_sqlo(handler=None):
@@ -229,6 +230,12 @@ class show_tfe_details:
         }
         return json.dumps(result)
 
+class set_session:
+    def POST(self):
+        x = web.input()
+        tfe = Tfe.select(Tfe.q.code == x.code)[0]
+        tfe.session = int(x.session)
+        return "ok"
         
 class scheduler:
     def GET(self):
