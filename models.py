@@ -1,4 +1,5 @@
 from sqlobject import *
+import hashlib
 
 sqlhub.processConnection = connectionForURI('sqlite:tfescheduler.db')
 
@@ -10,7 +11,15 @@ class User(SQLObject):
 	user = StringCol()
 	password = StringCol()
 	email = StringCol()
-	privilege = IntCol(default=0)
+
+class Sessions(SQLObject):
+
+	class sqlmeta:
+		table = 'sessions'
+
+	session_id = StringCol(length=128, unique=True, notNone=True)
+	atime = TimestampCol(notNone=True, default=DateTimeCol.now)
+	data = StringCol()
 
 class Secretary(SQLObject):
 
@@ -121,6 +130,12 @@ class Tfe_rel_reader(SQLObject):
 	reader = ForeignKey('Reader')
 
 if __name__ == "__main__":
+	User.dropTable(ifExists=True)
+	User.createTable()
+	Sessions.dropTable(ifExists=True)
+	Sessions.createTable()
+	pwdhash = hashlib.md5("pass".encode('utf-8')).hexdigest()
+	user = User(user="admin", password=pwdhash, email="a@a.com")
 	Disponibility.dropTable(ifExists=True)
 	Disponibility.createTable()
 	Student.dropTable(ifExists=True)
