@@ -200,11 +200,14 @@ desired effect
               <h3 class="box-title">Execute scheduler</h3>
             </div>
             <div class="box-body" id="scheduler-body">
+              <div>
               <p> Nombre d'auditoires :</p>
               <input class="slider slider-horizontal" id="roomsNbr" data-slider-id="green" type="text" data-slider-min="$rooms" data-slider-max="20" data-slider-step="1" data-slider-value="$rooms"/>
-              <p> Temps :</p>
+              </div>
+              <div>
+              <p id="time-label"> Temps :</p>
               <input class="slider slider-horizontal" id="schedulerTime" data-slider-id="red" type="text" data-slider-min="1" data-slider-max="60" data-slider-step="1" data-slider-value="1"/>
-
+              </div>
                 <div class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
                     <div class="modal-content">
@@ -291,15 +294,15 @@ desired effect
 
 <script type="text/javascript">
 
-  var schedulerTime = new Slider('#schedulerTime', {
-    formatter: function(value) {
-      return value + " min";
-    }
-  });
-
   var roomsNbr = new Slider('#roomsNbr', {
     formatter: function(value) {
       return value + " auditoires";
+    }
+  });
+
+  var schedulerTime = new Slider('#schedulerTime', {
+    formatter: function(value) {
+      return value + " min";
     }
   });
 

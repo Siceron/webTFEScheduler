@@ -1,0 +1,16 @@
+Statistics :
+	- Solution found in : 1min
+	- Sessions allocated : 60
+	- Jury : 244
+	- TFE : 167
+	- TFE impossible : 0
+	- TFE assigned : 167
+	  ratio : 100.0%
+Conflicts :
+	 No conflicts
+Not assigned :
+	 Every TFE is assigned
+Not disponible :
+	-aude.simar@uclouvain.be for EPL1415-79 session 48
+Parallel sessions :
+	-jean-didier.legat@uclouvain.be for [15, 27]
