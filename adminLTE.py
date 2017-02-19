@@ -22,7 +22,11 @@ urls = (
     '/informations', 'informations',
     '/executescheduler', 'executescheduler',
     '/show_tfe_details', 'show_tfe_details',
-    '/set_session', 'set_session'
+    '/set_session', 'set_session',
+    '/set_tfe', 'set_tfe',
+    '/delete_tfe', 'delete_tfe',
+    '/set_student', 'set_student',
+    '/delete_student', 'delete_student'
 )
 
 def load_sqlo(handler=None):
@@ -57,7 +61,7 @@ class login:
 
         #authdb = sqlite3.connect('users.db')
         pwdhash = hashlib.md5(i.password.encode('utf-8')).hexdigest()
-        check = User.select(AND(User.q.user==i.username, User.q.password == pwdhash)).count()
+        check = User.select(AND(User.q.email==i.username, User.q.password == pwdhash)).count()
         #check = authdb.execute('select * from users where username=? and password=?', (i.username, pwdhash))
         if check == 1: 
             session.loggedin = True
@@ -159,6 +163,43 @@ class set_session:
         x = web.input()
         tfe = Tfe.select(Tfe.q.code == x.code)[0]
         tfe.session = int(x.session)
+        return "ok"
+
+class set_tfe:
+    def POST(self):
+        x = web.input()
+        if Tfe.select(Tfe.q.code == x.code).count() == 0:
+            Tfe(code=x.code, title=x.title, commission=x.commission)
+        else:
+            tfe = Tfe.select(Tfe.q.code == x.code)[0]
+            tfe.title = x.title
+            tfe.commission = x.commission
+        raise web.seeother('/informations')
+
+class delete_tfe:
+    def POST(self):
+        x = web.input()
+        tfe = Tfe.select(Tfe.q.code == x.code)[0]
+        tfe.delete(tfe.id)
+        return "ok"
+
+class set_student:
+    def POST(self):
+        x = web.input()
+        if Student.select(Student.q.email == x.email).count() == 0:
+            Student(email=x.email, name=x.firstname, last_name=x.lastname, faculty=x.faculty)
+        else:
+            student = Student.select(Student.q.email == x.email)[0]
+            student.name = x.firstname
+            student.last_name = x.lastname
+            student.faculty = x.faculty
+        raise web.seeother('/informations')
+
+class delete_student:
+    def POST(self):
+        x = web.input()
+        student = Student.select(Student.q.email == x.email)[0]
+        student.delete(student.id)
         return "ok"
 
 if __name__ == "__main__":

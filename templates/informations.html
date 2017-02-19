@@ -163,13 +163,18 @@ desired effect
         <div class="box-header">
           <h3 class="box-title">Mémoires</h3>
         </div>
-            <!-- /.box-header -->
+        <div class="box-body">
+          <button type="button" id="tfe-button-add">Ajouter</button>
+          <button type="button" id="tfe-button-edit">Editer</button>
+          <button type="button" id="tfe-button-delete">Supprimer</button>
+        </div>
         <div class="box-body">
               <table id="tfes-table" class="table table-bordered table-hover">
                 <thead>
                 <tr>
                   <th>Code</th>
                   <th>Titre</th>
+                  <th>Commission</th>
                   <th>Session</th>
                 </tr>
                 </thead>
@@ -178,6 +183,28 @@ desired effect
                   <tr>
                     <td>$tfe.code</td>
                     <td>$tfe.title</td>
+                    $if tfe.commission == "ELEC":
+                      <td class="elec">$tfe.commission</td>
+                    $elif tfe.commission == "ELME":
+                      <td class="elme">$tfe.commission</td>
+                    $elif tfe.commission == "GBIO":
+                      <td class="gbio">$tfe.commission</td>
+                    $elif tfe.commission == "FYAP":
+                      <td class="fyap">$tfe.commission</td>
+                    $elif tfe.commission == "KIMA":
+                      <td class="kima">$tfe.commission</td>
+                    $elif tfe.commission == "GCE":
+                      <td class="gce">$tfe.commission</td>
+                    $elif tfe.commission == "INFO":
+                      <td class="info">$tfe.commission</td>
+                    $elif tfe.commission == "SINF":
+                      <td class="sinf">$tfe.commission</td>
+                    $elif tfe.commission == "MAP":
+                      <td class="map">$tfe.commission</td>
+                    $elif tfe.commission == "MECA":
+                      <td class="meca">$tfe.commission</td>
+                    $else:
+                      <td class="default-commission">$tfe.commission</td>
                     <td>$tfe.session</td>
                   </tr>
                 </tbody>
@@ -185,6 +212,7 @@ desired effect
                 <tr>
                   <th>Code</th>
                   <th>Titre</th>
+                  <th>Commission</th>
                   <th>Session</th>
                 </tr>
                 </tfoot>
@@ -197,7 +225,11 @@ desired effect
         <div class="box-header">
           <h3 class="box-title">Etudiants</h3>
         </div>
-            <!-- /.box-header -->
+        <div class="box-body">
+          <button type="button" id="students-button-add">Ajouter</button>
+          <button type="button" id="students-button-edit">Editer</button>
+          <button type="button" id="students-button-delete">Supprimer</button>
+        </div>
         <div class="box-body">
               <table id="students-table" class="table table-bordered table-hover">
                 <thead>
@@ -539,6 +571,91 @@ desired effect
 </div>
 <!-- ./wrapper -->
 
+<!-- Modals -->
+<div id="tfeModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">TFE</h4>
+      </div>
+      <form method="POST" enctype="multipart/form-data" action="/set_tfe">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="code">Code</label>
+            <input type="text" class="form-control" id="code" placeholder="code" name="code">
+          </div>
+          <div class="form-group">
+            <label for="title">Titre</label>
+            <input type="text" class="form-control" id="title" placeholder="titre" name="title">
+          </div>
+          <div class="form-group">
+            <label for="commission">Commission</label>
+            <select class="form-control" id="commission" name="commission">
+              <option></option>
+              <option>ELEC</option>
+              <option>ELME</option>
+              <option>GBIO</option>
+              <option>FYAP</option>
+              <option>KIMA</option>
+              <option>GCE</option>
+              <option>INFO</option>
+              <option>SINF</option>
+              <option>MAP</option>
+              <option>MECA</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-default" value="Submit">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </form> 
+    </div>
+
+  </div>
+</div>
+
+<div id="studentModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Etudiant</h4>
+      </div>
+      <form method="POST" enctype="multipart/form-data" action="/set_student">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="student-email">Email</label>
+            <input type="text" class="form-control" id="student-email" placeholder="student@student.uclouvain.be" name="email">
+          </div>
+          <div class="form-group">
+            <label for="student-firstname">Prénom</label>
+            <input type="text" class="form-control" id="student-firstname" placeholder="prénom" name="firstname">
+          </div>
+          <div class="form-group">
+            <label for="student-lastname">Nom</label>
+            <input type="text" class="form-control" id="student-lastname" placeholder="nom" name="lastname">
+          </div>
+          <div class="form-group">
+            <label for="student-faculty">Faculté</label>
+            <input type="text" class="form-control" id="student-faculty" placeholder="faculté" name="faculty">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-default" value="Submit">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </form> 
+    </div>
+
+  </div>
+</div>
+
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 2.2.3 -->
@@ -552,8 +669,9 @@ desired effect
 <script src="static/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
 <script>
+
   $$(function () {
-    $$("#tfes-table, #students-table, #advisors-table, #readers-table").DataTable({
+    var table = $$("#tfes-table, #students-table, #advisors-table, #readers-table").DataTable({
       "language":
       {
         "sProcessing":     "Traitement en cours...",
@@ -591,6 +709,89 @@ desired effect
       "fnStateLoad": function (oSettings) {
         var data = localStorage.getItem('DataTables_' + window.location.pathname);
         return JSON.parse(data);
+      }
+    });
+
+    // TFE CRUD
+
+    $$('#tfes-table tbody').on( 'click', 'tr', function () {
+        if ( $$(this).hasClass('tfe-selected') ) {
+            $$(this).removeClass('tfe-selected');
+        }
+        else {
+            table.$$('tr.tfe-selected').removeClass('tfe-selected');
+            $$(this).addClass('tfe-selected');
+        }
+    });
+
+    $$('#tfe-button-add').click( function () {
+      document.getElementById("code").value = "";
+      document.getElementById('code').readOnly = false;
+      document.getElementById("title").value = "";
+      document.getElementById("commission").value = "";
+      $$('#tfeModal').modal("show");
+    });
+
+    $$('#tfe-button-delete').click( function () {
+      var data = table.row('.tfe-selected').data();
+      table.row('.tfe-selected').remove().draw( false );
+      $$.ajax({
+        url: "delete_tfe",
+        type : 'POST',
+        data: 'code=' + data[0],
+      });
+    });
+
+    $$('#tfe-button-edit').click( function () {
+      var data = table.row('.tfe-selected').data();
+      if ( data.length != 0 ) {
+        document.getElementById("code").value = data[0];
+        document.getElementById('code').readOnly = true;
+        document.getElementById("title").value = data[1];
+        document.getElementById("commission").value = data[2];
+        $$('#tfeModal').modal("show");
+      }
+    });
+
+    // STUDENTS CRUD
+
+    $$('#students-table tbody').on( 'click', 'tr', function () {
+        if ( $$(this).hasClass('students-selected') ) {
+            $$(this).removeClass('students-selected');
+        }
+        else {
+            table.$$('tr.students-selected').removeClass('students-selected');
+            $$(this).addClass('students-selected');
+        }
+    });
+
+    $$('#students-button-add').click( function () {
+      document.getElementById("student-email").value = "";
+      document.getElementById('student-email').readOnly = false;
+      document.getElementById("student-firstname").value = "";
+      document.getElementById("student-lastname").value = "";
+      $$('#studentModal').modal("show");
+    });
+
+    $$('#students-button-delete').click( function () {
+      var data = table.row('.students-selected').data();
+      table.row('.students-selected').remove().draw( false );
+      $$.ajax({
+        url: "delete_student",
+        type : 'POST',
+        data: 'email=' + data[3],
+      });
+    });
+
+    $$('#students-button-edit').click( function () {
+      var data = table.row('.students-selected').data();
+      if ( data.length != 0 ) {
+        document.getElementById("student-email").value = data[3];
+        document.getElementById('student-email').readOnly = true;
+        document.getElementById("student-firstname").value = data[0];
+        document.getElementById("student-lastname").value = data[1];
+        document.getElementById("student-faculty").value = data[2];
+        $$('#studentModal').modal("show");
       }
     });
   });

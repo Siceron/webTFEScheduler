@@ -8,9 +8,8 @@ class User(SQLObject):
 	class sqlmeta:
 		table = 'user'
 
-	user = StringCol()
-	password = StringCol()
 	email = StringCol()
+	password = StringCol()
 
 class Sessions(SQLObject):
 
@@ -104,6 +103,7 @@ class Tfe(SQLObject):
 	code = StringCol(unique=True)
 	title = StringCol()
 	session = IntCol(default=-1)
+	commission = StringCol(default=None, notNone=False)
 
 class Tfe_rel_student(SQLObject):
 
@@ -135,7 +135,7 @@ if __name__ == "__main__":
 	Sessions.dropTable(ifExists=True)
 	Sessions.createTable()
 	pwdhash = hashlib.md5("pass".encode('utf-8')).hexdigest()
-	user = User(user="admin", password=pwdhash, email="a@a.com")
+	user = User(email="admin@a.com", password=pwdhash)
 	Disponibility.dropTable(ifExists=True)
 	Disponibility.createTable()
 	Student.dropTable(ifExists=True)
