@@ -30,7 +30,9 @@ urls = (
     '/set_student', 'set_student',
     '/delete_student', 'delete_student',
     '/set_person', 'set_person',
-    '/delete_person', 'delete_person'
+    '/delete_person', 'delete_person',
+    '/get_tfe_rel_student', 'get_tfe_rel_student',
+    '/set_tfe_rel_student', 'set_tfe_rel_student'
 )
 
 def load_sqlo(handler=None):
@@ -109,8 +111,9 @@ class tfe:
 class student:
     def GET(self):
         if session.get('username', False):
+            tfes = Tfe.select()
             students = Student.select()
-            return render.student(students)
+            return render.student(students, tfes)
         else:
            raise web.seeother('/')
 
@@ -269,6 +272,29 @@ class delete_person:
         for rel in tfe_relations:
             rel.delete(rel.id)
         return "ok"
+
+class get_tfe_rel_student:
+    def POST(self):
+        x = web.input()
+        student = Student.select(Student.q.email == x.email)[0]
+        if Tfe_rel_student.select(Tfe_rel_student.q.student == student).count() == 0:
+            return ""
+        else:
+            rel = Tfe_rel_student.select(Tfe_rel_student.q.student == student)[0]
+            return rel.tfe.code
+
+class set_tfe_rel_student:
+    def POST(self):
+        x = web.input()
+        student = Student.select(Student.q.email == x.email)[0]
+        if x.tfe == "":
+            if Tfe_rel_student.select(Tfe_rel_student.q.student == student).count() != 0:
+                rel = Tfe_rel_student.select(Tfe_rel_student.q.student == student)[0]
+                rel.delete(rel.id)
+        else:
+            tfe = Tfe.select(Tfe.q.code == x.tfe)[0]
+            Tfe_rel_student(tfe=tfe, student=student)
+        raise web.seeother('/student')
 
 if __name__ == "__main__":
     app = web.application(urls, globals())

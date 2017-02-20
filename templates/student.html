@@ -1,4 +1,4 @@
-$def with (students)
+$def with (students, tfes)
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -178,6 +178,7 @@ desired effect
           <button type="button" id="students-button-add">Ajouter</button>
           <button type="button" id="students-button-edit">Editer</button>
           <button type="button" id="students-button-delete">Supprimer</button>
+          <button type="button" id="students-button-link">Lier au tfe</button>
         </div>
         <div class="box-body">
               <table id="students-table" class="table table-bordered table-hover">
@@ -294,6 +295,37 @@ desired effect
   </div>
 </div>
 
+<div id="linkModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Lier <span id="student-email-label"></span> à un TFE</h4>
+      </div>
+      <form method="POST" enctype="multipart/form-data" action="/set_tfe_rel_student">
+        <div class="modal-body">
+          <input type="text" id="student-email-link" name="email" style="visibility : hidden;">
+          <div class="form-group">
+            <label for="tfe-link">Mémoire</label>
+            <select class="form-control" id="tfe-link" name="tfe">
+              <option></option>
+              $for tfe in tfes:
+                <option>$tfe.code</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-default" value="Submit">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </form> 
+    </div>
+
+  </div>
+</div>
+
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 2.2.3 -->
@@ -389,6 +421,23 @@ desired effect
         document.getElementById("student-lastname").value = data[0];
         document.getElementById("student-faculty").value = data[2];
         $$('#studentModal').modal("show");
+      }
+    });
+
+    $$('#students-button-link').click( function () {
+      var data = table.row('.students-selected').data();
+      if ( data.length != 0 ) {
+        document.getElementById("student-email-label").value = data[3];
+        document.getElementById("student-email-link").value = data[3];
+        document.getElementById('student-email-link').readOnly = true;
+        $$.ajax({
+          url : 'get_tfe_rel_student',
+          type : 'POST',
+          data : 'email=' + data[3]
+        }).done(function( msg ) {
+          document.getElementById("tfe-link").value = msg;
+          $$('#linkModal').modal("show");
+        });
       }
     });
   });
