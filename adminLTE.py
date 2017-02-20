@@ -32,7 +32,9 @@ urls = (
     '/set_person', 'set_person',
     '/delete_person', 'delete_person',
     '/get_tfe_rel_student', 'get_tfe_rel_student',
-    '/set_tfe_rel_student', 'set_tfe_rel_student'
+    '/set_tfe_rel_student', 'set_tfe_rel_student',
+    '/set_tfe_rel_person', 'set_tfe_rel_person',
+    '/delete_tfe_rel_person', 'delete_tfe_rel_person'
 )
 
 def load_sqlo(handler=None):
@@ -120,8 +122,10 @@ class student:
 class person:
     def GET(self):
         if session.get('username', False):
+            tfes = Tfe.select()
             persons = Person.select()
-            return render.person(persons)
+            rels = Tfe_rel_person.select()
+            return render.person(persons, rels, tfes)
         else:
            raise web.seeother('/')
 
@@ -237,9 +241,9 @@ class set_person:
     def POST(self):
         x = web.input()
         if Person.select(Person.q.email == x.email).count() == 0:
-            disponibility = Disponibility(session_0=x.s0, session_1=x.s1, session_2=x.s2, session_3=x.s3,\
-            session_4=x.s4, session_5=x.s5, session_6=x.s6, session_7=x.s7, session_8=x.s8,\
-            session_9=x.s9, session_10=x.s10, session_11=x.s11)
+            disponibility = Disponibility(session_0=isChecked(x, 's0'), session_1=isChecked(x, 's1'), session_2=isChecked(x, 's2'), session_3=isChecked(x, 's3'),\
+            session_4=isChecked(x, 's4'), session_5=isChecked(x, 's5'), session_6=isChecked(x, 's6'), session_7=isChecked(x, 's7'), session_8=isChecked(x, 's8'),\
+            session_9=isChecked(x, 's9'), session_10=isChecked(x, 's10'), session_11=isChecked(x, 's11'))
             Person(email=x.email, name=x.firstname, last_name=x.lastname, disponibility=disponibility)
         else:
             person = Person.select(Person.q.email == x.email)[0]
@@ -295,6 +299,25 @@ class set_tfe_rel_student:
             tfe = Tfe.select(Tfe.q.code == x.tfe)[0]
             Tfe_rel_student(tfe=tfe, student=student)
         raise web.seeother('/student')
+
+class set_tfe_rel_person:
+    def POST(self):
+        x = web.input()
+        if Person.select(Person.q.email == x.person).count() != 0 and Tfe.select(Tfe.q.code == x.tfe).count() != 0:
+            person = Person.select(Person.q.email == x.person)[0]
+            tfe = Tfe.select(Tfe.q.code == x.tfe)[0]
+            if Tfe_rel_person.select(AND(Tfe_rel_person.q.person == person, Tfe_rel_person.q.tfe == tfe)).count() == 0:
+                Tfe_rel_person(tfe=tfe, person=person, title=x.title)
+        raise web.seeother('/person')
+
+class delete_tfe_rel_person:
+    def POST(self):
+        x = web.input()
+        person = Person.select(Person.q.email == x.person)[0]
+        tfe = Tfe.select(Tfe.q.code == x.tfe)[0]
+        rel = Tfe_rel_person.select(AND(Tfe_rel_person.q.person == person, Tfe_rel_person.q.tfe == tfe))[0]
+        rel.delete(rel.id)
+        return "ok"
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
