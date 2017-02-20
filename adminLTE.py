@@ -19,7 +19,9 @@ urls = (
     '/logout', 'logout',
     '/index', 'index',
     '/scheduler', 'scheduler',
-    '/informations', 'informations',
+    '/tfe', 'tfe',
+    '/student', 'student',
+    '/person', 'person',
     '/executescheduler', 'executescheduler',
     '/show_tfe_details', 'show_tfe_details',
     '/set_session', 'set_session',
@@ -78,7 +80,7 @@ class index:
         if session.get('username', False):
             tfe_nbr = Tfe.select().count()
             rooms = math.ceil(tfe_nbr/(3*12))
-            return render.starter(rooms)
+            return render.index(rooms)
         else:
            raise web.seeother('/')
 
@@ -96,13 +98,27 @@ class scheduler:
         else:
            raise web.seeother('/')
 
-class informations:
+class tfe:
+    def GET(self):
+        if session.get('username', False):
+            tfes = Tfe.select()
+            return render.tfe(tfes)
+        else:
+           raise web.seeother('/')
+
+class student:
     def GET(self):
         if session.get('username', False):
             students = Student.select()
+            return render.student(students)
+        else:
+           raise web.seeother('/')
+
+class person:
+    def GET(self):
+        if session.get('username', False):
             persons = Person.select()
-            tfes = Tfe.select()
-            return render.informations(students, persons, tfes)
+            return render.person(persons)
         else:
            raise web.seeother('/')
 
@@ -175,7 +191,7 @@ class set_tfe:
             tfe = Tfe.select(Tfe.q.code == x.code)[0]
             tfe.title = x.title
             tfe.commission = x.commission
-        raise web.seeother('/informations')
+        raise web.seeother('/tfe')
 
 class delete_tfe:
     def POST(self):
@@ -194,7 +210,7 @@ class set_student:
             student.name = x.firstname
             student.last_name = x.lastname
             student.faculty = x.faculty
-        raise web.seeother('/informations')
+        raise web.seeother('/student')
 
 class delete_student:
     def POST(self):
@@ -238,7 +254,7 @@ class set_person:
             person.disponibility.session_9 = isChecked(x, 's9')
             person.disponibility.session_10 = isChecked(x, 's10')
             person.disponibility.session_11 = isChecked(x, 's11')
-        raise web.seeother('/informations')
+        raise web.seeother('/person')
 
 class delete_person:
     def POST(self):
