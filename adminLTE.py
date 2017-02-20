@@ -26,7 +26,9 @@ urls = (
     '/set_tfe', 'set_tfe',
     '/delete_tfe', 'delete_tfe',
     '/set_student', 'set_student',
-    '/delete_student', 'delete_student'
+    '/delete_student', 'delete_student',
+    '/set_person', 'set_person',
+    '/delete_person', 'delete_person'
 )
 
 def load_sqlo(handler=None):
@@ -98,10 +100,9 @@ class informations:
     def GET(self):
         if session.get('username', False):
             students = Student.select()
-            advisors = Advisor.select()
+            persons = Person.select()
             tfes = Tfe.select()
-            readers = Reader.select()
-            return render.informations(students, advisors, tfes, readers)
+            return render.informations(students, persons, tfes)
         else:
            raise web.seeother('/')
 
@@ -140,15 +141,15 @@ class show_tfe_details:
         for rel in students_data:
             students.append(rel.student.email)
 
-        advisors_data = Tfe_rel_advisor.select(Tfe_rel_advisor.q.tfe==tfe)
+        advisors_data = Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.title=="Promoteur"))
         advisors = []
         for rel in advisors_data:
-            advisors.append(rel.advisor.email)
+            advisors.append(rel.person.email)
 
-        readers_data = Tfe_rel_reader.select(Tfe_rel_reader.q.tfe==tfe)
+        readers_data = Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.title=="Lecteur"))
         readers = []
         for rel in readers_data:
-            readers.append(rel.reader.email)
+            readers.append(rel.person.email)
 
         result = {
             "title" : tfe.title,
@@ -199,7 +200,58 @@ class delete_student:
     def POST(self):
         x = web.input()
         student = Student.select(Student.q.email == x.email)[0]
+        tfe_relations = []
+        for rel in Tfe_rel_student.select(Tfe_rel_student.q.student == student):
+            tfe_relations.append(rel)
         student.delete(student.id)
+        for rel in tfe_relations:
+            rel.delete(rel.id)
+        return "ok"
+
+def isChecked(input, param):
+    if param in input:
+        return True
+    else:
+        return False
+
+class set_person:
+    def POST(self):
+        x = web.input()
+        if Person.select(Person.q.email == x.email).count() == 0:
+            disponibility = Disponibility(session_0=x.s0, session_1=x.s1, session_2=x.s2, session_3=x.s3,\
+            session_4=x.s4, session_5=x.s5, session_6=x.s6, session_7=x.s7, session_8=x.s8,\
+            session_9=x.s9, session_10=x.s10, session_11=x.s11)
+            Person(email=x.email, name=x.firstname, last_name=x.lastname, disponibility=disponibility)
+        else:
+            person = Person.select(Person.q.email == x.email)[0]
+            person.name = x.firstname
+            person.last_name = x.lastname
+            person.disponibility.session_0 = isChecked(x, 's0')
+            person.disponibility.session_1 = isChecked(x, 's1')
+            person.disponibility.session_2 = isChecked(x, 's2')
+            person.disponibility.session_3 = isChecked(x, 's3')
+            person.disponibility.session_4 = isChecked(x, 's4')
+            person.disponibility.session_5 = isChecked(x, 's5')
+            person.disponibility.session_6 = isChecked(x, 's6')
+            person.disponibility.session_7 = isChecked(x, 's7')
+            person.disponibility.session_8 = isChecked(x, 's8')
+            person.disponibility.session_9 = isChecked(x, 's9')
+            person.disponibility.session_10 = isChecked(x, 's10')
+            person.disponibility.session_11 = isChecked(x, 's11')
+        raise web.seeother('/informations')
+
+class delete_person:
+    def POST(self):
+        x = web.input()
+        person = Person.select(Person.q.email == x.email)[0]
+        disponibility = person.disponibility
+        tfe_relations = []
+        for rel in Tfe_rel_person.select(Tfe_rel_person.q.person == person):
+            tfe_relations.append(rel)
+        person.delete(person.id)
+        disponibility.delete(disponibility.id)
+        for rel in tfe_relations:
+            rel.delete(rel.id)
         return "ok"
 
 if __name__ == "__main__":

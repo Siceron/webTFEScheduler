@@ -3,23 +3,23 @@ from models import *
 
 def advisors_json():
     advisors_as_dict = []
-    for advisor in Advisor.select():
+    for rel in Tfe_rel_person.select(Tfe_rel_person.q.title == "Promoteur"):
         advisor_as_dict = {
-            "email" : advisor.email,
-            "faculty" : advisor.faculty,
+            "email" : rel.person.email,
+            "faculty" : "UNK",
             "disponibilities": [
-                advisor.disponibility.session_0,
-                advisor.disponibility.session_1,
-                advisor.disponibility.session_2,
-                advisor.disponibility.session_3,
-                advisor.disponibility.session_4,
-                advisor.disponibility.session_5,
-                advisor.disponibility.session_6,
-                advisor.disponibility.session_7,
-                advisor.disponibility.session_8,
-                advisor.disponibility.session_9,
-                advisor.disponibility.session_10,
-                advisor.disponibility.session_11
+                rel.person.disponibility.session_0,
+                rel.person.disponibility.session_1,
+                rel.person.disponibility.session_2,
+                rel.person.disponibility.session_3,
+                rel.person.disponibility.session_4,
+                rel.person.disponibility.session_5,
+                rel.person.disponibility.session_6,
+                rel.person.disponibility.session_7,
+                rel.person.disponibility.session_8,
+                rel.person.disponibility.session_9,
+                rel.person.disponibility.session_10,
+                rel.person.disponibility.session_11
             ]
         }
         advisors_as_dict.append(advisor_as_dict)
@@ -27,23 +27,23 @@ def advisors_json():
 
 def readers_json():
     readers_as_dict = []
-    for reader in Reader.select():
+    for rel in Tfe_rel_person.select(Tfe_rel_person.q.title == "Lecteur"):
         reader_as_dict = {
-            "email" : reader.email,
-            "faculty" : reader.faculty,
+            "email" : rel.person.email,
+            "faculty" : "UNK",
             "disponibilities": [
-                reader.disponibility.session_0,
-                reader.disponibility.session_1,
-                reader.disponibility.session_2,
-                reader.disponibility.session_3,
-                reader.disponibility.session_4,
-                reader.disponibility.session_5,
-                reader.disponibility.session_6,
-                reader.disponibility.session_7,
-                reader.disponibility.session_8,
-                reader.disponibility.session_9,
-                reader.disponibility.session_10,
-                reader.disponibility.session_11
+                rel.person.disponibility.session_0,
+                rel.person.disponibility.session_1,
+                rel.person.disponibility.session_2,
+                rel.person.disponibility.session_3,
+                rel.person.disponibility.session_4,
+                rel.person.disponibility.session_5,
+                rel.person.disponibility.session_6,
+                rel.person.disponibility.session_7,
+                rel.person.disponibility.session_8,
+                rel.person.disponibility.session_9,
+                rel.person.disponibility.session_10,
+                rel.person.disponibility.session_11
             ]
         }
         readers_as_dict.append(reader_as_dict)
@@ -60,17 +60,17 @@ def tfes_json():
             }
             students.append(student)
         advisors = []
-        for rel in Tfe_rel_advisor.select(Tfe_rel_advisor.q.tfe==tfe):
+        for rel in Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.title=="Promoteur")):
             advisor = {
-                "email" : rel.advisor.email,
-                "faculty" : rel.advisor.faculty
+                "email" : rel.person.email,
+                "faculty" : "UNK"
             }
             advisors.append(advisor)
         readers = []
-        for rel in Tfe_rel_reader.select(Tfe_rel_reader.q.tfe==tfe):
+        for rel in Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.title=="Lecteur")):
             reader = {
-                "email" : rel.reader.email,
-                "faculty" : rel.reader.faculty
+                "email" : rel.person.email,
+                "faculty" : "UNK"
             }
             readers.append(reader)
         tfe_as_dict = {

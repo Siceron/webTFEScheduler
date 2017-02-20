@@ -73,26 +73,14 @@ class Student(SQLObject):
 	last_name = StringCol()
 	faculty = StringCol()
 
-class Advisor(SQLObject):
+class Person(SQLObject):
 
 	class sqlmeta:
-		table = 'advisor'
+		table = 'person'
 
 	email = StringCol(unique=True)
 	name = StringCol()
 	last_name = StringCol()
-	faculty = StringCol(default='UNK')
-	disponibility = ForeignKey('Disponibility')
-
-class Reader(SQLObject):
-
-	class sqlmeta:
-		table = 'reader'
-
-	email = StringCol(unique=True)
-	name = StringCol()
-	last_name = StringCol()
-	faculty = StringCol(default='UNK')
 	disponibility = ForeignKey('Disponibility')
 
 class Tfe(SQLObject):
@@ -113,21 +101,14 @@ class Tfe_rel_student(SQLObject):
 	tfe = ForeignKey('Tfe')
 	student = ForeignKey('Student')
 
-class Tfe_rel_advisor(SQLObject):
+class Tfe_rel_person(SQLObject):
 
 	class sqlmeta:
-		table = 'tfe_rel_advisor'
+		table = 'tfe_rel_person'
 
 	tfe = ForeignKey('Tfe')
-	advisor = ForeignKey('Advisor')
-
-class Tfe_rel_reader(SQLObject):
-
-	class sqlmeta:
-		table = 'tfe_rel_reader'
-
-	tfe = ForeignKey('Tfe')
-	reader = ForeignKey('Reader')
+	person = ForeignKey('Person')
+	title = StringCol()
 
 if __name__ == "__main__":
 	User.dropTable(ifExists=True)
@@ -140,15 +121,11 @@ if __name__ == "__main__":
 	Disponibility.createTable()
 	Student.dropTable(ifExists=True)
 	Student.createTable()
-	Advisor.dropTable(ifExists=True)
-	Advisor.createTable()
-	Reader.dropTable(ifExists=True)
-	Reader.createTable()
+	Person.dropTable(ifExists=True)
+	Person.createTable()
 	Tfe.dropTable(ifExists=True)
 	Tfe.createTable()
 	Tfe_rel_student.dropTable(ifExists=True)
 	Tfe_rel_student.createTable()
-	Tfe_rel_advisor.dropTable(ifExists=True)
-	Tfe_rel_advisor.createTable()
-	Tfe_rel_reader.dropTable(ifExists=True)
-	Tfe_rel_reader.createTable()
+	Tfe_rel_person.dropTable(ifExists=True)
+	Tfe_rel_person.createTable()

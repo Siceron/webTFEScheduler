@@ -58,58 +58,43 @@ def populate_db(input):
                             email_count += 1
                         for prom in row[3].split(" - "):
                             prom_name = prom.split(", ")
-                            if Advisor.select(Advisor.q.email == emails[email_count]).count() == 0:
-                                if Reader.select(Reader.q.email == emails[email_count]).count() == 0:
-                                    if random_disp==True:
-                                        promoteur = Advisor(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=get_rand_disp())
-                                        tfe_rel_advisor = Tfe_rel_advisor(tfe=memoire, advisor=promoteur)   
-                                    else:
-                                        promoteur = Advisor(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=Disponibility())
-                                        tfe_rel_advisor = Tfe_rel_advisor(tfe=memoire, advisor=promoteur)
+                            if Person.select(Person.q.email == emails[email_count]).count() == 0:
+                                if random_disp==True:
+                                    person = Person(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=get_rand_disp())
+                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")   
                                 else:
-                                    disp = Reader.select(Reader.q.email == emails[email_count])[0].disponibility
-                                    promoteur = Advisor(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=disp)
-                                    tfe_rel_advisor = Tfe_rel_advisor(tfe=memoire, advisor=promoteur)
+                                    person = Person(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=Disponibility())
+                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")
                             else:
-                                tfe_rel_advisor = Tfe_rel_advisor(tfe=memoire, advisor=Advisor.select(Advisor.q.email == emails[email_count])[0])
+                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=Person.select(Person.q.email == emails[email_count])[0], title="Promoteur")
                             email_count += 1
                         for lect in row[4].split(" - "):
                             lect_name = lect.split(", ")
                             if len(lect_name) == 2:
-                                if Reader.select(Reader.q.email == emails[email_count]).count() == 0:
+                                if Person.select(Person.q.email == emails[email_count]).count() == 0:
                                     if len(lect_name) == 2:
                                         lect_descr = lect_name[1].split(' ')
-                                        if Advisor.select(Advisor.q.email == emails[email_count]).count() == 0:
-                                            if random_disp==True:
-                                                lecteur = Reader(email=emails[email_count], last_name=lect_name[0],name=lect_descr[0], disponibility=get_rand_disp())
-                                                tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
-                                            else:
-                                                lecteur = Reader(email=emails[email_count], last_name=lect_name[0],name=lect_descr[0], disponibility=Disponibility())
-                                                tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
+                                        if random_disp==True:
+                                            person = Person(email=emails[email_count], last_name=lect_name[0],name=lect_descr[0], disponibility=get_rand_disp())
+                                            tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
                                         else:
-                                            disp = Advisor.select(Advisor.q.email == emails[email_count])[0].disponibility
-                                            lecteur = Reader(email=emails[email_count], last_name=lect_name[0],name=lect_descr[0], disponibility=disp)
-                                            tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
+                                            person = Person(email=emails[email_count], last_name=lect_name[0],name=lect_descr[0], disponibility=Disponibility())
+                                            tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
                                         email_count += 1
                                     else:
                                         lect_name = lect.split(' ')
                                         if len(lect_name) == 4 or len(lect_name) == 3:
-                                            if Advisor.select(Advisor.q.email == emails[email_count]).count() == 0:
-                                                if random_disp==True:
-                                                    lecteur = Reader(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=get_rand_disp())
-                                                    tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
-                                                else:
-                                                    lecteur = Reader(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=Disponibility())
-                                                    tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
+                                            if random_disp==True:
+                                                person = Person(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=get_rand_disp())
+                                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
                                             else:
-                                                disp = Advisor.select(Advisor.q.email == emails[email_count])[0].disponibility
-                                                lecteur = Reader(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=disp)
-                                                tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=lecteur)
+                                                person = Person(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=Disponibility())
+                                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
                                             email_count += 1
                                         else:
                                             print("discarded : "+row[0])
                                 else:
-                                    tfe_rel_reader = Tfe_rel_reader(tfe=memoire, reader=Reader.select(Reader.q.email == emails[email_count])[0])
+                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=Person.select(Person.q.email == emails[email_count])[0], title="Lecteur")
                                     email_count += 1
                         """print(row[0])
                         print(row[1])

@@ -1,4 +1,4 @@
-$def with (students, advisors, tfes, readers)
+$def with (students, persons, tfes)
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -264,16 +264,19 @@ desired effect
       <!-- /.box -->
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Promoteurs</h3>
+          <h3 class="box-title">Jurys</h3>
         </div>
-            <!-- /.box-header -->
         <div class="box-body">
-              <table id="advisors-table" class="table table-bordered table-hover">
+          <button type="button" id="persons-button-add">Ajouter</button>
+          <button type="button" id="persons-button-edit">Editer</button>
+          <button type="button" id="persons-button-delete">Supprimer</button>
+        </div>
+        <div class="box-body">
+              <table id="person-table" class="table table-bordered table-hover">
                 <thead>
                 <tr>
                   <th>Nom</th>
                   <th>Prénom</th>
-                  <th>Faculté</th>
                   <th>Email</th>
                   <th>S0</th>
                   <th>S1</th>
@@ -290,80 +293,79 @@ desired effect
                 </tr>
                 </thead>
                 <tbody>
-                $for advisor in advisors:
+                $for person in persons:
                   <tr>
-                    <td>$advisor.last_name</td>
-                    <td>$advisor.name</td>
-                    <td>$advisor.faculty</td>
-                    <td>$advisor.email</td>
+                    <td>$person.last_name</td>
+                    <td>$person.name</td>
+                    <td>$person.email</td>
                     <td>
-                      $if advisor.disponibility.session_0:
+                      $if person.disponibility.session_0:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_1:
+                      $if person.disponibility.session_1:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_2:
+                      $if person.disponibility.session_2:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_3:
+                      $if person.disponibility.session_3:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_4:
+                      $if person.disponibility.session_4:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_5:
+                      $if person.disponibility.session_5:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_6:
+                      $if person.disponibility.session_6:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_7:
+                      $if person.disponibility.session_7:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_8:
+                      $if person.disponibility.session_8:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_9:
+                      $if person.disponibility.session_9:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_10:
+                      $if person.disponibility.session_10:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
                     </td>
                     <td>
-                      $if advisor.disponibility.session_11:
+                      $if person.disponibility.session_11:
                         <span class="glyphicon glyphicon-ok"></span>
                       $else:
                         <span class="glyphicon glyphicon-remove"></span>
@@ -374,140 +376,6 @@ desired effect
                 <tr>
                   <th>Nom</th>
                   <th>Prénom</th>
-                  <th>Faculté</th>
-                  <th>Email</th>
-                  <th>S0</th>
-                  <th>S1</th>
-                  <th>S2</th>
-                  <th>S3</th>
-                  <th>S4</th>
-                  <th>S5</th>
-                  <th>S6</th>
-                  <th>S7</th>
-                  <th>S8</th>
-                  <th>S9</th>
-                  <th>S10</th>
-                  <th>S11</th>
-                </tr>
-                </tfoot>
-              </table>
-        </div>
-        <!-- /.box-body -->
-      </div>
-      <!-- /.box -->
-      <div class="box">
-        <div class="box-header">
-          <h3 class="box-title">Lecteurs</h3>
-        </div>
-            <!-- /.box-header -->
-        <div class="box-body">
-              <table id="readers-table" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>Nom</th>
-                  <th>Prénom</th>
-                  <th>Faculté</th>
-                  <th>Email</th>
-                  <th>S0</th>
-                  <th>S1</th>
-                  <th>S2</th>
-                  <th>S3</th>
-                  <th>S4</th>
-                  <th>S5</th>
-                  <th>S6</th>
-                  <th>S7</th>
-                  <th>S8</th>
-                  <th>S9</th>
-                  <th>S10</th>
-                  <th>S11</th>
-                </tr>
-                </thead>
-                <tbody>
-                $for reader in readers:
-                  <tr>
-                    <td>$reader.last_name</td>
-                    <td>$reader.name</td>
-                    <td>$reader.faculty</td>
-                    <td>$reader.email</td>
-                    <td>
-                      $if reader.disponibility.session_0:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_1:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_2:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_3:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_4:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_5:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_6:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_7:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_8:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_9:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_10:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                    <td>
-                      $if reader.disponibility.session_11:
-                        <span class="glyphicon glyphicon-ok"></span>
-                      $else:
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                  <th>Nom</th>
-                  <th>Prénom</th>
-                  <th>Faculté</th>
                   <th>Email</th>
                   <th>S0</th>
                   <th>S1</th>
@@ -656,6 +524,74 @@ desired effect
   </div>
 </div>
 
+<div id="personModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Jury</h4>
+      </div>
+      <form method="POST" enctype="multipart/form-data" action="/set_person" id="person-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="person-email">Email</label>
+            <input type="text" class="form-control" id="person-email" placeholder="jury@uclouvain.be" name="email">
+          </div>
+          <div class="form-group">
+            <label for="person-firstname">Prénom</label>
+            <input type="text" class="form-control" id="person-firstname" placeholder="prénom" name="firstname">
+          </div>
+          <div class="form-group">
+            <label for="person-lastname">Nom</label>
+            <input type="text" class="form-control" id="person-lastname" placeholder="nom" name="lastname">
+          </div>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>S0</th>
+                <th>S1</th>
+                <th>S2</th>
+                <th>S3</th>
+                <th>S4</th>
+                <th>S5</th>
+                <th>S6</th>
+                <th>S7</th>
+                <th>S8</th>
+                <th>S9</th>
+                <th>S10</th>
+                <th>S11</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" id="person-s0" name="s0"></td>
+                <td><input type="checkbox" id="person-s1" name="s1"></td>
+                <td><input type="checkbox" id="person-s2" name="s2"></td>
+                <td><input type="checkbox" id="person-s3" name="s3"></td>
+                <td><input type="checkbox" id="person-s4" name="s4"></td>
+                <td><input type="checkbox" id="person-s5" name="s5"></td>
+                <td><input type="checkbox" id="person-s6" name="s6"></td>
+                <td><input type="checkbox" id="person-s7" name="s7"></td>
+                <td><input type="checkbox" id="person-s8" name="s8"></td>
+                <td><input type="checkbox" id="person-s9" name="s9"></td>
+                <td><input type="checkbox" id="person-s10" name="s10"></td>
+                <td><input type="checkbox" id="person-s11" name="s11"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" class="btn btn-default" value="Submit">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </form> 
+    </div>
+
+  </div>
+</div>
+
 <!-- REQUIRED JS SCRIPTS -->
 
 <!-- jQuery 2.2.3 -->
@@ -671,7 +607,7 @@ desired effect
 <script>
 
   $$(function () {
-    var table = $$("#tfes-table, #students-table, #advisors-table, #readers-table").DataTable({
+    var table = $$("#tfes-table, #students-table, #person-table").DataTable({
       "language":
       {
         "sProcessing":     "Traitement en cours...",
@@ -788,10 +724,76 @@ desired effect
       if ( data.length != 0 ) {
         document.getElementById("student-email").value = data[3];
         document.getElementById('student-email').readOnly = true;
-        document.getElementById("student-firstname").value = data[0];
-        document.getElementById("student-lastname").value = data[1];
+        document.getElementById("student-firstname").value = data[1];
+        document.getElementById("student-lastname").value = data[0];
         document.getElementById("student-faculty").value = data[2];
         $$('#studentModal').modal("show");
+      }
+    });
+
+    // PERSON CRUD
+
+    $$('#person-table tbody').on( 'click', 'tr', function () {
+        if ( $$(this).hasClass('persons-selected') ) {
+            $$(this).removeClass('persons-selected');
+        }
+        else {
+            table.$$('tr.persons-selected').removeClass('persons-selected');
+            $$(this).addClass('persons-selected');
+        }
+    });
+
+    $$('#persons-button-add').click( function () {
+      document.getElementById("person-email").value = "";
+      document.getElementById('person-email').readOnly = false;
+      document.getElementById("person-firstname").value = "";
+      document.getElementById("person-lastname").value = "";
+      document.getElementById("person-s0").checked = true;
+      document.getElementById("person-s1").checked = true;
+      document.getElementById("person-s2").checked = true;
+      document.getElementById("person-s3").checked = true;
+      document.getElementById("person-s4").checked = true;
+      document.getElementById("person-s5").checked = true;
+      document.getElementById("person-s6").checked = true;
+      document.getElementById("person-s7").checked = true;
+      document.getElementById("person-s8").checked = true;
+      document.getElementById("person-s9").checked = true;
+      document.getElementById("person-s10").checked = true;
+      document.getElementById("person-s11").checked = true;
+      $$('#personModal').modal("show");
+    });
+
+    $$('#persons-button-delete').click( function () {
+      var data = table.row('.persons-selected').data();
+      table.row('.persons-selected').remove().draw( false );
+      $$.ajax({
+        url: "delete_person",
+        type : 'POST',
+        data: 'email=' + data[2],
+      });
+    });
+
+    $$('#persons-button-edit').click( function () {
+      var data = table.row('.persons-selected').data();
+      if ( data.length != 0 ) {
+        document.getElementById("person-email").value = data[2];
+        document.getElementById('person-email').readOnly = true;
+        document.getElementById("person-firstname").value = data[1];
+        document.getElementById("person-lastname").value = data[0];
+        var expr = new RegExp("ok");
+        document.getElementById("person-s0").checked = expr.test(data[3]);
+        document.getElementById("person-s1").checked = expr.test(data[4]);
+        document.getElementById("person-s2").checked = expr.test(data[5]);
+        document.getElementById("person-s3").checked = expr.test(data[6]);
+        document.getElementById("person-s4").checked = expr.test(data[7]);
+        document.getElementById("person-s5").checked = expr.test(data[8]);
+        document.getElementById("person-s6").checked = expr.test(data[9]);
+        document.getElementById("person-s7").checked = expr.test(data[10]);
+        document.getElementById("person-s8").checked = expr.test(data[11]);
+        document.getElementById("person-s9").checked = expr.test(data[12]);
+        document.getElementById("person-s10").checked = expr.test(data[13]);
+        document.getElementById("person-s11").checked = expr.test(data[14]);
+        $$('#personModal').modal("show");
       }
     });
   });
