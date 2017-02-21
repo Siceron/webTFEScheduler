@@ -192,12 +192,13 @@ class set_session:
 class set_tfe:
     def POST(self):
         x = web.input()
-        if Tfe.select(Tfe.q.code == x.code).count() == 0:
-            Tfe(code=x.code, title=x.title, commission=x.commission)
-        else:
-            tfe = Tfe.select(Tfe.q.code == x.code)[0]
-            tfe.title = x.title
-            tfe.commission = x.commission
+        if x.code.strip() != "" and x.title.strip() != "":
+            if Tfe.select(Tfe.q.code == x.code).count() == 0:
+                Tfe(code=x.code, title=x.title, commission=x.commission)
+            else:
+                tfe = Tfe.select(Tfe.q.code == x.code)[0]
+                tfe.title = x.title
+                tfe.commission = x.commission
         raise web.seeother('/tfe')
 
 class delete_tfe:
@@ -210,13 +211,14 @@ class delete_tfe:
 class set_student:
     def POST(self):
         x = web.input()
-        if Student.select(Student.q.email == x.email).count() == 0:
-            Student(email=x.email, name=x.firstname, last_name=x.lastname, faculty=x.faculty)
-        else:
-            student = Student.select(Student.q.email == x.email)[0]
-            student.name = x.firstname
-            student.last_name = x.lastname
-            student.faculty = x.faculty
+        if x.email.strip() != "" and x.lastname.strip() != "" and x.firstname.strip() != "" and x.faculty.strip() != "":
+            if Student.select(Student.q.email == x.email).count() == 0:
+                Student(email=x.email, name=x.firstname, last_name=x.lastname, faculty=x.faculty)
+            else:
+                student = Student.select(Student.q.email == x.email)[0]
+                student.name = x.firstname
+                student.last_name = x.lastname
+                student.faculty = x.faculty
         raise web.seeother('/student')
 
 class delete_student:
@@ -240,27 +242,28 @@ def isChecked(input, param):
 class set_person:
     def POST(self):
         x = web.input()
-        if Person.select(Person.q.email == x.email).count() == 0:
-            disponibility = Disponibility(session_0=isChecked(x, 's0'), session_1=isChecked(x, 's1'), session_2=isChecked(x, 's2'), session_3=isChecked(x, 's3'),\
-            session_4=isChecked(x, 's4'), session_5=isChecked(x, 's5'), session_6=isChecked(x, 's6'), session_7=isChecked(x, 's7'), session_8=isChecked(x, 's8'),\
-            session_9=isChecked(x, 's9'), session_10=isChecked(x, 's10'), session_11=isChecked(x, 's11'))
-            Person(email=x.email, name=x.firstname, last_name=x.lastname, disponibility=disponibility)
-        else:
-            person = Person.select(Person.q.email == x.email)[0]
-            person.name = x.firstname
-            person.last_name = x.lastname
-            person.disponibility.session_0 = isChecked(x, 's0')
-            person.disponibility.session_1 = isChecked(x, 's1')
-            person.disponibility.session_2 = isChecked(x, 's2')
-            person.disponibility.session_3 = isChecked(x, 's3')
-            person.disponibility.session_4 = isChecked(x, 's4')
-            person.disponibility.session_5 = isChecked(x, 's5')
-            person.disponibility.session_6 = isChecked(x, 's6')
-            person.disponibility.session_7 = isChecked(x, 's7')
-            person.disponibility.session_8 = isChecked(x, 's8')
-            person.disponibility.session_9 = isChecked(x, 's9')
-            person.disponibility.session_10 = isChecked(x, 's10')
-            person.disponibility.session_11 = isChecked(x, 's11')
+        if x.email.strip() != "" and x.firstname.strip() != "" and x.lastname.strip() != "":
+            if Person.select(Person.q.email == x.email).count() == 0:
+                disponibility = Disponibility(session_0=isChecked(x, 's0'), session_1=isChecked(x, 's1'), session_2=isChecked(x, 's2'), session_3=isChecked(x, 's3'),\
+                session_4=isChecked(x, 's4'), session_5=isChecked(x, 's5'), session_6=isChecked(x, 's6'), session_7=isChecked(x, 's7'), session_8=isChecked(x, 's8'),\
+                session_9=isChecked(x, 's9'), session_10=isChecked(x, 's10'), session_11=isChecked(x, 's11'))
+                Person(email=x.email, name=x.firstname, last_name=x.lastname, disponibility=disponibility)
+            else:
+                person = Person.select(Person.q.email == x.email)[0]
+                person.name = x.firstname
+                person.last_name = x.lastname
+                person.disponibility.session_0 = isChecked(x, 's0')
+                person.disponibility.session_1 = isChecked(x, 's1')
+                person.disponibility.session_2 = isChecked(x, 's2')
+                person.disponibility.session_3 = isChecked(x, 's3')
+                person.disponibility.session_4 = isChecked(x, 's4')
+                person.disponibility.session_5 = isChecked(x, 's5')
+                person.disponibility.session_6 = isChecked(x, 's6')
+                person.disponibility.session_7 = isChecked(x, 's7')
+                person.disponibility.session_8 = isChecked(x, 's8')
+                person.disponibility.session_9 = isChecked(x, 's9')
+                person.disponibility.session_10 = isChecked(x, 's10')
+                person.disponibility.session_11 = isChecked(x, 's11')
         raise web.seeother('/person')
 
 class delete_person:

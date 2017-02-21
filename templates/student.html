@@ -266,7 +266,7 @@ desired effect
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Etudiant</h4>
       </div>
-      <form method="POST" enctype="multipart/form-data" action="/set_student">
+      <form method="POST" enctype="multipart/form-data" action="/set_student" onsubmit="return validateForm()">
         <div class="modal-body">
           <div class="form-group">
             <label for="student-email">Email</label>
@@ -339,6 +339,17 @@ desired effect
 <script src="static/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
 <script>
+
+  function validateForm(){
+    var email = document.getElementById("student-email").value.trim();
+    var lastname = document.getElementById("student-lastname").value.trim();
+    var firstname = document.getElementById("student-firstname").value.trim();
+    var faculty = document.getElementById("student-faculty").value.trim();
+    if (email==null || email=="" || lastname==null || lastname=="" || firstname==null || firstname=="" || faculty==null || faculty==""){
+      alert("Veuillez remplir tous les champs");
+      return false;
+    }
+  }
 
   $$(function () {
     var table = $$("#students-table").DataTable({

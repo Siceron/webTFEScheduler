@@ -401,7 +401,7 @@ desired effect
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Jury</h4>
       </div>
-      <form method="POST" enctype="multipart/form-data" action="/set_person" id="person-form">
+      <form method="POST" enctype="multipart/form-data" action="/set_person" id="person-form" onsubmit="return validateForm()">
         <div class="modal-body">
           <div class="form-group">
             <label for="person-email">Email</label>
@@ -469,7 +469,7 @@ desired effect
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Lier un jury à un TFE</h4>
       </div>
-      <form method="POST" enctype="multipart/form-data" action="/set_tfe_rel_person">
+      <form method="POST" enctype="multipart/form-data" action="/set_tfe_rel_person" onsubmit="return validateFormLink()">
         <div class="modal-body">
           <div class="form-group">
             <label for="person-link">Jury</label>
@@ -518,6 +518,25 @@ desired effect
 <script src="static/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
 <script>
+
+  function validateForm(){
+    var email = document.getElementById("person-email").value.trim();
+    var lastname = document.getElementById("person-lastname").value.trim();
+    var firstname = document.getElementById("person-firstname").value.trim();
+    if (email==null || email=="" || lastname==null || lastname=="" || firstname==null || firstname==""){
+      alert("Veuillez remplir tous les champs");
+      return false;
+    }
+  }
+
+  function validateFormLink(){
+    var person = document.getElementById("person-link").value.trim();
+    var tfe = document.getElementById("tfe-link").value.trim();
+    if (person==null || person=="" || tfe==null || tfe==""){
+      alert("Veuillez remplir tous les champs");
+      return false;
+    }
+  }
 
   $$(function () {
     var table = $$("#person-table, #rel-table").DataTable({

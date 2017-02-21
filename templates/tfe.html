@@ -285,7 +285,7 @@ desired effect
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">TFE</h4>
       </div>
-      <form method="POST" enctype="multipart/form-data" action="/set_tfe">
+      <form method="POST" enctype="multipart/form-data" action="/set_tfe" onsubmit="return validateForm()">
         <div class="modal-body">
           <div class="form-group">
             <label for="code">Code</label>
@@ -335,6 +335,15 @@ desired effect
 <script src="static/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
 <script>
+
+  function validateForm(){
+    var code = document.getElementById("code").value.trim();
+    var title = document.getElementById("title").value.trim();
+    if (code==null || code=="" || title==null || title==""){
+      alert("Veuillez remplir tous les champs");
+      return false;
+    }
+  }
 
   $$(function () {
     var table = $$("#tfes-table").DataTable({
