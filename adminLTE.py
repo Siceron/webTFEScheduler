@@ -24,6 +24,7 @@ urls = (
     '/person', 'person',
     '/executescheduler', 'executescheduler',
     '/show_tfe_details', 'show_tfe_details',
+    '/get_commission', 'get_commission',
     '/set_session', 'set_session',
     '/set_tfe', 'set_tfe',
     '/delete_tfe', 'delete_tfe',
@@ -134,6 +135,12 @@ class logout:
         session.kill()
         raise web.seeother('/')
 
+def set_commission(data_commission, commission):
+    for i in data_commission[commission]:
+        tfe = Tfe.select(Tfe.q.code == i)[0]
+        if tfe.commission == None:
+            tfe.commission = commission
+
 class executescheduler:
     def POST(self):
         x = web.input()
@@ -151,6 +158,20 @@ class executescheduler:
         for i in data:
             tfe = Tfe.select(Tfe.q.code == i["code"])[0]
             tfe.session=i["session"]
+
+        with open('commissions.JSON') as data_file_commission:    
+            data_commission = json.load(data_file_commission)
+
+        set_commission(data_commission, "ELEC")
+        set_commission(data_commission, "ELME")
+        set_commission(data_commission, "GBIO")
+        set_commission(data_commission, "FYAP")
+        set_commission(data_commission, "KIMA")
+        set_commission(data_commission, "GCE")
+        set_commission(data_commission, "INFO")
+        set_commission(data_commission, "SINF")
+        set_commission(data_commission, "MAP")
+        set_commission(data_commission, "MECA")
 
         return "ok"
 
@@ -181,6 +202,12 @@ class show_tfe_details:
             "readers" : readers
         }
         return json.dumps(result)
+
+class get_commission:
+    def POST(self):
+        x = web.input()
+        tfe = Tfe.select(Tfe.q.code==x.code)[0]
+        return tfe.commission
 
 class set_session:
     def POST(self):

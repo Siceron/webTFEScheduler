@@ -44,8 +44,33 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   <script>
 
+  function get_commission(code){
+    var commission = "";
+    $$.ajax({
+      url : 'get_commission',
+      type : 'POST',
+      data : 'code=' + code,
+      async: false
+    }).done(function( msg ) {
+      commission = msg;
+    });
+    return commission;
+  }
+
   $$(function() { // document ready
 
+    var colors = new Array();
+    colors["ELEC"] = "#2EFEF7";
+    colors["ELME"] = "#2E9AFE";
+    colors["GBIO"] = "#0000FF";
+    colors["FYAP"] = "#088A29";
+    colors["KIMA"] = "#01DF01";
+    colors["GCE"] = "#A4A4A4";
+    colors["INFO"] = "#BF00FF";
+    colors["SINF"] = "#F5A9F2";
+    colors["MAP"] = "#FF8000";
+    colors["MECA"] = "#D7DF01";
+    colors[""] = "#FF0000";
 
     /* initialize the external events
     -----------------------------------------------------------------*/
@@ -55,7 +80,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
       // store data so the calendar knows to render an event upon drop
       $$(this).data('event', {
         title: $$.trim($$(this).text()), // use the element's text as the event title
-        stick: true // maintain when user navigates (see docs on the renderEvent method)
+        stick: true, // maintain when user navigates (see docs on the renderEvent method)
+        color: colors[get_commission($$.trim($$(this).text()))]
       });
 
       // make the event draggable using jQuery UI
@@ -69,6 +95,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
           top: Math.floor($$(this).height() / 2)
         }
       });
+
+      $$(this).css("background-color", colors[get_commission($$.trim($$(this).text()))]);
 
     });
 
@@ -108,7 +136,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     var i = 0;
     $for tfe in tfes:
       $if tfe.session != -1:
-        eventlist[i] = {id: i+1, resourceId: ''+Math.floor($tfe.session/12), start:tab[$tfe.session%12][0], end:tab[$tfe.session%12][1], title: '$tfe.code'}
+        eventlist[i] = {id: i+1, resourceId: ''+Math.floor($tfe.session/12), start:tab[$tfe.session%12][0], end:tab[$tfe.session%12][1], title: '$tfe.code', color: colors['$tfe.commission']}
         i++;    
 
     $$('#calendar').fullCalendar({
@@ -164,10 +192,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
       resourceLabelText: 'Rooms',
       resources: [
         { id: '0', title: 'Auditorium A' },
-        { id: '1', title: 'Auditorium B', eventColor: 'green' },
-        { id: '2', title: 'Auditorium C', eventColor: 'orange' },
-        { id: '3', title: 'Auditorium D', eventColor: 'brown'}, 
-        { id: '4', title: 'Auditorium E', eventColor: 'red'}
+        { id: '1', title: 'Auditorium B' },
+        { id: '2', title: 'Auditorium C' },
+        { id: '3', title: 'Auditorium D' }, 
+        { id: '4', title: 'Auditorium E' }
       ],
       events: eventlist,
       eventClick: function(event, element) {
@@ -242,7 +270,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         top: Math.floor($$(this).height() / 2)
                       }
                     });
-                    el.data('event', { title: event.title, id :event.id, stick: true });
+                    $$.ajax({
+                      url : 'get_commission',
+                      type : 'POST',
+                      data : 'code=' + event.title
+                    }).done(function( msg ) {
+                      el.data('event', { title: event.title, id :event.id, stick: true, color : colors[msg] });
+                      el.css("background-color", colors[msg]);
+                    });
                     console.log('eventDrop', event);
                     console.log(-1);
                     setSession(event.title, -1);

@@ -1,0 +1,68 @@
+table.dataTable tbody tr {
+  background-color: #ffffff;
+}
+table.dataTable tbody tr.tfe-selected {
+  background-color: #B0BED9;
+}
+table.dataTable tbody tr.students-selected {
+  background-color: #B0BED9;
+}
+table.dataTable tbody tr.persons-selected {
+  background-color: #B0BED9;
+}
+table.dataTable tbody tr.rel-persons-selected {
+  background-color: #B0BED9;
+}
+
+/* Green check. */
+.glyphicon-ok {
+    color: green;
+}
+/* Red X. */
+.glyphicon-remove {
+    color: red;
+}
+
+.default-commission {
+	color: #FF0000;
+}
+
+.elec {
+	color: #2EFEF7;
+}
+
+.elme {
+	color: #2E9AFE;
+}
+
+.gbio {
+	color: #0000FF;
+}
+
+.fyap {
+	color: #088A29;
+}
+
+.kima {
+	color: #01DF01;
+}
+
+.gce {
+	color: #A4A4A4;
+}
+
+.info {
+	color: #BF00FF;
+}
+
+.sinf {
+	color: #F5A9F2;
+}
+
+.map {
+	color: #FF8000;
+}
+
+.meca {
+	color: #D7DF01;
+}
