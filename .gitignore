@@ -89,5 +89,4 @@ ENV/
 
 *.JSON
 *.sol
-*.db
 report.txt

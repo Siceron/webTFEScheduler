@@ -27,8 +27,11 @@ def modify_person():
 		person.last_name = "lastname"+str(i)
 		i+=1
 
-if __name__ == "__main__":
+def modify():
 	modify_tfe()
 	modify_student()
 	modify_person()
+
+if __name__ == "__main__":
+	modify()
 

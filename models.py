@@ -92,6 +92,7 @@ class Tfe(SQLObject):
 	title = StringCol()
 	session = IntCol(default=-1)
 	commission = StringCol(default=None, notNone=False)
+	log = TimestampCol(notNone=True, default=DateTimeCol.now)
 
 class Tfe_rel_student(SQLObject):
 

@@ -7,6 +7,7 @@ from parser_utils import *
 from subprocess import Popen, PIPE, STDOUT
 import json
 from pprint import pprint
+import datetime
 import hashlib
 
 web.config.debug = False
@@ -35,7 +36,8 @@ urls = (
     '/get_tfe_rel_student', 'get_tfe_rel_student',
     '/set_tfe_rel_student', 'set_tfe_rel_student',
     '/set_tfe_rel_person', 'set_tfe_rel_person',
-    '/delete_tfe_rel_person', 'delete_tfe_rel_person'
+    '/delete_tfe_rel_person', 'delete_tfe_rel_person',
+    '/is_up_to_date', 'is_up_to_date'
 )
 
 def load_sqlo(handler=None):
@@ -75,6 +77,7 @@ class login:
         if check == 1: 
             session.loggedin = True
             session.username = i.username
+            session.log = datetime.datetime.now()
             raise web.seeother('/index')   
         else:
             return "Those login details don't work."
@@ -99,6 +102,7 @@ class scheduler:
     def GET(self):
         if session.get('username', False):
             tfes = Tfe.select()
+            session.log = datetime.datetime.now()
             return render.scheduler(tfes)
         else:
            raise web.seeother('/')
@@ -207,13 +211,18 @@ class get_commission:
     def POST(self):
         x = web.input()
         tfe = Tfe.select(Tfe.q.code==x.code)[0]
-        return tfe.commission
+        if tfe.commission == None:
+            return ""
+        else:
+            return tfe.commission
 
 class set_session:
     def POST(self):
         x = web.input()
         tfe = Tfe.select(Tfe.q.code == x.code)[0]
         tfe.session = int(x.session)
+        tfe.log = datetime.datetime.now()
+        session.log = datetime.datetime.now()
         return "ok"
 
 class set_tfe:
@@ -348,6 +357,16 @@ class delete_tfe_rel_person:
         rel = Tfe_rel_person.select(AND(Tfe_rel_person.q.person == person, Tfe_rel_person.q.tfe == tfe))[0]
         rel.delete(rel.id)
         return "ok"
+
+class is_up_to_date:
+    def POST(self):
+        x = web.input()
+        tfe = Tfe.select(Tfe.q.code == x.code)[0]
+        if tfe.log < session.log:
+            return "True"
+        else:
+            return "False"
+
 
 if __name__ == "__main__":
     app = web.application(urls, globals())

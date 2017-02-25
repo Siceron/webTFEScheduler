@@ -52,9 +52,30 @@ scratch. This page gets rid of all links and provides the needed markup only.
       data : 'code=' + code,
       async: false
     }).done(function( msg ) {
-      commission = msg;
+      if(msg != "None")
+        commission = msg;
     });
     return commission;
+  }
+
+  function is_up_to_date(code){
+    var isUpToDate = false;
+    $$.ajax({
+      url : 'is_up_to_date',
+      type : 'POST',
+      data : 'code=' + code,
+      async: false
+    }).done(function( msg ) {
+      if(msg=="False"){
+        if (confirm("Ce tfe est désynchronisé, voulez-vous recharger la page ?")) {
+          location.reload();
+        }
+      }
+      else{
+        isUpToDate = true;
+      }
+    });
+    return isUpToDate;
   }
 
   $$(function() { // document ready
@@ -77,11 +98,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $$('#external-events .fc-event').each(function() {
 
+      var commission = get_commission($$.trim($$(this).text()));
+
       // store data so the calendar knows to render an event upon drop
       $$(this).data('event', {
         title: $$.trim($$(this).text()), // use the element's text as the event title
         stick: true, // maintain when user navigates (see docs on the renderEvent method)
-        color: colors[get_commission($$.trim($$(this).text()))]
+        color: colors[commission]
       });
 
       // make the event draggable using jQuery UI
@@ -96,7 +119,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         }
       });
 
-      $$(this).css("background-color", colors[get_commission($$.trim($$(this).text()))]);
+      $$(this).css("background-color", colors[commission]);
 
     });
 
@@ -257,18 +280,46 @@ scratch. This page gets rid of all links and provides the needed markup only.
       eventDragStop: function( event, jsEvent, ui, view ) {
                 
         if(isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
-          if (confirm("Voulez-vous confirmer ce déplacement ?")) {
+          if(is_up_to_date(event.title)){
+            if (confirm("Voulez-vous confirmer ce déplacement ?")) {
+              $$('#calendar').fullCalendar('removeEvents', event._id);
+              var el = $$( "<div class='fc-event'>" ).appendTo( '#external-events-listing' ).text( event.title );
+              el.draggable({
+                zIndex: 999,
+                revert: true, 
+                revertDuration: 0,
+                helper: 'clone',
+                cursorAt:{
+                  left: Math.floor($$(this).width() / 2),
+                  top: Math.floor($$(this).height() / 2)
+                }
+              });
+              $$.ajax({
+                url : 'get_commission',
+                type : 'POST',
+                data : 'code=' + event.title
+              }).done(function( msg ) {
+                el.data('event', { title: event.title, id :event.id, stick: true, color : colors[msg] });
+                el.css("background-color", colors[msg]);
+              });
+              console.log('eventDrop', event);
+              console.log(-1);
+              setSession(event.title, -1);
+            }
+          }
+        }
+      },
+      eventReceive: function(event) { // called when a proper external event is dropped
+        console.log('eventReceive', event);
+        if(is_up_to_date(event.title)){
+          if (!confirm("Voulez-vous confirmer ce déplacement ?")) {
             $$('#calendar').fullCalendar('removeEvents', event._id);
             var el = $$( "<div class='fc-event'>" ).appendTo( '#external-events-listing' ).text( event.title );
             el.draggable({
               zIndex: 999,
               revert: true, 
               revertDuration: 0,
-              helper: 'clone',
-              cursorAt:{
-                left: Math.floor($$(this).width() / 2),
-                top: Math.floor($$(this).height() / 2)
-              }
+              helper: 'clone'
             });
             $$.ajax({
               url : 'get_commission',
@@ -278,15 +329,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
               el.data('event', { title: event.title, id :event.id, stick: true, color : colors[msg] });
               el.css("background-color", colors[msg]);
             });
-            console.log('eventDrop', event);
-            console.log(-1);
-            setSession(event.title, -1);
+          } else {
+            for(var i=0; i<12; i++){
+              if(event.start._d.getTime() == Date.parse(tab[i][0])){
+                console.log(i+(12*event.resourceId));
+                setSession(event.title, i+(12*event.resourceId));
+                break;
+              }
+            }
           }
         }
-      },
-      eventReceive: function(event) { // called when a proper external event is dropped
-        console.log('eventReceive', event);
-        if (!confirm("Voulez-vous confirmer ce déplacement ?")) {
+        else{
           $$('#calendar').fullCalendar('removeEvents', event._id);
           var el = $$( "<div class='fc-event'>" ).appendTo( '#external-events-listing' ).text( event.title );
           el.draggable({
@@ -303,28 +356,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
             el.data('event', { title: event.title, id :event.id, stick: true, color : colors[msg] });
             el.css("background-color", colors[msg]);
           });
-        } else {
-          for(var i=0; i<12; i++){
-            if(event.start._d.getTime() == Date.parse(tab[i][0])){
-              console.log(i+(12*event.resourceId));
-              setSession(event.title, i+(12*event.resourceId));
-              break;
-            }
-          }
         }
       },
       eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) { // called when an event (already on the calendar) is moved
         console.log('eventDrop', event);
-        if (!confirm("Voulez-vous confirmer ce déplacement ?")) {
-          revertFunc();
-        } else {
-          for(var i=0; i<12; i++){
-            if(event.start._d.getTime() == Date.parse(tab[i][0])){
-              console.log(i+(12*event.resourceId));
-              setSession(event.title, i+(12*event.resourceId));
-              break;
+        if(is_up_to_date(event.title)){
+          if (!confirm("Voulez-vous confirmer ce déplacement ?")) {
+            revertFunc();
+          } else {
+            for(var i=0; i<12; i++){
+              if(event.start._d.getTime() == Date.parse(tab[i][0])){
+                console.log(i+(12*event.resourceId));
+                setSession(event.title, i+(12*event.resourceId));
+                break;
+              }
             }
           }
+        }
+        else{
+          revertFunc();
         }
       }
     });
