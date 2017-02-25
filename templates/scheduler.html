@@ -200,56 +200,55 @@ scratch. This page gets rid of all links and provides the needed markup only.
       events: eventlist,
       eventClick: function(event, element) {
 
-            $$.ajax({
-              url : 'show_tfe_details',
-              type : 'POST',
-              data : 'code=' + event.title,
-              dataType : 'json'
-            }).done(function( msg ) {
-              document.getElementById("modalTitle").innerHTML=event.title+" : "+msg.title;
+        $$.ajax({
+          url : 'show_tfe_details',
+          type : 'POST',
+          data : 'code=' + event.title,
+          dataType : 'json'
+        }).done(function( msg ) {
+          document.getElementById("modalTitle").innerHTML=event.title+" : "+msg.title;
 
-              // student list
-              var ul = document.getElementById("studentList");
-              while (ul.lastChild) {
-                ul.removeChild(ul.lastChild);
-              }
-              for(var i=0 ; i<msg.students.length; i++){
-                var li = document.createElement("li");
-                li.appendChild(document.createTextNode(msg.students[i]));
-                li.setAttribute("class", "list-group-item");
-                ul.appendChild(li);
-              }
+          // student list
+          var ul = document.getElementById("studentList");
+          while (ul.lastChild) {
+            ul.removeChild(ul.lastChild);
+          }
+          for(var i=0 ; i<msg.students.length; i++){
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(msg.students[i]));
+            li.setAttribute("class", "list-group-item");
+            ul.appendChild(li);
+          }
 
-              // advisor list
-              var ul = document.getElementById("advisorList");
-              while (ul.lastChild) {
-                ul.removeChild(ul.lastChild);
-              }
-              for(var i=0 ; i<msg.advisors.length; i++){
-                var li = document.createElement("li");
-                li.appendChild(document.createTextNode(msg.advisors[i]));
-                li.setAttribute("class", "list-group-item");
-                ul.appendChild(li);
-              }
+          // advisor list
+          var ul = document.getElementById("advisorList");
+          while (ul.lastChild) {
+            ul.removeChild(ul.lastChild);
+          }
+          for(var i=0 ; i<msg.advisors.length; i++){
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(msg.advisors[i]));
+            li.setAttribute("class", "list-group-item");
+            ul.appendChild(li);
+          }
 
-              // reader list
-              var ul = document.getElementById("readerList");
-              while (ul.lastChild) {
-                ul.removeChild(ul.lastChild);
-              }
-              for(var i=0 ; i<msg.readers.length; i++){
-                var li = document.createElement("li");
-                li.appendChild(document.createTextNode(msg.readers[i]));
-                li.setAttribute("class", "list-group-item");
-                ul.appendChild(li);
-              }
-            });
+          // reader list
+          var ul = document.getElementById("readerList");
+          while (ul.lastChild) {
+            ul.removeChild(ul.lastChild);
+          }
+          for(var i=0 ; i<msg.readers.length; i++){
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(msg.readers[i]));
+            li.setAttribute("class", "list-group-item");
+            ul.appendChild(li);
+          }
+        });
 
-            $$('#tfeDetails').modal('show');
+        $$('#tfeDetails').modal('show');
 
-            $$('#calendar').fullCalendar('updateEvent',event);
-
-        },
+        $$('#calendar').fullCalendar('updateEvent',event);
+      },
       drop: function(date, jsEvent, ui, resourceId) {
         console.log('drop', date.format(), resourceId);
 
@@ -257,49 +256,73 @@ scratch. This page gets rid of all links and provides the needed markup only.
       },
       eventDragStop: function( event, jsEvent, ui, view ) {
                 
-                if(isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
-                    $$('#calendar').fullCalendar('removeEvents', event._id);
-                    var el = $$( "<div class='fc-event'>" ).appendTo( '#external-events-listing' ).text( event.title );
-                    el.draggable({
-                      zIndex: 999,
-                      revert: true, 
-                      revertDuration: 0,
-                      helper: 'clone',
-                      cursorAt:{
-                        left: Math.floor($$(this).width() / 2),
-                        top: Math.floor($$(this).height() / 2)
-                      }
-                    });
-                    $$.ajax({
-                      url : 'get_commission',
-                      type : 'POST',
-                      data : 'code=' + event.title
-                    }).done(function( msg ) {
-                      el.data('event', { title: event.title, id :event.id, stick: true, color : colors[msg] });
-                      el.css("background-color", colors[msg]);
-                    });
-                    console.log('eventDrop', event);
-                    console.log(-1);
-                    setSession(event.title, -1);
-                }
-            },
-      eventReceive: function(event) { // called when a proper external event is dropped
-        console.log('eventReceive', event);
-        for(var i=0; i<12; i++){
-          if(event.start._d.getTime() == Date.parse(tab[i][0])){
-            console.log(i+(12*event.resourceId));
-            setSession(event.title, i+(12*event.resourceId));
-            break;
+        if(isEventOverDiv(jsEvent.clientX, jsEvent.clientY)) {
+          if (confirm("Voulez-vous confirmer ce déplacement ?")) {
+            $$('#calendar').fullCalendar('removeEvents', event._id);
+            var el = $$( "<div class='fc-event'>" ).appendTo( '#external-events-listing' ).text( event.title );
+            el.draggable({
+              zIndex: 999,
+              revert: true, 
+              revertDuration: 0,
+              helper: 'clone',
+              cursorAt:{
+                left: Math.floor($$(this).width() / 2),
+                top: Math.floor($$(this).height() / 2)
+              }
+            });
+            $$.ajax({
+              url : 'get_commission',
+              type : 'POST',
+              data : 'code=' + event.title
+            }).done(function( msg ) {
+              el.data('event', { title: event.title, id :event.id, stick: true, color : colors[msg] });
+              el.css("background-color", colors[msg]);
+            });
+            console.log('eventDrop', event);
+            console.log(-1);
+            setSession(event.title, -1);
           }
         }
       },
-      eventDrop: function(event) { // called when an event (already on the calendar) is moved
+      eventReceive: function(event) { // called when a proper external event is dropped
+        console.log('eventReceive', event);
+        if (!confirm("Voulez-vous confirmer ce déplacement ?")) {
+          $$('#calendar').fullCalendar('removeEvents', event._id);
+          var el = $$( "<div class='fc-event'>" ).appendTo( '#external-events-listing' ).text( event.title );
+          el.draggable({
+            zIndex: 999,
+            revert: true, 
+            revertDuration: 0
+          });
+          $$.ajax({
+            url : 'get_commission',
+            type : 'POST',
+            data : 'code=' + event.title
+          }).done(function( msg ) {
+            el.data('event', { title: event.title, id :event.id, stick: true, color : colors[msg] });
+            el.css("background-color", colors[msg]);
+          });
+        } else {
+          for(var i=0; i<12; i++){
+            if(event.start._d.getTime() == Date.parse(tab[i][0])){
+              console.log(i+(12*event.resourceId));
+              setSession(event.title, i+(12*event.resourceId));
+              break;
+            }
+          }
+        }
+      },
+      eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) { // called when an event (already on the calendar) is moved
         console.log('eventDrop', event);
-        for(var i=0; i<12; i++){
-          if(event.start._d.getTime() == Date.parse(tab[i][0])){
-            console.log(i+(12*event.resourceId));
-            setSession(event.title, i+(12*event.resourceId));
-            break;
+        if (!confirm("Voulez-vous confirmer ce déplacement ?")) {
+          revertFunc();
+        } else {
+          for(var i=0; i<12; i++){
+            if(event.start._d.getTime() == Date.parse(tab[i][0])){
+              console.log(i+(12*event.resourceId));
+              setSession(event.title, i+(12*event.resourceId));
+              break;
+            }
           }
         }
       }
@@ -315,19 +338,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     var isEventOverDiv = function(x, y) {
 
-            var external_events = $$( '#external-events' );
-            var offset = external_events.offset();
-            offset.right = external_events.width() + offset.left;
-            offset.bottom = external_events.height() + offset.top;
+      var external_events = $$( '#external-events' );
+      var offset = external_events.offset();
+      offset.right = external_events.width() + offset.left;
+      offset.bottom = external_events.height() + offset.top;
 
-            // Compare
-            if (x >= offset.left
-                && y >= offset.top
-                && x <= offset.right
-                && y <= offset .bottom) { return true; }
-            return false;
-
-        }
+      // Compare
+      if (x >= offset.left
+          && y >= offset.top
+          && x <= offset.right
+          && y <= offset .bottom) { return true; }
+      return false;
+    }
 
   });
 
@@ -542,7 +564,7 @@ desired effect
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="modalTitle">Modal title</h4>
+                <h4 class="modal-title" id="modalTitle">Détails TFE</h4>
               </div>
               <div class="modal-body">
                 <p>Etudiants :</p>
