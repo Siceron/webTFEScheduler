@@ -292,7 +292,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
           el.draggable({
             zIndex: 999,
             revert: true, 
-            revertDuration: 0
+            revertDuration: 0,
+            helper: 'clone'
           });
           $$.ajax({
             url : 'get_commission',
