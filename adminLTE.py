@@ -4,6 +4,7 @@ import math
 from models import *
 from json_utils import *
 from parser_utils import *
+from conflicts_report import *
 from subprocess import Popen, PIPE, STDOUT
 import json
 from pprint import pprint
@@ -37,7 +38,8 @@ urls = (
     '/set_tfe_rel_student', 'set_tfe_rel_student',
     '/set_tfe_rel_person', 'set_tfe_rel_person',
     '/delete_tfe_rel_person', 'delete_tfe_rel_person',
-    '/is_up_to_date', 'is_up_to_date'
+    '/is_up_to_date', 'is_up_to_date',
+    '/get_conflicts', 'get_conflicts'
 )
 
 def load_sqlo(handler=None):
@@ -366,6 +368,12 @@ class is_up_to_date:
             return "True"
         else:
             return "False"
+
+class get_conflicts:
+    def POST(self):
+        x = web.input()
+        result = get_conflicts_json(x.code, x.session)
+        return result
 
 
 if __name__ == "__main__":
