@@ -16,7 +16,7 @@ def get_tfe_dictionnary():
 
 def max_tfes_json(session):
     tfe_dictionnary = get_tfe_dictionnary()
-    if len(tfe_dictionnary[session]) == 3:
+    if session in tfe_dictionnary and len(tfe_dictionnary[session]) == 3:
         global is_conflicts
         is_conflicts = True
         return True
