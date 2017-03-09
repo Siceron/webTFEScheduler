@@ -106,10 +106,13 @@ class index:
 class scheduler:
     def GET(self):
         if session.get('username', False):
-            tfes = Tfe.select()
-            session.log = datetime.now()
-            parametrization = Parametrization.select()[0]
-            return render.scheduler(tfes, parametrization)
+            if Parametrization.select().count() > 0:
+                tfes = Tfe.select()
+                session.log = datetime.now()
+                parametrization = Parametrization.select()[0]
+                return render.scheduler(tfes, parametrization)
+            else:
+                raise web.seeother('/index')
         else:
            raise web.seeother('/')
 
