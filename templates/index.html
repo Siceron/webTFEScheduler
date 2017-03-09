@@ -1,4 +1,4 @@
-$def with (rooms)
+$def with (rooms, parametrization)
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -26,7 +26,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         apply the skin class to the body tag so the changes take effect.
   -->
   <link rel="stylesheet" href="static/dist/css/skins/skin-blue.min.css">
-  <link rel="stylesheet" href="static/dist/css/starter.css">
+  <link rel="stylesheet" href="static/dist/css/index.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -176,9 +176,10 @@ desired effect
 
     <!-- Main content -->
     <section class="content">
-      <!-- left column -->
-      <div class="col-md-6">
-      <!-- general form elements -->
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6">
+        <!-- general form elements -->
           <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Fill the database</h3>
@@ -202,21 +203,59 @@ desired effect
             </form>
           </div>
           <!-- /.box -->
-      </div>
-      <!--/.col (left) -->
-      <!-- right column -->
-      <div class="col-md-6">
-        <div class="box box-primary">
+        </div>
+        <!--/.col (left) -->
+        <!-- right column -->
+        <div class="col-md-6">
+          <div id="parametrization-box" class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Paramétrisation</h3>
+            </div>
+            <div class="box-body">
+              <!-- Date -->
+              <div class="form-group">
+                <div>
+                <label id="room-label"> Nombre d'auditoires :</label>
+                <input class="slider slider-horizontal" id="roomsNbr" data-slider-id="green" type="text" data-slider-min="$rooms" data-slider-max="20" data-slider-step="1" data-slider-value="$rooms"/>
+                </div>
+                <label class="day-label">Jour 1 :</label>
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input id="day1" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                </div>
+                <label class="day-label">Jour 2 :</label>
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input id="day2" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                </div>
+                <label class="day-label">Jour 3 :</label>
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input id="day3" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                </div>
+                <!-- /.input group -->
+              </div>
+              <!-- /.form group -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-footer">
+              <button class="btn btn-primary" onclick="parametrization()">Save</button>
+            </div>
+          </div>
+          <!-- /.box -->
+          <div id="scheduler-box" class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Execute scheduler</h3>
             </div>
             <div class="box-body" id="scheduler-body">
               <div>
-              <p> Nombre d'auditoires :</p>
-              <input class="slider slider-horizontal" id="roomsNbr" data-slider-id="green" type="text" data-slider-min="$rooms" data-slider-max="20" data-slider-step="1" data-slider-value="$rooms"/>
-              </div>
-              <div>
-              <p id="time-label"> Temps :</p>
+              <label id="time-label"> Temps :</label>
               <input class="slider slider-horizontal" id="schedulerTime" data-slider-id="red" type="text" data-slider-min="1" data-slider-max="60" data-slider-step="1" data-slider-value="1"/>
               </div>
                 <div class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -241,14 +280,14 @@ desired effect
             $if rooms == 0:
               <button class="btn btn-primary" disabled onclick="scheduler()">Go</button>
             $else:
-              <button class="btn btn-primary" onclick="scheduler()">Go</button>
-            <a href="/static/report.txt" class="btn btn-primary">Rapport</a>
+                <button class="btn btn-primary" onclick="scheduler()">Go</button>
+                <a href="/static/report.txt" class="btn btn-primary">Rapport</a>
             </div>
-            </form>
           </div>
           <!-- /.box -->
+        </div>
+        <!--/.col (right) -->
       </div>
-      <!--/.col (right) -->
     </section>
     <!-- /.content -->
   </div>
@@ -302,8 +341,22 @@ desired effect
 <script src="static/plugins/bootstrap-slider/bootstrap-slider.js"></script>
 <!-- AdminLTE App -->
 <script src="static/dist/js/app.min.js"></script>
+<!-- InputMask -->
+<script src="static/plugins/input-mask/jquery.inputmask.js"></script>
+<script src="static/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="static/plugins/input-mask/jquery.inputmask.extensions.js"></script>
 
 <script type="text/javascript">
+
+  $$(function() {
+    $$("#datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
+    $$("[data-mask]").inputmask();
+
+    $if parametrization == 1:
+      $$('#parametrization-box').hide();
+    $else:
+      $$('#scheduler-box').hide();
+  });
 
   var roomsNbr = new Slider('#roomsNbr', {
     formatter: function(value) {
@@ -316,6 +369,19 @@ desired effect
       return value + " min";
     }
   });
+
+  function parametrization() {
+    $$.ajax({
+      url: "parametrization",
+      type : 'POST',
+      data: {rooms: document.getElementById('roomsNbr').value, day1: document.getElementById('day1').value,
+        day2: document.getElementById('day2').value, day3: document.getElementById('day3').value}
+    }).done(function( msg ) {
+      $$('#parametrization-box').fadeOut(500).promise().done(function() {
+        $$('#scheduler-box').fadeIn(500);
+      });
+    });
+  }
 
   function scheduler() {
 
@@ -340,7 +406,7 @@ desired effect
     $$.ajax({
       url: "executescheduler",
       type : 'POST',
-      data: {time: document.getElementById('schedulerTime').value, rooms: document.getElementById('roomsNbr').value}
+      data: 'time=' + document.getElementById('schedulerTime').value
     }).done(function( msg ) {
       pleaseWait.modal('hide');
     });

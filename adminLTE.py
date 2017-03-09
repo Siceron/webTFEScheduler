@@ -10,6 +10,7 @@ import json
 from pprint import pprint
 import datetime
 import hashlib
+from datetime import datetime
 
 web.config.debug = False
 web.config.session_parameters['cookie_name'] = 'tfescheduler_session_id'
@@ -39,7 +40,8 @@ urls = (
     '/set_tfe_rel_person', 'set_tfe_rel_person',
     '/delete_tfe_rel_person', 'delete_tfe_rel_person',
     '/is_up_to_date', 'is_up_to_date',
-    '/get_conflicts', 'get_conflicts'
+    '/get_conflicts', 'get_conflicts',
+    '/parametrization', 'parametrization'
 )
 
 def load_sqlo(handler=None):
@@ -79,7 +81,7 @@ class login:
         if check == 1: 
             session.loggedin = True
             session.username = i.username
-            session.log = datetime.datetime.now()
+            session.log = datetime.now()
             raise web.seeother('/index')   
         else:
             return "Those login details don't work."
@@ -90,7 +92,8 @@ class index:
         if session.get('username', False):
             tfe_nbr = Tfe.select().count()
             rooms = math.ceil(tfe_nbr/(3*12))
-            return render.index(rooms)
+            parametrization = Parametrization.select().count()
+            return render.index(rooms, parametrization)
         else:
            raise web.seeother('/')
 
@@ -104,8 +107,9 @@ class scheduler:
     def GET(self):
         if session.get('username', False):
             tfes = Tfe.select()
-            session.log = datetime.datetime.now()
-            return render.scheduler(tfes)
+            session.log = datetime.now()
+            parametrization = Parametrization.select()[0]
+            return render.scheduler(tfes, parametrization)
         else:
            raise web.seeother('/')
 
@@ -151,7 +155,7 @@ class executescheduler:
     def POST(self):
         x = web.input()
         with open("input.JSON", "w") as outfile:
-            json.dump(create_input_json(x.rooms), outfile, indent=4)
+            json.dump(create_input_json(Parametrization.select()[0].rooms_number), outfile, indent=4)
         proc = Popen(["java", "-jar", "scheduler/TFEScheduler.jar", "input.JSON", x.time], stdout=PIPE, stderr=STDOUT)
         proc.wait()
         print("hello")
@@ -223,8 +227,8 @@ class set_session:
         x = web.input()
         tfe = Tfe.select(Tfe.q.code == x.code)[0]
         tfe.session = int(x.session)
-        tfe.log = datetime.datetime.now()
-        session.log = datetime.datetime.now()
+        tfe.log = datetime.now()
+        session.log = datetime.now()
         return "ok"
 
 class set_tfe:
@@ -375,6 +379,14 @@ class get_conflicts:
         result = get_conflicts_json(x.code, x.session)
         return result
 
+class parametrization:
+    def POST(self):
+        x = web.input()
+        day1 = datetime.strptime(x.day1, '%d/%m/%Y')
+        day2 = datetime.strptime(x.day2, '%d/%m/%Y')
+        day3 = datetime.strptime(x.day3, '%d/%m/%Y')
+        Parametrization(rooms_number=int(x.rooms), day_1=day1, day_2=day2, day_3=day3)
+        return "ok"
 
 if __name__ == "__main__":
     app = web.application(urls, globals())

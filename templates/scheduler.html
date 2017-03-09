@@ -1,4 +1,4 @@
-$def with (tfes)
+$def with (tfes, parametrization)
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -181,30 +181,35 @@ scratch. This page gets rid of all links and provides the needed markup only.
     var tab = new Array();
     for(var i=0; i<12; i++)
       tab[i] = new Array();
-    tab[0][0] = '2017-06-26T08:00:00.000Z'
-    tab[0][1] = '2017-06-26T10:30:00.000Z'
-    tab[1][0] = '2017-06-26T10:45:00.000Z'
-    tab[1][1] = '2017-06-26T13:15:00.000Z'
-    tab[2][0] = '2017-06-26T14:00:00.000Z'
-    tab[2][1] = '2017-06-26T16:30:00.000Z'
-    tab[3][0] = '2017-06-26T16:45:00.000Z'
-    tab[3][1] = '2017-06-26T19:15:00.000Z'
-    tab[4][0] = '2017-06-27T08:00:00.000Z'
-    tab[4][1] = '2017-06-27T10:30:00.000Z'
-    tab[5][0] = '2017-06-27T10:45:00.000Z'
-    tab[5][1] = '2017-06-27T13:15:00.000Z'
-    tab[6][0] = '2017-06-27T14:00:00.000Z'
-    tab[6][1] = '2017-06-27T16:30:00.000Z'
-    tab[7][0] = '2017-06-27T16:45:00.000Z'
-    tab[7][1] = '2017-06-27T19:15:00.000Z'
-    tab[8][0] = '2017-06-28T08:00:00.000Z'
-    tab[8][1] = '2017-06-28T10:30:00.000Z'
-    tab[9][0] = '2017-06-28T10:45:00.000Z'
-    tab[9][1] = '2017-06-28T13:15:00.000Z'
-    tab[10][0] = '2017-06-28T14:00:00.000Z'
-    tab[10][1] = '2017-06-28T16:30:00.000Z'
-    tab[11][0] = '2017-06-28T16:45:00.000Z'
-    tab[11][1] = '2017-06-28T19:15:00.000Z'
+    tab[0][0] = '$parametrization.day_1'+'T08:00:00.000Z'
+    tab[0][1] = '$parametrization.day_1'+'T10:30:00.000Z'
+    tab[1][0] = '$parametrization.day_1'+'T10:45:00.000Z'
+    tab[1][1] = '$parametrization.day_1'+'T13:15:00.000Z'
+    tab[2][0] = '$parametrization.day_1'+'T14:00:00.000Z'
+    tab[2][1] = '$parametrization.day_1'+'T16:30:00.000Z'
+    tab[3][0] = '$parametrization.day_1'+'T16:45:00.000Z'
+    tab[3][1] = '$parametrization.day_1'+'T19:15:00.000Z'
+    tab[4][0] = '$parametrization.day_2'+'T08:00:00.000Z'
+    tab[4][1] = '$parametrization.day_2'+'T10:30:00.000Z'
+    tab[5][0] = '$parametrization.day_2'+'T10:45:00.000Z'
+    tab[5][1] = '$parametrization.day_2'+'T13:15:00.000Z'
+    tab[6][0] = '$parametrization.day_2'+'T14:00:00.000Z'
+    tab[6][1] = '$parametrization.day_2'+'T16:30:00.000Z'
+    tab[7][0] = '$parametrization.day_2'+'T16:45:00.000Z'
+    tab[7][1] = '$parametrization.day_2'+'T19:15:00.000Z'
+    tab[8][0] = '$parametrization.day_3'+'T08:00:00.000Z'
+    tab[8][1] = '$parametrization.day_3'+'T10:30:00.000Z'
+    tab[9][0] = '$parametrization.day_3'+'T10:45:00.000Z'
+    tab[9][1] = '$parametrization.day_3'+'T13:15:00.000Z'
+    tab[10][0] = '$parametrization.day_3'+'T14:00:00.000Z'
+    tab[10][1] = '$parametrization.day_3'+'T16:30:00.000Z'
+    tab[11][0] = '$parametrization.day_3'+'T16:45:00.000Z'
+    tab[11][1] = '$parametrization.day_3'+'T19:15:00.000Z'
+
+    var res = new Array();
+    for(var i=0; i<$parametrization.rooms_number ; i++){
+      res[i] = { id: ""+i, title: 'Auditorium '+i };
+    }
 
     var eventlist = Array();
     var i = 0;
@@ -215,7 +220,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $$('#calendar').fullCalendar({
       schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-      now: '2017-06-26',
+      now: '$parametrization.day_1',
       editable: true, // enable draggable events
       eventDurationEditable: false,
       droppable: true, // this allows things to be dropped onto the calendar
@@ -264,13 +269,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       eventConstraint: 'businessHours',
       resourceAreaWidth: '15%',
       resourceLabelText: 'Rooms',
-      resources: [
-        { id: '0', title: 'Auditorium A' },
-        { id: '1', title: 'Auditorium B' },
-        { id: '2', title: 'Auditorium C' },
-        { id: '3', title: 'Auditorium D' }, 
-        { id: '4', title: 'Auditorium E' }
-      ],
+      resources: res,
       events: eventlist,
       eventClick: function(event, element) {
 

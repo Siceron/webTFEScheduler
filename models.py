@@ -12,6 +12,16 @@ class User(SQLObject):
 	password = StringCol()
 	permission = IntCol(default=0)
 
+class Parametrization(SQLObject):
+
+	class sqlmeta:
+		table = 'parametrization'
+
+	rooms_number = IntCol()
+	day_1 = DateCol()
+	day_2 = DateCol()
+	day_3 = DateCol()
+
 class Sessions(SQLObject):
 
 	class sqlmeta:
@@ -141,3 +151,5 @@ if __name__ == "__main__":
 	Tfe_rel_person.createTable()
 	Room.dropTable(ifExists=True)
 	Room.createTable()
+	Parametrization.dropTable(ifExists=True)
+	Parametrization.createTable()
