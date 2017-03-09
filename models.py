@@ -10,6 +10,7 @@ class User(SQLObject):
 
 	email = StringCol()
 	password = StringCol()
+	permission = IntCol(default=0)
 
 class Sessions(SQLObject):
 
@@ -91,7 +92,8 @@ class Tfe(SQLObject):
 	code = StringCol(unique=True)
 	title = StringCol()
 	session = IntCol(default=-1)
-	commission = StringCol(default=None, notNone=False)
+	commission = StringCol(default="TBD", notNone=False)
+	moderator = StringCol(default=None)
 	log = TimestampCol(notNone=True, default=DateTimeCol.now)
 
 class Tfe_rel_student(SQLObject):
@@ -109,6 +111,13 @@ class Tfe_rel_person(SQLObject):
 
 	tfe = ForeignKey('Tfe')
 	person = ForeignKey('Person')
+	title = StringCol()
+
+class Room(SQLObject):
+
+	class sqlmeta:
+		table = 'room'
+
 	title = StringCol()
 
 if __name__ == "__main__":
@@ -130,3 +139,5 @@ if __name__ == "__main__":
 	Tfe_rel_student.createTable()
 	Tfe_rel_person.dropTable(ifExists=True)
 	Tfe_rel_person.createTable()
+	Room.dropTable(ifExists=True)
+	Room.createTable()

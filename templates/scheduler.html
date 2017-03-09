@@ -45,15 +45,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script>
 
   function get_commission(code){
-    var commission = "";
+    var commission = "TBD";
     $$.ajax({
       url : 'get_commission',
       type : 'POST',
       data : 'code=' + code,
       async: false
     }).done(function( msg ) {
-      if(msg != "None")
-        commission = msg;
+      commission = msg;
     });
     return commission;
   }
@@ -143,7 +142,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     colors["SINF"] = "#F5A9F2";
     colors["MAP"] = "#FF8000";
     colors["MECA"] = "#D7DF01";
-    colors[""] = "#FF0000";
+    colors["TBD"] = "#FF0000";
 
     /* initialize the external events
     -----------------------------------------------------------------*/

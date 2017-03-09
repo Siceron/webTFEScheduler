@@ -93,76 +93,16 @@ def fixed_json():
             fixeds_as_dict.append(fixed_as_dict)
     return fixeds_as_dict
 
-def secretaries_json():
-    secretaries_as_dict = [
-        {
-          "email": "secretary1@uclouvain.be",
-          "faculties": [
-            "ELEC",
-            "ELME",
-            "GBIO"
-          ],
-          "tfes": []
-        },
-        {
-          "email": "secretary2@uclouvain.be",
-          "faculties": [
-            "FYAP",
-            "KIMA"
-          ],
-          "tfes": []
-        },
-        {
-          "email": "secretary3@uclouvain.be",
-          "faculties": [
-            "GCE"
-          ],
-          "tfes": []
-        },
-        {
-          "email": "secretary4@uclouvain.be",
-          "faculties": [
-            "INFO",
-            "SINF"
-          ],
-          "tfes": []
-        },
-        {
-          "email": "secretary5@uclouvain.be",
-          "faculties": [
-            "MAP"
-          ],
-          "tfes": []
-        },
-        {
-          "email": "secretary6@uclouvain.be",
-          "faculties": [
-            "MECA"
-          ],
-          "tfes": []
-        },
-        {
-          "email": "secretary-poubelle@uclouvain.be",
-          "faculties": [
-            "UNK"
-          ],
-          "tfes": []
-        }
-    ]
-    return secretaries_as_dict
-
 def create_input_json(rooms):
 
     advisors = advisors_json()
     readers = readers_json()
-    secretaries = secretaries_json()
     tfes = tfes_json()
     fixed = fixed_json()
     json = {
         "sessionNumber": int(rooms)*12,
         "sessionDays": 3,
         "sessionRooms": int(rooms),
-        "secretaries": secretaries,
         "advisors" : advisors,
         "readers" : readers,
         "tfes" : tfes,

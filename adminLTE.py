@@ -144,7 +144,7 @@ class logout:
 def set_commission(data_commission, commission):
     for i in data_commission[commission]:
         tfe = Tfe.select(Tfe.q.code == i)[0]
-        if tfe.commission == None:
+        if tfe.commission == "TBD":
             tfe.commission = commission
 
 class executescheduler:
