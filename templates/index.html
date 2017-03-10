@@ -376,12 +376,32 @@ desired effect
     }
   });
 
+  function parseDate(str){
+    var parts = str.split("/");
+    var dt = new Date(parseInt(parts[2]), parseInt(parts[1]), parseInt(parts[0]));
+    return dt;
+  }
+
   function parametrization() {
+    var roomsNbr = document.getElementById('roomsNbr').value;
+    var day_1 = document.getElementById('day1').value;
+    var day_2 = document.getElementById('day2').value;
+    var day_3 = document.getElementById('day3').value;
+    if (roomsNbr==0 || day_1==null || day_1=="" || day_2==null || day_2=="" || day_3==null || day_3==""){
+      alert("Veuillez remplir tous les champs correctement");
+      return false;
+    }
+    var d1 = parseDate(day_1);
+    var d2 = parseDate(day_2);
+    var d3 = parseDate(day_3);
+    if (!(d1 < d2 && d2 < d3 && d1 < d3)){
+      alert("Veuillez remplir les dates dans le bon ordre");
+      return false;
+    }
     $$.ajax({
       url: "parametrization",
       type : 'POST',
-      data: {rooms: document.getElementById('roomsNbr').value, day1: document.getElementById('day1').value,
-        day2: document.getElementById('day2').value, day3: document.getElementById('day3').value, reserve: document.getElementById('reserve').value}
+      data: {rooms: roomsNbr, day1: day_1, day2: day_2, day3: day_3, reserve: document.getElementById('reserve').value}
     }).done(function( msg ) {
       $$('#parametrization-box').fadeOut(500).promise().done(function() {
         $$('#scheduler-box').fadeIn(500);
