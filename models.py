@@ -21,6 +21,7 @@ class Parametrization(SQLObject):
 	day_1 = DateCol()
 	day_2 = DateCol()
 	day_3 = DateCol()
+	reserve = IntCol()
 
 class Sessions(SQLObject):
 

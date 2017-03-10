@@ -93,16 +93,17 @@ def fixed_json():
             fixeds_as_dict.append(fixed_as_dict)
     return fixeds_as_dict
 
-def create_input_json(rooms):
+def create_input_json():
 
+    parametrization = Parametrization.select()[0]
     advisors = advisors_json()
     readers = readers_json()
     tfes = tfes_json()
     fixed = fixed_json()
     json = {
-        "sessionNumber": int(rooms)*12,
+        "reserveDay": parametrization.reserve,
         "sessionDays": 3,
-        "sessionRooms": int(rooms),
+        "sessionRooms": parametrization.rooms_number,
         "advisors" : advisors,
         "readers" : readers,
         "tfes" : tfes,

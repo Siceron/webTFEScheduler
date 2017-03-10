@@ -158,7 +158,7 @@ class executescheduler:
     def POST(self):
         x = web.input()
         with open("input.JSON", "w") as outfile:
-            json.dump(create_input_json(Parametrization.select()[0].rooms_number), outfile, indent=4)
+            json.dump(create_input_json(), outfile, indent=4)
         proc = Popen(["java", "-jar", "scheduler/TFEScheduler.jar", "input.JSON", x.time], stdout=PIPE, stderr=STDOUT)
         proc.wait()
         print("hello")
@@ -388,7 +388,7 @@ class parametrization:
         day1 = datetime.strptime(x.day1, '%d/%m/%Y')
         day2 = datetime.strptime(x.day2, '%d/%m/%Y')
         day3 = datetime.strptime(x.day3, '%d/%m/%Y')
-        Parametrization(rooms_number=int(x.rooms), day_1=day1, day_2=day2, day_3=day3)
+        Parametrization(rooms_number=int(x.rooms), day_1=day1, day_2=day2, day_3=day3, reserve=int(x.reserve)-1)
         return "ok"
 
 if __name__ == "__main__":

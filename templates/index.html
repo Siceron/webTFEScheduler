@@ -239,6 +239,12 @@ desired effect
                   </div>
                   <input id="day3" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
                 </div>
+                <label class="day-label">Jour de réserve :</label>
+                <select id="reserve" class="form-control">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                </select>
                 <!-- /.input group -->
               </div>
               <!-- /.form group -->
@@ -375,7 +381,7 @@ desired effect
       url: "parametrization",
       type : 'POST',
       data: {rooms: document.getElementById('roomsNbr').value, day1: document.getElementById('day1').value,
-        day2: document.getElementById('day2').value, day3: document.getElementById('day3').value}
+        day2: document.getElementById('day2').value, day3: document.getElementById('day3').value, reserve: document.getElementById('reserve').value}
     }).done(function( msg ) {
       $$('#parametrization-box').fadeOut(500).promise().done(function() {
         $$('#scheduler-box').fadeIn(500);
