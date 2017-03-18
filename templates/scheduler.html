@@ -316,6 +316,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
             li.setAttribute("class", "list-group-item");
             ul.appendChild(li);
           }
+
+          // moderator
+          var ul = document.getElementById("moderatorList");
+          while (ul.lastChild) {
+            ul.removeChild(ul.lastChild);
+          }
+          if(msg.moderator != null){
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(msg.moderator));
+            li.setAttribute("class", "list-group-item");
+            ul.appendChild(li);
+          }
         });
 
         $$('#tfeDetails').modal('show');
@@ -661,6 +673,9 @@ desired effect
                 </ul>
                 <p>Lecteurs :</p>
                 <ul class="list-group" id="readerList">
+                </ul>
+                <p>Modérateur :</p>
+                <ul class="list-group" id="moderatorList">
                 </ul>
               </div>
               <div class="modal-footer">

@@ -212,7 +212,8 @@ class show_tfe_details:
             "title" : tfe.title,
             "students" : students,
             "advisors" : advisors,
-            "readers" : readers
+            "readers" : readers,
+            "moderator": tfe.moderator
         }
         return json.dumps(result)
 
@@ -239,11 +240,12 @@ class set_tfe:
         x = web.input()
         if x.code.strip() != "" and x.title.strip() != "":
             if Tfe.select(Tfe.q.code == x.code).count() == 0:
-                Tfe(code=x.code, title=x.title, commission=x.commission)
+                Tfe(code=x.code, title=x.title, commission=x.commission, moderator=x.moderator)
             else:
                 tfe = Tfe.select(Tfe.q.code == x.code)[0]
                 tfe.title = x.title
                 tfe.commission = x.commission
+                tfe.moderator = x.moderator
         raise web.seeother('/tfe')
 
 class delete_tfe:

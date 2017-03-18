@@ -184,16 +184,15 @@ desired effect
                 <thead>
                 <tr>
                   <th>Code</th>
-                  <th>Titre</th>
                   <th>Commission</th>
-                  <th>Session</th>
+                  <th>Modérateur</th>
+                  <th>Titre</th>
                 </tr>
                 </thead>
                 <tbody>
                 $for tfe in tfes:
                   <tr>
                     <td>$tfe.code</td>
-                    <td>$tfe.title</td>
                     $if tfe.commission == "ELEC":
                       <td class="elec">$tfe.commission</td>
                     $elif tfe.commission == "ELME":
@@ -216,15 +215,16 @@ desired effect
                       <td class="meca">$tfe.commission</td>
                     $else:
                       <td class="default-commission">$tfe.commission</td>
-                    <td>$tfe.session</td>
+                    <td>$tfe.moderator</td>
+                    <td>$tfe.title</td>
                   </tr>
                 </tbody>
                 <tfoot>
                 <tr>
                   <th>Code</th>
-                  <th>Titre</th>
                   <th>Commission</th>
-                  <th>Session</th>
+                  <th>Modérateur</th>
+                  <th>Titre</th>
                 </tr>
                 </tfoot>
               </table>
@@ -296,9 +296,13 @@ desired effect
             <input type="text" class="form-control" id="title" placeholder="titre" name="title">
           </div>
           <div class="form-group">
+            <label for="moderator">Modérateur</label>
+            <input type="text" class="form-control" id="moderator" placeholder="modérateur" name="moderator">
+          </div>
+          <div class="form-group">
             <label for="commission">Commission</label>
             <select class="form-control" id="commission" name="commission">
-              <option></option>
+              <option>TBD</option>
               <option>ELEC</option>
               <option>ELME</option>
               <option>GBIO</option>
@@ -403,6 +407,7 @@ desired effect
       document.getElementById("code").value = "";
       document.getElementById('code').readOnly = false;
       document.getElementById("title").value = "";
+      document.getElementById("moderator").value = "";
       document.getElementById("commission").value = "";
       $$('#tfeModal').modal("show");
     });
@@ -422,8 +427,9 @@ desired effect
       if ( data.length != 0 ) {
         document.getElementById("code").value = data[0];
         document.getElementById('code').readOnly = true;
-        document.getElementById("title").value = data[1];
-        document.getElementById("commission").value = data[2];
+        document.getElementById("title").value = data[3];
+        document.getElementById("moderator").value = data[2];
+        document.getElementById("commission").value = data[1];
         $$('#tfeModal').modal("show");
       }
     });
