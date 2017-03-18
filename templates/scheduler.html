@@ -132,7 +132,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   $$(function() { // document ready
 
     var colors = new Array();
-    colors["ELEC"] = "#2EFEF7";
+    colors["ELEC"] = "#01DFDF";
     colors["ELME"] = "#2E9AFE";
     colors["GBIO"] = "#0000FF";
     colors["FYAP"] = "#088A29";
@@ -604,14 +604,46 @@ desired effect
     <section class="content">
       <div id='wrap'>
 
-        <div id='external-events'>
-          <h4>Mémoires</h4>
-          <div id='external-events-listing'>
-            $for tfe in tfes:
-              $if tfe.session == -1:
-                <div class='fc-event'>$tfe.code</div>
+        <div id='left-element'>
+          <div id='legend'>
+            <h4>Commissions</h4>
+              <table>
+                <tr>
+                  <th class='legend-cell'><div class='default-commission'>TBD</div></th>
+                </tr>
+                <tr>
+                  <th class='legend-cell'><div class='elec'>ELEC </div></th>
+                  <th class='legend-cell'><div class='elme'>ELME </div></th>
+                  <th class='legend-cell'><div class='gbio'>GBIO</div></th>
+                </tr>
+                <tr>
+                  <th class='legend-cell'><div class='fyap'>FYAP </div></th>
+                  <th class='legend-cell'><div class='kima'>KIMA</div></th>
+                </tr>
+                <tr>
+                  <th class='legend-cell'><div class='gce'>GCE</div></th>
+                </tr>
+                <tr>
+                  <th class='legend-cell'><div class='info-fac'>INFO </div></th>
+                  <th class='legend-cell'><div class='sinf'>SINF</div></th>
+                </tr>
+                <tr>
+                  <th class='legend-cell'><div class='map'>MAP</div></th>
+                </tr>
+                <tr>
+                  <th class='legend-cell'><div class='meca'>MECA</div></th>
+                </tr>
+              </table>
           </div>
-        </div>
+          <div id='external-events'>
+            <h4>Mémoires</h4>
+            <div id='external-events-listing'>
+              $for tfe in tfes:
+                $if tfe.session == -1:
+                  <div class='fc-event'>$tfe.code</div>
+            </div>
+          </div>
+      </div>
 
         <div class="modal fade" id="tfeDetails" tabindex="-1" role="dialog">
           <div class="modal-dialog" role="document">

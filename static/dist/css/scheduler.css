@@ -2,10 +2,44 @@
   width: 1100px;
   margin: 0 auto;
 }
+
+#left-element {
+  float: left;
+}
+
+#legend {
+  margin-top: 2cm;
+  width: 150px;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  background: #eee;
+  text-align: left;
+  overflow: hidden;
+}
+
+#legend h4 {
+  font-size: 16px;
+  margin-top: 0;
+  padding-top: 1em;
+}
+  
+#legend p {
+  margin: 1.5em 0;
+  font-size: 11px;
+  color: #666;
+}
+  
+#legend p input {
+  margin: 0;
+  vertical-align: middle;
+}
+
+.legend-cell{
+  padding:0 3px 0 3px;
+}
   
 #external-events {
-  margin-top: 2cm;
-  float: left;
+  margin-top: 0.2cm;
   width: 150px;
   padding: 0 10px;
   border: 1px solid #ccc;
@@ -16,7 +50,7 @@
 
 #external-events-listing{
   min-height: 100px;
-  max-height: 450px;
+  max-height: 250px;
   overflow-y: scroll;
 }
   
@@ -45,4 +79,48 @@
 #calendar {
   float: right;
   width: 900px;
+}
+
+.default-commission {
+  color: #FF0000;
+}
+
+.elec {
+  color: #01DFDF;
+}
+
+.elme {
+  color: #2E9AFE;
+}
+
+.gbio {
+  color: #0000FF;
+}
+
+.fyap {
+  color: #088A29;
+}
+
+.kima {
+  color: #01DF01;
+}
+
+.gce {
+  color: #A4A4A4;
+}
+
+.info-fac {
+  color: #BF00FF;
+}
+
+.sinf {
+  color: #F5A9F2;
+}
+
+.map {
+  color: #FF8000;
+}
+
+.meca {
+  color: #D7DF01;
 }
