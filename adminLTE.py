@@ -4,6 +4,7 @@ import math
 from models import *
 from json_utils import *
 from parser_utils import *
+from export_utils import *
 from conflicts_report import *
 from subprocess import Popen, PIPE, STDOUT
 import json
@@ -41,7 +42,9 @@ urls = (
     '/delete_tfe_rel_person', 'delete_tfe_rel_person',
     '/is_up_to_date', 'is_up_to_date',
     '/get_conflicts', 'get_conflicts',
-    '/parametrization', 'parametrization'
+    '/parametrization', 'parametrization',
+    '/csv_export', 'csv_export',
+    '/excel_export', 'excel_export'
 )
 
 def load_sqlo(handler=None):
@@ -391,6 +394,16 @@ class parametrization:
         day2 = datetime.strptime(x.day2, '%d/%m/%Y')
         day3 = datetime.strptime(x.day3, '%d/%m/%Y')
         Parametrization(rooms_number=int(x.rooms), day_1=day1, day_2=day2, day_3=day3, reserve=int(x.reserve)-1)
+        return "ok"
+
+class csv_export:
+    def GET(self):
+        export_data("static/")
+        return "ok"
+
+class excel_export:
+    def GET(self):
+        export_data_excel("static/")
         return "ok"
 
 if __name__ == "__main__":

@@ -182,17 +182,16 @@ desired effect
         <!-- general form elements -->
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Fill the database</h3>
+              <h3 class="box-title">Remplir la base de données</h3>
             </div>
             <!-- /.box-header -->
             <!-- form start -->
             <form method="POST" enctype="multipart/form-data" action="">
               <div class="box-body">
                 <div class="form-group">
-                  <label for="myfile">Enter .csv file</label>
+                  <label for="myfile">Entrez un fichier .csv</label>
                   <input type="file" id="myfile" name="myfile">
                   <input type="checkbox" id="randomdisp" name="randomdisp" value="True">Disponibilités aléatoires<br>
-                  <p class="help-block">Example block-level help text here.</p>
                 </div>
               </div>
               <!-- /.box-body -->
@@ -201,6 +200,18 @@ desired effect
                 <button type="submit" class="btn btn-primary">Submit</button>
               </div>
             </form>
+          </div>
+          <!-- /.box -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Exporter les données</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <div class="box-body">
+              <button class="btn btn-primary" onclick="csvExport()">CSV</button>
+              <button class="btn btn-primary" onclick="excelExport()">EXCEL</button>
+            </div>
           </div>
           <!-- /.box -->
         </div>
@@ -435,6 +446,24 @@ desired effect
       data: 'time=' + document.getElementById('schedulerTime').value
     }).done(function( msg ) {
       pleaseWait.modal('hide');
+    });
+  }
+
+  function csvExport() {
+    $$.ajax({
+      url: "csv_export",
+      type : 'GET'
+    }).done(function( msg ) {
+      window.location.href = 'static/data.csv';
+    });
+  }
+
+  function excelExport() {
+    $$.ajax({
+      url: "excel_export",
+      type : 'GET'
+    }).done(function( msg ) {
+      window.location.href = 'static/data.xlsx';
     });
   }
 </script>
