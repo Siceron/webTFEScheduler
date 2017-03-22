@@ -130,7 +130,7 @@ class tfe:
 class student:
     def GET(self):
         if session.get('username', False):
-            tfes = Tfe.select()
+            tfes = Tfe.select(orderBy="code")
             students = Student.select()
             return render.student(students, tfes)
         else:
@@ -139,10 +139,11 @@ class student:
 class person:
     def GET(self):
         if session.get('username', False):
-            tfes = Tfe.select()
+            tfes = Tfe.select(orderBy="code")
             persons = Person.select()
             rels = Tfe_rel_person.select()
-            return render.person(persons, rels, tfes)
+            parametrization = Parametrization.select()[0]
+            return render.person(persons, rels, tfes, parametrization)
         else:
            raise web.seeother('/')
 

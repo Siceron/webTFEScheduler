@@ -352,6 +352,12 @@ desired effect
   }
 
   $$(function () {
+    // Setup - add a text input to each footer cell
+    $$('#students-table tfoot th').each( function () {
+        var title = $$(this).text();
+        $$(this).html( '<input type="text" placeholder="Filtrer '+title+'" />' );
+    } );
+
     var table = $$("#students-table").DataTable({
       "language":
       {
@@ -392,6 +398,19 @@ desired effect
         return JSON.parse(data);
       }
     });
+
+    // Apply the search
+    table.columns().every( function () {
+        var that = this;
+ 
+        $$( 'input', this.footer() ).on( 'keyup change', function () {
+            if ( that.search() !== this.value ) {
+                that
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
 
     // STUDENTS CRUD
 
