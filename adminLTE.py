@@ -122,7 +122,7 @@ class scheduler:
 class tfe:
     def GET(self):
         if session.get('username', False):
-            tfes = Tfe.select()
+            tfes = tfes_full_json()
             return render.tfe(tfes)
         else:
            raise web.seeother('/')

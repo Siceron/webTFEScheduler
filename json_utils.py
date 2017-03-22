@@ -82,6 +82,30 @@ def tfes_json():
         tfes_as_dict.append(tfe_as_dict)
     return tfes_as_dict
 
+def tfes_full_json():
+    tfes_as_dict = []
+    for tfe in Tfe.select():
+        students = []
+        for rel in Tfe_rel_student.select(Tfe_rel_student.q.tfe==tfe):
+            students.append(rel.student.email)
+        advisors = []
+        for rel in Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.title=="Promoteur")):
+            advisors.append(rel.person.email)
+        readers = []
+        for rel in Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.title=="Lecteur")):
+            readers.append(rel.person.email)
+        tfe_as_dict = {
+            "code" : tfe.code,
+            "title" : tfe.title,
+            "moderator" : tfe.moderator,
+            "commission" : tfe.commission,
+            "students" : "\n".join(students),
+            "advisors" : "\n".join(advisors),
+            "readers" : "\n".join(readers)
+        }
+        tfes_as_dict.append(tfe_as_dict)
+    return tfes_as_dict
+
 def fixed_json():
     fixeds_as_dict = []
     for tfe in Tfe.select():

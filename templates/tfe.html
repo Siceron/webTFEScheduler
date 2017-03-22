@@ -186,37 +186,43 @@ desired effect
                   <th>Code</th>
                   <th>Commission</th>
                   <th>Modérateur</th>
+                  <th>Etudiants</th>
+                  <th>Promoteurs</th>
+                  <th>Lecteurs</th>
                   <th>Titre</th>
                 </tr>
                 </thead>
                 <tbody>
                 $for tfe in tfes:
                   <tr>
-                    <td>$tfe.code</td>
-                    $if tfe.commission == "ELEC":
-                      <td class="elec">$tfe.commission</td>
-                    $elif tfe.commission == "ELME":
-                      <td class="elme">$tfe.commission</td>
-                    $elif tfe.commission == "GBIO":
-                      <td class="gbio">$tfe.commission</td>
-                    $elif tfe.commission == "FYAP":
-                      <td class="fyap">$tfe.commission</td>
-                    $elif tfe.commission == "KIMA":
-                      <td class="kima">$tfe.commission</td>
-                    $elif tfe.commission == "GCE":
-                      <td class="gce">$tfe.commission</td>
-                    $elif tfe.commission == "INFO":
-                      <td class="info-fac">$tfe.commission</td>
-                    $elif tfe.commission == "SINF":
-                      <td class="sinf">$tfe.commission</td>
-                    $elif tfe.commission == "MAP":
-                      <td class="map">$tfe.commission</td>
-                    $elif tfe.commission == "MECA":
-                      <td class="meca">$tfe.commission</td>
+                    <td>$tfe['code']</td>
+                    $if tfe['commission'] == "ELEC":
+                      <td class="elec">$tfe['commission']</td>
+                    $elif tfe['commission'] == "ELME":
+                      <td class="elme">$tfe['commission']</td>
+                    $elif tfe['commission'] == "GBIO":
+                      <td class="gbio">$tfe['commission']</td>
+                    $elif tfe['commission'] == "FYAP":
+                      <td class="fyap">$tfe['commission']</td>
+                    $elif tfe['commission'] == "KIMA":
+                      <td class="kima">$tfe['commission']</td>
+                    $elif tfe['commission'] == "GCE":
+                      <td class="gce">$tfe['commission']</td>
+                    $elif tfe['commission'] == "INFO":
+                      <td class="info-fac">$tfe['commission']</td>
+                    $elif tfe['commission'] == "SINF":
+                      <td class="sinf">$tfe['commission']</td>
+                    $elif tfe['commission'] == "MAP":
+                      <td class="map">$tfe['commission']</td>
+                    $elif tfe['commission'] == "MECA":
+                      <td class="meca">$tfe['commission']</td>
                     $else:
-                      <td class="default-commission">$tfe.commission</td>
-                    <td>$tfe.moderator</td>
-                    <td>$tfe.title</td>
+                      <td class="default-commission">$tfe['commission']</td>
+                    <td>$tfe['moderator']</td>
+                    <td>$tfe['students']</td>
+                    <td>$tfe['advisors']</td>
+                    <td>$tfe['readers']</td>
+                    <td>$tfe['title']</td>
                   </tr>
                 </tbody>
                 <tfoot>
@@ -224,6 +230,9 @@ desired effect
                   <th>Code</th>
                   <th>Commission</th>
                   <th>Modérateur</th>
+                  <th>Etudiants</th>
+                  <th>Promoteurs</th>
+                  <th>Lecteurs</th>
                   <th>Titre</th>
                 </tr>
                 </tfoot>
@@ -427,7 +436,7 @@ desired effect
       if ( data.length != 0 ) {
         document.getElementById("code").value = data[0];
         document.getElementById('code').readOnly = true;
-        document.getElementById("title").value = data[3];
+        document.getElementById("title").value = data[6];
         document.getElementById("moderator").value = data[2];
         document.getElementById("commission").value = data[1];
         $$('#tfeModal').modal("show");
