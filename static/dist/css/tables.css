@@ -13,6 +13,9 @@ table.dataTable tbody tr.persons-selected {
 table.dataTable tbody tr.rel-persons-selected {
   background-color: #B0BED9;
 }
+table.dataTable tbody tr.auditorium-selected {
+  background-color: #B0BED9;
+}
 
 /* Green check. */
 .glyphicon-ok {

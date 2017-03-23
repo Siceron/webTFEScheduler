@@ -26,6 +26,7 @@ urls = (
     '/tfe', 'tfe',
     '/student', 'student',
     '/person', 'person',
+    '/auditoriums', 'auditoriums',
     '/executescheduler', 'executescheduler',
     '/show_tfe_details', 'show_tfe_details',
     '/get_commission', 'get_commission',
@@ -36,6 +37,7 @@ urls = (
     '/delete_student', 'delete_student',
     '/set_person', 'set_person',
     '/delete_person', 'delete_person',
+    '/set_auditorium', 'set_auditorium',
     '/get_tfe_rel_student', 'get_tfe_rel_student',
     '/set_tfe_rel_student', 'set_tfe_rel_student',
     '/set_tfe_rel_person', 'set_tfe_rel_person',
@@ -113,7 +115,8 @@ class scheduler:
                 tfes = Tfe.select()
                 session.log = datetime.now()
                 parametrization = Parametrization.select()[0]
-                return render.scheduler(tfes, parametrization)
+                auditoriums = Room.select()
+                return render.scheduler(tfes, parametrization, auditoriums)
             else:
                 raise web.seeother('/index')
         else:
@@ -144,6 +147,14 @@ class person:
             rels = Tfe_rel_person.select()
             parametrization = Parametrization.select()[0]
             return render.person(persons, rels, tfes, parametrization)
+        else:
+           raise web.seeother('/')
+
+class auditoriums:
+    def GET(self):
+        if session.get('username', False):
+            auditoriums = Room.select()
+            return render.auditoriums(auditoriums)
         else:
            raise web.seeother('/')
 
@@ -331,6 +342,14 @@ class delete_person:
             rel.delete(rel.id)
         return "ok"
 
+class set_auditorium:
+    def POST(self):
+        x = web.input()
+        if x.name.strip() != "":
+            auditorium = Room.select(Room.q.id == x.id)[0]
+            auditorium.title = x.name
+        raise web.seeother('/auditoriums')
+
 class get_tfe_rel_student:
     def POST(self):
         x = web.input()
@@ -394,7 +413,10 @@ class parametrization:
         day1 = datetime.strptime(x.day1, '%d/%m/%Y')
         day2 = datetime.strptime(x.day2, '%d/%m/%Y')
         day3 = datetime.strptime(x.day3, '%d/%m/%Y')
-        Parametrization(rooms_number=int(x.rooms), day_1=day1, day_2=day2, day_3=day3, reserve=int(x.reserve)-1)
+        rooms = int(x.rooms)
+        for i in range(1, rooms+1):
+            Room(title="Auditoire"+str(i))
+        Parametrization(rooms_number=rooms, day_1=day1, day_2=day2, day_3=day3, reserve=int(x.reserve)-1)
         return "ok"
 
 class csv_export:

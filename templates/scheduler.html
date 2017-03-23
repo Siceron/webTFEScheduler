@@ -1,4 +1,4 @@
-$def with (tfes, parametrization)
+$def with (tfes, parametrization, auditoriums)
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -207,9 +207,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     tab[11][1] = '$parametrization.day_3'+'T19:15:00.000Z'
 
     var res = new Array();
-    for(var i=0; i<$parametrization.rooms_number ; i++){
-      res[i] = { id: ""+i, title: 'Auditorium '+i };
-    }
+    var i = 0;
+    $for auditorium in auditoriums:
+      res[i] = { id: ""+i, title: '$auditorium.title' };
+      i++;
 
     var eventlist = Array();
     var i = 0;
@@ -224,10 +225,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
     }
 
     function schedulerDays(first, second) {
-        return Math.round((second-first)/(1000*60*60*24)) + 1;
+      first.setMinutes(first.getMinutes() - first.getTimezoneOffset());
+      second.setMinutes(second.getMinutes() - second.getTimezoneOffset());
+      return Math.round((second-first)/(1000*60*60*24)) + 1;
     }
 
-    console.log(parseDate('$parametrization.day_1').getDay());
+    function getHiddenDays(){
+      var result = new Array();
+      var day1 = parseDate('$parametrization.day_1').getDay();
+      var day2 = parseDate('$parametrization.day_2').getDay();
+      var day3 = parseDate('$parametrization.day_3').getDay();
+      var counter = 0;
+      for(var i = 0 ; i < 7 ; i++){
+        if( i!=day1 && i!=day2 && i!=day3){
+          result[counter] = i;
+          counter++;
+        }
+      }
+      return result;
+    }
 
     $$('#calendar').fullCalendar({
       schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
@@ -255,6 +271,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           slotWidth: 10
         }
       },
+      hiddenDays: getHiddenDays(),
       businessHours: [
         {
             start: '08:00',
@@ -279,7 +296,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       ],
       eventConstraint: 'businessHours',
       resourceAreaWidth: '15%',
-      resourceLabelText: 'Rooms',
+      resourceLabelText: 'Auditoires',
       resources: res,
       events: eventlist,
       eventClick: function(event, element) {
@@ -588,6 +605,7 @@ desired effect
             <li><a href="tfe"><i class="fa fa-circle-o"></i>Mémoires</a></li>
             <li><a href="student"><i class="fa fa-circle-o"></i>Etudiants</a></li>
             <li><a href="person"><i class="fa fa-circle-o"></i>Jurys</a></li>
+            <li><a href="auditoriums"><i class="fa fa-circle-o"></i>Auditoires</a></li>
           </ul>
         </li>
         <li class="active treeview">

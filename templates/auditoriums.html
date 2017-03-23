@@ -1,4 +1,4 @@
-$def with (students, tfes)
+$def with (auditoriums)
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -137,9 +137,9 @@ desired effect
           </a>
           <ul class="treeview-menu">
             <li><a href="tfe"><i class="fa fa-circle-o"></i>Mémoires</a></li>
-            <li class="active"><a href="#"><i class="fa fa-circle-o"></i>Etudiants</a></li>
+            <li><a href="student"><i class="fa fa-circle-o"></i>Etudiants</a></li>
             <li><a href="person"><i class="fa fa-circle-o"></i>Jurys</a></li>
-            <li><a href="auditoriums"><i class="fa fa-circle-o"></i>Auditoires</a></li>
+            <li class="active"><a href="#"><i class="fa fa-circle-o"></i>Auditoires</a></li>
           </ul>
         </li>
         <li class="treeview">
@@ -173,39 +173,30 @@ desired effect
     <section class="content">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Etudiants</h3>
+          <h3 class="box-title">Auditoires</h3>
         </div>
         <div class="box-body">
-          <button type="button" id="students-button-add">Ajouter</button>
-          <button type="button" id="students-button-edit">Editer</button>
-          <button type="button" id="students-button-delete">Supprimer</button>
-          <button type="button" id="students-button-link">Lier au tfe</button>
+          <button type="button" id="auditorium-button-edit">Editer</button>
         </div>
         <div class="box-body">
-              <table id="students-table" class="table table-bordered table-hover">
+              <table id="auditorium-table" class="table table-bordered table-hover">
                 <thead>
                 <tr>
+                  <th>Id</th>
                   <th>Nom</th>
-                  <th>Prénom</th>
-                  <th>Faculté</th>
-                  <th>Email</th>
                 </tr>
                 </thead>
                 <tbody>
-                $for student in students:
+                $for auditorium in auditoriums:
                   <tr>
-                    <td>$student.last_name</td>
-                    <td>$student.name</td>
-                    <td>$student.faculty</td>
-                    <td>$student.email</td>
+                    <td>$auditorium.id</td>
+                    <td>$auditorium.title</td>
                   </tr>
                 </tbody>
                 <tfoot>
                 <tr>
+                  <th>Id</th>
                   <th>Nom</th>
-                  <th>Prénom</th>
-                  <th>Faculté</th>
-                  <th>Email</th>
                 </tr>
                 </tfoot>
               </table>
@@ -257,64 +248,24 @@ desired effect
 <!-- ./wrapper -->
 
 <!-- Modals -->
-
-<div id="studentModal" class="modal fade" role="dialog">
+<div id="auditoriumModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Etudiant</h4>
+        <h4 class="modal-title">Auditoire</h4>
       </div>
-      <form method="POST" enctype="multipart/form-data" action="/set_student" onsubmit="return validateForm()">
+      <form method="POST" enctype="multipart/form-data" action="/set_auditorium" onsubmit="return validateForm()">
         <div class="modal-body">
           <div class="form-group">
-            <label for="student-email">Email</label>
-            <input type="text" class="form-control" id="student-email" placeholder="student@student.uclouvain.be" name="email">
+            <label for="id">Id</label>
+            <input type="text" class="form-control" id="id" placeholder="id" name="id">
           </div>
           <div class="form-group">
-            <label for="student-firstname">Prénom</label>
-            <input type="text" class="form-control" id="student-firstname" placeholder="prénom" name="firstname">
-          </div>
-          <div class="form-group">
-            <label for="student-lastname">Nom</label>
-            <input type="text" class="form-control" id="student-lastname" placeholder="nom" name="lastname">
-          </div>
-          <div class="form-group">
-            <label for="student-faculty">Faculté</label>
-            <input type="text" class="form-control" id="student-faculty" placeholder="faculté" name="faculty">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <input type="submit" class="btn btn-default" value="Submit">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </form> 
-    </div>
-
-  </div>
-</div>
-
-<div id="linkModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Lier <span id="student-email-label"></span> à un TFE</h4>
-      </div>
-      <form method="POST" enctype="multipart/form-data" action="/set_tfe_rel_student">
-        <div class="modal-body">
-          <input type="text" id="student-email-link" name="email" style="visibility : hidden;">
-          <div class="form-group">
-            <label for="tfe-link">Mémoire</label>
-            <select class="form-control" id="tfe-link" name="tfe">
-              <option></option>
-              $for tfe in tfes:
-                <option>$tfe.code</option>
-            </select>
+            <label for="name">Nom</label>
+            <input type="text" class="form-control" id="name" placeholder="name" name="name">
           </div>
         </div>
         <div class="modal-footer">
@@ -342,11 +293,8 @@ desired effect
 <script>
 
   function validateForm(){
-    var email = document.getElementById("student-email").value.trim();
-    var lastname = document.getElementById("student-lastname").value.trim();
-    var firstname = document.getElementById("student-firstname").value.trim();
-    var faculty = document.getElementById("student-faculty").value.trim();
-    if (email==null || email=="" || lastname==null || lastname=="" || firstname==null || firstname=="" || faculty==null || faculty==""){
+    var name = document.getElementById("name").value.trim();
+    if (name==null || name==""){
       alert("Veuillez remplir tous les champs");
       return false;
     }
@@ -354,12 +302,12 @@ desired effect
 
   $$(function () {
     // Setup - add a text input to each footer cell
-    $$('#students-table tfoot th').each( function () {
+    $$('#auditorium-table tfoot th').each( function () {
         var title = $$(this).text();
         $$(this).html( '<input type="text" placeholder="Filtrer '+title+'" />' );
     } );
 
-    var table = $$("#students-table").DataTable({
+    var table = $$("#auditorium-table").DataTable({
       "language":
       {
         "sProcessing":     "Traitement en cours...",
@@ -413,62 +361,25 @@ desired effect
         } );
     } );
 
-    // STUDENTS CRUD
+    // AUDITORIUM CRUD
 
-    $$('#students-table tbody').on( 'click', 'tr', function () {
-        if ( $$(this).hasClass('students-selected') ) {
-            $$(this).removeClass('students-selected');
+    $$('#auditorium-table tbody').on( 'click', 'tr', function () {
+        if ( $$(this).hasClass('auditorium-selected') ) {
+            $$(this).removeClass('auditorium-selected');
         }
         else {
-            table.$$('tr.students-selected').removeClass('students-selected');
-            $$(this).addClass('students-selected');
+            table.$$('tr.auditorium-selected').removeClass('auditorium-selected');
+            $$(this).addClass('auditorium-selected');
         }
     });
 
-    $$('#students-button-add').click( function () {
-      document.getElementById("student-email").value = "";
-      document.getElementById('student-email').readOnly = false;
-      document.getElementById("student-firstname").value = "";
-      document.getElementById("student-lastname").value = "";
-      $$('#studentModal').modal("show");
-    });
-
-    $$('#students-button-delete').click( function () {
-      var data = table.row('.students-selected').data();
-      table.row('.students-selected').remove().draw( false );
-      $$.ajax({
-        url: "delete_student",
-        type : 'POST',
-        data: 'email=' + data[3],
-      });
-    });
-
-    $$('#students-button-edit').click( function () {
-      var data = table.row('.students-selected').data();
+    $$('#auditorium-button-edit').click( function () {
+      var data = table.row('.auditorium-selected').data();
       if ( data.length != 0 ) {
-        document.getElementById("student-email").value = data[3];
-        document.getElementById('student-email').readOnly = true;
-        document.getElementById("student-firstname").value = data[1];
-        document.getElementById("student-lastname").value = data[0];
-        document.getElementById("student-faculty").value = data[2];
-        $$('#studentModal').modal("show");
-      }
-    });
-
-    $$('#students-button-link').click( function () {
-      var data = table.row('.students-selected').data();
-      if ( data.length != 0 ) {
-        document.getElementById("student-email-label").value = data[3];
-        document.getElementById("student-email-link").value = data[3];
-        document.getElementById('student-email-link').readOnly = true;
-        $$.ajax({
-          url : 'get_tfe_rel_student',
-          type : 'POST',
-          data : 'email=' + data[3]
-        }).done(function( msg ) {
-          document.getElementById("tfe-link").value = msg;
-          $$('#linkModal').modal("show");
-        });
+        document.getElementById("id").value = data[0];
+        document.getElementById('id').readOnly = true;
+        document.getElementById("name").value = data[1];
+        $$('#auditoriumModal').modal("show");
       }
     });
   });
