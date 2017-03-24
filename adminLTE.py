@@ -80,11 +80,8 @@ class login:
 
     def POST(self):
         i = web.input()
-
-        #authdb = sqlite3.connect('users.db')
         pwdhash = hashlib.md5(i.password.encode('utf-8')).hexdigest()
         check = User.select(AND(User.q.email==i.username, User.q.password == pwdhash)).count()
-        #check = authdb.execute('select * from users where username=? and password=?', (i.username, pwdhash))
         if check == 1: 
             session.loggedin = True
             session.username = i.username
@@ -97,10 +94,14 @@ class index:
 
     def GET(self):
         if session.get('username', False):
-            tfe_nbr = Tfe.select().count()
-            rooms = math.ceil(tfe_nbr/(3*12))
-            parametrization = Parametrization.select().count()
-            return render.index(rooms, parametrization)
+            user = User.select(User.q.email == session.get('username', False))[0]
+            if(user.permission == 1):
+                tfe_nbr = Tfe.select().count()
+                rooms = math.ceil(tfe_nbr/(3*12))
+                parametrization = Parametrization.select().count()
+                return render.index_admin(rooms, parametrization)
+            else:
+                return render.index()
         else:
            raise web.seeother('/')
 

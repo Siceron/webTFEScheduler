@@ -1,3 +1,4 @@
+$def with (rooms, parametrization)
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -182,6 +183,28 @@ desired effect
         <!-- general form elements -->
           <div class="box box-primary">
             <div class="box-header with-border">
+              <h3 class="box-title">Remplir la base de données</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form method="POST" enctype="multipart/form-data" action="">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="myfile">Entrez un fichier .csv</label>
+                  <input type="file" id="myfile" name="myfile">
+                  <input type="checkbox" id="randomdisp" name="randomdisp" value="True">Disponibilités aléatoires<br>
+                </div>
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+          <!-- /.box -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
               <h3 class="box-title">Exporter les données</h3>
             </div>
             <!-- /.box-header -->
@@ -196,7 +219,90 @@ desired effect
         <!--/.col (left) -->
         <!-- right column -->
         <div class="col-md-6">
-          
+          <div id="parametrization-box" class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Paramétrisation</h3>
+            </div>
+            <div class="box-body">
+              <!-- Date -->
+              <div class="form-group">
+                <div>
+                <label id="room-label"> Nombre d'auditoires :</label>
+                <input class="slider slider-horizontal" id="roomsNbr" data-slider-id="green" type="text" data-slider-min="$rooms" data-slider-max="20" data-slider-step="1" data-slider-value="$rooms"/>
+                </div>
+                <label class="day-label">Jour 1 :</label>
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input id="day1" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                </div>
+                <label class="day-label">Jour 2 :</label>
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input id="day2" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                </div>
+                <label class="day-label">Jour 3 :</label>
+                <div class="input-group">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                  <input id="day3" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                </div>
+                <label class="day-label">Jour de réserve :</label>
+                <select id="reserve" class="form-control">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                </select>
+                <!-- /.input group -->
+              </div>
+              <!-- /.form group -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-footer">
+              <button class="btn btn-primary" onclick="parametrization()">Save</button>
+            </div>
+          </div>
+          <!-- /.box -->
+          <div id="scheduler-box" class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Execute scheduler</h3>
+            </div>
+            <div class="box-body" id="scheduler-body">
+              <div>
+              <label id="time-label"> Temps :</label>
+              <input class="slider slider-horizontal" id="schedulerTime" data-slider-id="red" type="text" data-slider-min="1" data-slider-max="60" data-slider-step="1" data-slider-value="1"/>
+              </div>
+                <div class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                          <h1>Processing...</h1>
+                      </div>
+                      <div class="modal-body">
+                        <p id="messageTimeout"></p>
+                        <div class="progress progress-sm active">
+                          <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <!-- /.box-header -->
+            <div class="box-footer">
+            $if rooms == 0:
+              <button class="btn btn-primary" disabled onclick="scheduler()">Go</button>
+            $else:
+                <button class="btn btn-primary" onclick="scheduler()">Go</button>
+                <a href="/static/report.txt" class="btn btn-primary">Rapport</a>
+            </div>
+          </div>
+          <!-- /.box -->
         </div>
         <!--/.col (right) -->
       </div>
@@ -259,6 +365,103 @@ desired effect
 <script src="static/plugins/input-mask/jquery.inputmask.extensions.js"></script>
 
 <script type="text/javascript">
+
+  $$(function() {
+    $$("#datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
+    $$("[data-mask]").inputmask();
+
+    $if rooms == 0:
+      $$('#parametrization-box').hide();
+      $$('#scheduler-box').hide();
+    $elif parametrization == 1:
+      $$('#parametrization-box').hide();
+    $else:
+      $$('#scheduler-box').hide();
+  });
+
+  var roomsNbr = new Slider('#roomsNbr', {
+    formatter: function(value) {
+      return value + " auditoires";
+    }
+  });
+
+  var schedulerTime = new Slider('#schedulerTime', {
+    formatter: function(value) {
+      return value + " min";
+    }
+  });
+
+  function parseDate(str){
+    var parts = str.split("/");
+    var dt = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+    return dt;
+  }
+
+  function schedulerDays(first, second) {
+    first.setMinutes(first.getMinutes() - first.getTimezoneOffset());
+    second.setMinutes(second.getMinutes() - second.getTimezoneOffset());
+    return Math.round((second-first)/(1000*60*60*24)) + 1;
+  }
+
+  function parametrization() {
+    var roomsNbr = document.getElementById('roomsNbr').value;
+    var day_1 = document.getElementById('day1').value;
+    var day_2 = document.getElementById('day2').value;
+    var day_3 = document.getElementById('day3').value;
+    if (roomsNbr==0 || day_1==null || day_1=="" || day_2==null || day_2=="" || day_3==null || day_3==""){
+      alert("Veuillez remplir tous les champs correctement");
+      return false;
+    }
+    var d1 = parseDate(day_1);
+    var d2 = parseDate(day_2);
+    var d3 = parseDate(day_3);
+    if (!(d1 < d2 && d2 < d3 && d1 < d3)){
+      alert("Veuillez remplir les dates dans le bon ordre");
+      return false;
+    }
+    if(schedulerDays(d1, d3) > 7){
+      alert("Veuillez entrez les dates sur 1 semaine maximum");
+      return false;
+    }
+    $$.ajax({
+      url: "parametrization",
+      type : 'POST',
+      data: {rooms: roomsNbr, day1: day_1, day2: day_2, day3: day_3, reserve: document.getElementById('reserve').value}
+    }).done(function( msg ) {
+      $$('#parametrization-box').fadeOut(500).promise().done(function() {
+        $$('#scheduler-box').fadeIn(500);
+      });
+    });
+  }
+
+  function scheduler() {
+
+    var pleaseWait = $$('#pleaseWaitDialog');
+
+    var countdow = (document.getElementById('schedulerTime').value * 60)-1;
+    var x = setInterval(function() {
+      var minutes = Math.floor(countdow / 60);
+      var seconds = Math.floor(countdow % 60);
+      document.getElementById("messageTimeout").innerHTML = "Temps restant : " + minutes + " min " + seconds + " sec";
+      countdow -= 1;
+      if (countdow < 0) {
+        clearInterval(x);
+      }
+    },1000);
+
+    pleaseWait.modal({
+      backdrop: 'static',
+      keyboard: false
+    });
+
+    $$.ajax({
+      url: "executescheduler",
+      type : 'POST',
+      data: 'time=' + document.getElementById('schedulerTime').value
+    }).done(function( msg ) {
+      pleaseWait.modal('hide');
+    });
+  }
 
   function csvExport() {
     $$.ajax({

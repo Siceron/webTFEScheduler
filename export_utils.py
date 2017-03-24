@@ -3,6 +3,7 @@ import os
 import glob
 import csv
 import openpyxl
+import math
 
 def check_none(element):
     return '' if element is None else str(element)
@@ -31,9 +32,12 @@ def get_hour(session):
     else:
         return "16:45"
 
+def get_auditorium(session):
+    return Room.select()[math.floor(session/12)].title
+
 def export_data(path):
     rows = []
-    rows.append("Code;Titre;Etudiants;Promoteurs;Lecteurs;Mails;Modérateur;Commission;Jour;Heure")
+    rows.append("Code;Titre;Etudiants;Promoteurs;Lecteurs;Mails;Modérateur;Commission;Jour;Heure;Auditoire")
     for tfe in Tfe.select():
         emails = []
         students = []
@@ -49,7 +53,8 @@ def export_data(path):
             readers.append(rel.person.last_name+", "+rel.person.name)
             emails.append(rel.person.email)
         row = tfe.code+";"+tfe.title+";"+" - ".join(students)+";"+" - ".join(advisors)+";"+" - ".join(readers)+";"+\
-            " , ".join(emails)+";"+check_none(tfe.moderator)+";"+tfe.commission+";"+get_day(tfe.session)+";"+get_hour(tfe.session)
+            " , ".join(emails)+";"+check_none(tfe.moderator)+";"+tfe.commission+";"+get_day(tfe.session)+";"+get_hour(tfe.session)+";"+\
+            get_auditorium(tfe.session)
         rows.append(row)
     with open(path+"data.csv", 'w') as outfile:
         for row in rows:
