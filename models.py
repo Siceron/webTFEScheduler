@@ -106,6 +106,7 @@ class Tfe(SQLObject):
 	commission = StringCol(default="TBD", notNone=False)
 	moderator = StringCol(default=None)
 	log = TimestampCol(notNone=True, default=DateTimeCol.now)
+	conflict = BoolCol(default=False)
 
 class Tfe_rel_student(SQLObject):
 

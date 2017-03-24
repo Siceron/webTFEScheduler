@@ -47,7 +47,8 @@ urls = (
     '/get_conflicts', 'get_conflicts',
     '/parametrization', 'parametrization',
     '/csv_export', 'csv_export',
-    '/excel_export', 'excel_export'
+    '/excel_export', 'excel_export',
+    '/set_conflict', 'set_conflict'
 )
 
 def load_sqlo(handler=None):
@@ -287,7 +288,6 @@ class set_session:
         tfe = Tfe.select(Tfe.q.code == x.code)[0]
         tfe.session = int(x.session)
         tfe.log = datetime.now()
-        session.log = datetime.now()
         return "ok"
 
 class set_tfe:
@@ -468,6 +468,15 @@ class excel_export:
     def GET(self):
         export_data_excel("static/")
         return "ok"
+
+class set_conflict:
+    def POST(self):
+        x = web.input()
+        tfe = Tfe.select(Tfe.q.code == x.code)[0]
+        if x.conflict == "true":
+            tfe.conflict = True
+        else:
+            tfe.conflict = False
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
