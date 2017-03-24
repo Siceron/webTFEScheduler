@@ -9,16 +9,20 @@ def check_none(element):
 
 def get_day(session):
     modulo = session % 12
-    if modulo >= 0 and modulo <= 3:
+    if session == -1:
+        return "TBD"
+    elif modulo >= 0 and modulo <= 3:
         return str(Parametrization.select()[0].day_1)
     elif modulo >= 4 and modulo <= 7:
         return str(Parametrization.select()[0].day_2)
-    else:
+    elif modulo >= 8 and modulo <= 11:
         return str(Parametrization.select()[0].day_3)
 
 def get_hour(session):
     modulo = session % 12
-    if modulo == 0 or modulo == 4 or modulo == 8:
+    if session == -1:
+        return "TBD"
+    elif modulo == 0 or modulo == 4 or modulo == 8:
         return "8:30"
     elif modulo == 1 or modulo == 5 or modulo == 9:
         return "10:45"

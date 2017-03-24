@@ -29,6 +29,7 @@ urls = (
     '/auditoriums', 'auditoriums',
     '/executescheduler', 'executescheduler',
     '/show_tfe_details', 'show_tfe_details',
+    '/set_prevented', 'set_prevented',
     '/get_commission', 'get_commission',
     '/set_session', 'set_session',
     '/set_tfe', 'set_tfe',
@@ -176,7 +177,6 @@ class executescheduler:
             json.dump(create_input_json(), outfile, indent=4)
         proc = Popen(["java", "-jar", "scheduler/TFEScheduler.jar", "input.JSON", x.time], stdout=PIPE, stderr=STDOUT)
         proc.wait()
-        print("hello")
         for line in proc.stdout:
             print(line)
 
@@ -203,10 +203,27 @@ class executescheduler:
 
         return "ok"
 
+def is_in_conflicts(email, conflicts, sessionNbr):
+    result = False
+    if int(sessionNbr) == -1:
+        return False
+    for i in conflicts['not_disponible']:
+        if email == i['email']:
+            result = True
+            break
+    if result == False:
+        for i in conflicts['parallel']:
+            if email == i['email']:
+                result = True
+                break
+    return result
+
 class show_tfe_details:
     def POST(self):
         x = web.input()
         tfe = Tfe.select(Tfe.q.code==x.code)[0]
+
+        conflicts = get_conflicts_json(x.code, x.session)
 
         students_data = Tfe_rel_student.select(Tfe_rel_student.q.tfe==tfe)
         students = []
@@ -216,14 +233,25 @@ class show_tfe_details:
         advisors_data = Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.title=="Promoteur"))
         advisors = []
         for rel in advisors_data:
-            advisors.append(rel.person.email)
+            advisor = {
+                "email" : rel.person.email,
+                "prevented" : rel.prevented,
+                "readonly" : is_in_conflicts(rel.person.email, conflicts, x.session)
+            }
+            advisors.append(advisor)
 
         readers_data = Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.title=="Lecteur"))
         readers = []
         for rel in readers_data:
-            readers.append(rel.person.email)
+            reader = {
+                "email" : rel.person.email,
+                "prevented" : rel.prevented,
+                "readonly" : is_in_conflicts(rel.person.email, conflicts, x.session)
+            }
+            readers.append(reader)
 
         result = {
+            "code" : tfe.code,
             "title" : tfe.title,
             "students" : students,
             "advisors" : advisors,
@@ -231,6 +259,18 @@ class show_tfe_details:
             "moderator": tfe.moderator
         }
         return json.dumps(result)
+
+class set_prevented:
+    def POST(self):
+        x = web.input()
+        tfe = Tfe.select(Tfe.q.code==x.code)[0]
+        person = Person.select(Person.q.email==x.email)[0]
+        rel = Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.person==person))[0]
+        if x.check == "true":
+            rel.prevented = True
+        else:
+            rel.prevented = False
+        return "ok"
 
 class get_commission:
     def POST(self):
@@ -404,7 +444,7 @@ class is_up_to_date:
 class get_conflicts:
     def POST(self):
         x = web.input()
-        result = get_conflicts_json(x.code, x.session)
+        result = json.dumps(get_conflicts_json(x.code, x.session))
         return result
 
 class parametrization:

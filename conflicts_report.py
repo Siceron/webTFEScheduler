@@ -47,7 +47,11 @@ def not_disponible_json(code, session):
         if disponibility[session%12] == False:
             global is_conflicts
             is_conflicts = True
-            not_disponible_list.append(rel.person.email)
+            not_disponible = {
+                "email" : rel.person.email,
+                "prevented" : rel.prevented
+            }
+            not_disponible_list.append(not_disponible)
     return not_disponible_list
 
 def get_person_dictionnary(code):
@@ -76,7 +80,11 @@ def parallel_json(code, session, rooms):
             if session != (session%12)+(i*12) and (session%12)+(i*12) in person_dictionnary and rel.person.email in person_dictionnary[(session%12)+(i*12)]:
                 global is_conflicts
                 is_conflicts = True
-                parallel_list.append(rel.person.email)
+                parallel = {
+                    "email" : rel.person.email,
+                    "prevented" : rel.prevented
+                }
+                parallel_list.append(parallel)
                 break
     return parallel_list
 
@@ -93,4 +101,4 @@ def get_conflicts_json(code, session):
         "not_disponible": not_disponible,
         "parallel": parallel
     }
-    return json.dumps(result)
+    return result

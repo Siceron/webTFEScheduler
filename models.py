@@ -123,6 +123,7 @@ class Tfe_rel_person(SQLObject):
 	tfe = ForeignKey('Tfe')
 	person = ForeignKey('Person')
 	title = StringCol()
+	prevented = BoolCol(default=False)
 
 class Room(SQLObject):
 

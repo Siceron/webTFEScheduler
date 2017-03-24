@@ -86,12 +86,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       data : {code: code, session: session},
       async : false
     }).done(function( msg ){
-      is_conflict = msg.is_conflicts;
-      if(is_conflict){
-        if(msg.max_tfes)
-          $$("#max_tfe").show();
-        else
-          $$("#max_tfe").hide();
+      if(msg.is_conflicts){
 
         // not disp list
         $$("#not_disponible_label").show();
@@ -103,7 +98,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
           $$("#not_disponible_label").hide();
         for(var i=0 ; i<msg.not_disponible.length; i++){
           var li = document.createElement("li");
-          li.appendChild(document.createTextNode(msg.not_disponible[i]));
+          if(msg.not_disponible[i].prevented)
+            li.appendChild(document.createTextNode(msg.not_disponible[i].email+" (empêché)"));
+          else{
+            li.appendChild(document.createTextNode(msg.not_disponible[i].email));
+            is_conflict = true;
+          }
           li.setAttribute("class", "list-group-item");
           ul.appendChild(li);
         }
@@ -118,10 +118,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
           $$("#parallel_label").hide();
         for(var i=0 ; i<msg.parallel.length; i++){
           var li = document.createElement("li");
-          li.appendChild(document.createTextNode(msg.parallel[i]));
+          if(msg.parallel[i].prevented)
+            li.appendChild(document.createTextNode(msg.parallel[i].email+" (empêché)"));
+          else{
+            li.appendChild(document.createTextNode(msg.parallel[i].email));
+            is_conflict = true;
+          }
           li.setAttribute("class", "list-group-item");
           ul.appendChild(li);
         }
+
+        if(msg.max_tfes){
+          $$("#max_tfe").show();
+          is_conflict = true;
+        }
+        else
+          $$("#max_tfe").hide();
 
         $$('#conflicts').modal('show');
       }
@@ -143,6 +155,86 @@ scratch. This page gets rid of all links and provides the needed markup only.
     colors["MAP"] = "#FF8000";
     colors["MECA"] = "#D7DF01";
     colors["TBD"] = "#FF0000";
+
+    var tfeDetailsJson;
+
+    function showDetailsModal(code, session){
+      $$.ajax({
+          url : 'show_tfe_details',
+          type : 'POST',
+          data : {code: code, session: session},
+          dataType : 'json'
+        }).done(function( msg ) {
+          tfeDetailsJson = msg;
+          document.getElementById("modalTitle").innerHTML=code+" : "+msg.title;
+
+          // student list
+          var ul = document.getElementById("studentList");
+          while (ul.lastChild) {
+            ul.removeChild(ul.lastChild);
+          }
+          for(var i=0 ; i<msg.students.length; i++){
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(msg.students[i]));
+            li.setAttribute("class", "list-group-item");
+            ul.appendChild(li);
+          }
+
+          // advisor list
+          var ul = document.getElementById("advisorList");
+          while (ul.lastChild) {
+            ul.removeChild(ul.lastChild);
+          }
+          for(var i=0 ; i<msg.advisors.length; i++){
+            var li = document.createElement("li");
+            var checkbox = document.createElement('input');
+            checkbox.type = "checkbox";
+            checkbox.value = 1;
+            checkbox.id = msg.advisors[i].email;
+            checkbox.checked = msg.advisors[i].prevented;
+            if(msg.advisors[i].readonly)
+              checkbox.disabled="disabled";
+            li.appendChild(checkbox);
+            li.appendChild(document.createTextNode(" "+msg.advisors[i].email));
+            li.setAttribute("class", "list-group-item");
+            ul.appendChild(li);
+          }
+
+          // reader list
+          var ul = document.getElementById("readerList");
+          while (ul.lastChild) {
+            ul.removeChild(ul.lastChild);
+          }
+          for(var i=0 ; i<msg.readers.length; i++){
+            var li = document.createElement("li");
+            var checkbox = document.createElement('input');
+            checkbox.type = "checkbox";
+            checkbox.value = 1;
+            checkbox.id = msg.readers[i].email;
+            checkbox.checked = msg.readers[i].prevented;
+            if(msg.readers[i].readonly)
+              checkbox.disabled="disabled";
+            li.appendChild(checkbox);
+            li.appendChild(document.createTextNode(" "+msg.readers[i].email));
+            li.setAttribute("class", "list-group-item");
+            ul.appendChild(li);
+          }
+
+          // moderator
+          var ul = document.getElementById("moderatorList");
+          while (ul.lastChild) {
+            ul.removeChild(ul.lastChild);
+          }
+          if(msg.moderator != null){
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(msg.moderator));
+            li.setAttribute("class", "list-group-item");
+            ul.appendChild(li);
+          }
+        });
+
+        $$('#tfeDetails').modal('show');
+    }
 
     /* initialize the external events
     -----------------------------------------------------------------*/
@@ -168,6 +260,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
           left: Math.floor($$(this).width() / 2),
           top: Math.floor($$(this).height() / 2)
         }
+      });
+
+      $$(this).click(function(){
+        if ( $$(this).is('.ui-draggable-dragging') ) {
+          return;
+        }
+        showDetailsModal($$.trim($$(this).text()), -1);
       });
 
       $$(this).css("background-color", colors[commission]);
@@ -301,66 +400,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
       events: eventlist,
       eventClick: function(event, element) {
 
-        $$.ajax({
-          url : 'show_tfe_details',
-          type : 'POST',
-          data : 'code=' + event.title,
-          dataType : 'json'
-        }).done(function( msg ) {
-          document.getElementById("modalTitle").innerHTML=event.title+" : "+msg.title;
+        var session = -1;
+        for(var i=0; i<12; i++){
+          if(event.start._d.getTime() == Date.parse(tab[i][0])){
+            session = i+(12*event.resourceId);
+            break;
+          }
+        }
 
-          // student list
-          var ul = document.getElementById("studentList");
-          while (ul.lastChild) {
-            ul.removeChild(ul.lastChild);
-          }
-          for(var i=0 ; i<msg.students.length; i++){
-            var li = document.createElement("li");
-            li.appendChild(document.createTextNode(msg.students[i]));
-            li.setAttribute("class", "list-group-item");
-            ul.appendChild(li);
-          }
-
-          // advisor list
-          var ul = document.getElementById("advisorList");
-          while (ul.lastChild) {
-            ul.removeChild(ul.lastChild);
-          }
-          for(var i=0 ; i<msg.advisors.length; i++){
-            var li = document.createElement("li");
-            li.appendChild(document.createTextNode(msg.advisors[i]));
-            li.setAttribute("class", "list-group-item");
-            ul.appendChild(li);
-          }
-
-          // reader list
-          var ul = document.getElementById("readerList");
-          while (ul.lastChild) {
-            ul.removeChild(ul.lastChild);
-          }
-          for(var i=0 ; i<msg.readers.length; i++){
-            var li = document.createElement("li");
-            li.appendChild(document.createTextNode(msg.readers[i]));
-            li.setAttribute("class", "list-group-item");
-            ul.appendChild(li);
-          }
-
-          // moderator
-          var ul = document.getElementById("moderatorList");
-          while (ul.lastChild) {
-            ul.removeChild(ul.lastChild);
-          }
-          if(msg.moderator != null){
-            var li = document.createElement("li");
-            li.appendChild(document.createTextNode(msg.moderator));
-            li.setAttribute("class", "list-group-item");
-            ul.appendChild(li);
-          }
-        });
-
-        $$('#tfeDetails').modal('show');
-
-        $$('#calendar').fullCalendar('updateEvent',event);
+        showDetailsModal(event.title, session);
       },
       drop: function(date, jsEvent, ui, resourceId) {
         console.log('drop', date.format(), resourceId);
@@ -384,6 +432,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   top: Math.floor($$(this).height() / 2)
                 }
               });
+              el.click(function(){
+                if ( el.is('.ui-draggable-dragging') ) {
+                  return;
+                }
+                showDetailsModal(event.title, -1);
+              });
               $$.ajax({
                 url : 'get_commission',
                 type : 'POST',
@@ -393,7 +447,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 el.css("background-color", colors[msg]);
               });
               console.log('eventDrop', event);
-              console.log(-1);
               setSession(event.title, -1);
             }
           }
@@ -417,6 +470,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
               revert: true, 
               revertDuration: 0,
               helper: 'clone'
+            });
+            el.click(function(){
+              if ( el.is('.ui-draggable-dragging') ) {
+                return;
+              }
+              showDetailsModal(event.title, -1);
             });
             $$.ajax({
               url : 'get_commission',
@@ -493,6 +552,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
           && y <= offset .bottom) { return true; }
       return false;
     }
+
+    $$('#save-details').click( function () {
+      for(var i=0 ; i<tfeDetailsJson.advisors.length; i++){
+        var isChecked = document.getElementById(tfeDetailsJson.advisors[i].email).checked;
+        $$.ajax({
+          url : 'set_prevented',
+          type : 'POST',
+          data : {code: tfeDetailsJson.code, email: tfeDetailsJson.advisors[i].email, check: isChecked}
+        });
+      }
+      for(var i=0 ; i<tfeDetailsJson.readers.length; i++){
+        var isChecked = document.getElementById(tfeDetailsJson.readers[i].email).checked;
+        $$.ajax({
+          url : 'set_prevented',
+          type : 'POST',
+          data : {code: tfeDetailsJson.code, email: tfeDetailsJson.readers[i].email, check: isChecked}
+        });
+      }
+      $$('#tfeDetails').modal('hide');
+    });
 
   });
 
@@ -694,13 +773,13 @@ desired effect
                 <h4 class="modal-title" id="modalTitle">Détails TFE</h4>
               </div>
               <div class="modal-body">
-                <p>Etudiants :</p>
+                <p>Etudiants (email):</p>
                 <ul class="list-group" id="studentList">
                 </ul>
-                <p>Promoteurs :</p>
+                <p>Promoteurs (empêché - email):</p>
                 <ul class="list-group" id="advisorList">
                 </ul>
-                <p>Lecteurs :</p>
+                <p>Lecteurs (empêché - email):</p>
                 <ul class="list-group" id="readerList">
                 </ul>
                 <p>Modérateur :</p>
@@ -709,6 +788,7 @@ desired effect
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" id="save-details">Save</button>
               </div>
             </div><!-- /.modal-content -->
           </div><!-- /.modal-dialog -->

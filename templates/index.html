@@ -370,7 +370,10 @@ desired effect
     $$("#datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
     $$("[data-mask]").inputmask();
 
-    $if parametrization == 1:
+    $if rooms == 0:
+      $$('#parametrization-box').hide();
+      $$('#scheduler-box').hide();
+    $elif parametrization == 1:
       $$('#parametrization-box').hide();
     $else:
       $$('#scheduler-box').hide();
