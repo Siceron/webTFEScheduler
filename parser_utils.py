@@ -44,7 +44,16 @@ def populate_db(input):
                 if row[3] != "" and row[4] != "":
                     #mails = row[20].split(" , ")
                     if Tfe.select(Tfe.q.code == row[0]).count() == 0:
-                        memoire = Tfe(code=row[0], title=row[1])
+                        confidential = False
+                        cpme = False
+                        open_hub = False
+                        if row[5] == "y":
+                            confidential = True
+                        if row[6] == "y":
+                            cpme = True
+                        if row[7] == "y":
+                            open_hub = True
+                        memoire = Tfe(code=row[0], title=row[1], confidential=confidential, cpme=cpme, open_hub=open_hub)
                         emails = row[20].split(" , ")
                         email_count = 0
                         for etu in row[2].split(" - "):

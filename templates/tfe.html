@@ -191,6 +191,9 @@ desired effect
                   <th>Promoteurs</th>
                   <th>Lecteurs</th>
                   <th>Titre</th>
+                  <th>Confidentiel</th>
+                  <th>CPME</th>
+                  <th>OpenHub</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -224,6 +227,9 @@ desired effect
                     <td>$tfe['advisors']</td>
                     <td>$tfe['readers']</td>
                     <td>$tfe['title']</td>
+                    <td>$tfe['confidential']</td>
+                    <td>$tfe['cpme']</td>
+                    <td>$tfe['open_hub']</td>
                   </tr>
                 </tbody>
                 <tfoot>
@@ -235,6 +241,9 @@ desired effect
                   <th>Promoteurs</th>
                   <th>Lecteurs</th>
                   <th>Titre</th>
+                  <th>Confidentiel</th>
+                  <th>CPME</th>
+                  <th>OpenHub</th>
                 </tr>
                 </tfoot>
               </table>
@@ -324,6 +333,18 @@ desired effect
               <option>MAP</option>
               <option>MECA</option>
             </select>
+          </div>
+          <div class="form-group">
+            <label for="confidential">Confidentiel</label>
+            <input type="checkbox" id="confidential" name="confidential">
+          </div>
+          <div class="form-group">
+            <label for="cpme">CPME</label>
+            <input type="checkbox" id="cpme" name="cpme">
+          </div>
+          <div class="form-group">
+            <label for="open-hub">OpenHub</label>
+            <input type="checkbox" id="open-hub" name="openhub">
           </div>
         </div>
         <div class="modal-footer">
@@ -437,7 +458,10 @@ desired effect
       document.getElementById('code').readOnly = false;
       document.getElementById("title").value = "";
       document.getElementById("moderator").value = "";
-      document.getElementById("commission").value = "";
+      document.getElementById("commission").value = "TBD";
+      document.getElementById("confidential").checked = false;
+      document.getElementById("cpme").checked = false;
+      document.getElementById("open-hub").checked = false;
       $$('#tfeModal').modal("show");
     });
 
@@ -459,6 +483,9 @@ desired effect
         document.getElementById("title").value = data[6];
         document.getElementById("moderator").value = data[2];
         document.getElementById("commission").value = data[1];
+        document.getElementById("confidential").checked = (data[7] == "True");
+        document.getElementById("cpme").checked = (data[8] == "True");
+        document.getElementById("open-hub").checked = (data[9] == "True");
         $$('#tfeModal').modal("show");
       }
     });

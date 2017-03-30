@@ -274,7 +274,7 @@ desired effect
             <div class="box-body" id="scheduler-body">
               <div>
               <label id="time-label"> Temps :</label>
-              <input class="slider slider-horizontal" id="schedulerTime" data-slider-id="red" type="text" data-slider-min="1" data-slider-max="60" data-slider-step="1" data-slider-value="1"/>
+              <input class="slider slider-horizontal" id="schedulerTime" data-slider-id="red" type="text" data-slider-min="1" data-slider-max="1440" data-slider-step="1" data-slider-value="1"/>
               </div>
                 <div class="modal fade" id="pleaseWaitDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
@@ -387,7 +387,10 @@ desired effect
 
   var schedulerTime = new Slider('#schedulerTime', {
     formatter: function(value) {
-      return value + " min";
+      if(Math.floor(value/60) < 1)
+        return value % 60 + "min";
+      else
+        return Math.floor(value/60) + "h" + value % 60;
     }
   });
 

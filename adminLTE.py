@@ -296,12 +296,16 @@ class set_tfe:
         x = web.input()
         if x.code.strip() != "" and x.title.strip() != "":
             if Tfe.select(Tfe.q.code == x.code).count() == 0:
-                Tfe(code=x.code, title=x.title, commission=x.commission, moderator=x.moderator)
+                Tfe(code=x.code, title=x.title, commission=x.commission, moderator=x.moderator, \
+                    confidential=isChecked(x, 'confidential'), cpme=isChecked(x, 'cpme'), open_hub=isChecked(x, 'openhub'))
             else:
                 tfe = Tfe.select(Tfe.q.code == x.code)[0]
                 tfe.title = x.title
                 tfe.commission = x.commission
                 tfe.moderator = x.moderator
+                tfe.confidential = isChecked(x, 'confidential')
+                tfe.cpme = isChecked(x, 'cpme')
+                tfe.open_hub = isChecked(x, 'openhub')
         raise web.seeother('/tfe')
 
 class delete_tfe:

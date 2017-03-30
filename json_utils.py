@@ -99,6 +99,9 @@ def tfes_full_json():
             "title" : tfe.title,
             "moderator" : tfe.moderator,
             "commission" : tfe.commission,
+            "confidential" : tfe.confidential,
+            "cpme" : tfe.cpme,
+            "open_hub" : tfe.open_hub,
             "students" : "\n".join(students),
             "advisors" : "\n".join(advisors),
             "readers" : "\n".join(readers)

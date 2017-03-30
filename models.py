@@ -107,6 +107,9 @@ class Tfe(SQLObject):
 	moderator = StringCol(default=None)
 	log = TimestampCol(notNone=True, default=DateTimeCol.now)
 	conflict = BoolCol(default=False)
+	confidential = BoolCol(default=False)
+	cpme = BoolCol(default=False)
+	open_hub = BoolCol(default=False)
 
 class Tfe_rel_student(SQLObject):
 

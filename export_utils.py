@@ -37,7 +37,7 @@ def get_auditorium(session):
 
 def export_data(path):
     rows = []
-    rows.append("Code;Titre;Etudiants;Promoteurs;Lecteurs;Mails;Modérateur;Commission;Jour;Heure;Auditoire")
+    rows.append("Code;Titre;Etudiants;Promoteurs;Lecteurs;Mails;Modérateur;Commission;Jour;Heure;Auditoire;Confidentiel;CPME;OpenHub")
     for tfe in Tfe.select():
         emails = []
         students = []
@@ -54,7 +54,7 @@ def export_data(path):
             emails.append(rel.person.email)
         row = tfe.code+";"+tfe.title+";"+" - ".join(students)+";"+" - ".join(advisors)+";"+" - ".join(readers)+";"+\
             " , ".join(emails)+";"+check_none(tfe.moderator)+";"+tfe.commission+";"+get_day(tfe.session)+";"+get_hour(tfe.session)+";"+\
-            get_auditorium(tfe.session)
+            get_auditorium(tfe.session)+";"+str(tfe.confidential)+";"+str(tfe.cpme)+";"+str(tfe.open_hub)
         rows.append(row)
     with open(path+"data.csv", 'w') as outfile:
         for row in rows:
