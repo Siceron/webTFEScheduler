@@ -89,7 +89,7 @@ class login:
             session.log = datetime.now()
             raise web.seeother('/index')   
         else:
-            return "Those login details don't work."
+            return render.message("Ces logins sont erronés")
 
 class index:
 
@@ -100,9 +100,11 @@ class index:
                 tfe_nbr = Tfe.select().count()
                 rooms = math.ceil(tfe_nbr/(3*12))
                 parametrization = Parametrization.select().count()
-                return render.index_admin(rooms, parametrization)
+                username = session.get('username', False)
+                return render.index_admin(rooms, parametrization, username)
             else:
-                return render.index()
+                username = session.get('username', False)
+                return render.index(username)
         else:
            raise web.seeother('/')
 
@@ -120,9 +122,10 @@ class scheduler:
                 session.log = datetime.now()
                 parametrization = Parametrization.select()[0]
                 auditoriums = Room.select()
-                return render.scheduler(tfes, parametrization, auditoriums)
+                username = session.get('username', False)
+                return render.scheduler(tfes, parametrization, auditoriums, username)
             else:
-                raise web.seeother('/index')
+                return render.message("Veuillez attendre qu'un admin entre la parametrisation")
         else:
            raise web.seeother('/')
 
@@ -130,7 +133,8 @@ class tfe:
     def GET(self):
         if session.get('username', False):
             tfes = tfes_full_json()
-            return render.tfe(tfes)
+            username = session.get('username', False)
+            return render.tfe(tfes, username)
         else:
            raise web.seeother('/')
 
@@ -139,7 +143,8 @@ class student:
         if session.get('username', False):
             tfes = Tfe.select(orderBy="code")
             students = Student.select()
-            return render.student(students, tfes)
+            username = session.get('username', False)
+            return render.student(students, tfes, username)
         else:
            raise web.seeother('/')
 
@@ -149,8 +154,13 @@ class person:
             tfes = Tfe.select(orderBy="code")
             persons = Person.select()
             rels = Tfe_rel_person.select()
-            parametrization = Parametrization.select()[0]
-            return render.person(persons, rels, tfes, parametrization)
+            username = session.get('username', False)
+            if Parametrization.select().count() == 0:
+                parametrization = 0
+                return render.person(persons, rels, tfes, parametrization, username)
+            else:
+                parametrization = Parametrization.select()[0]
+                return render.person(persons, rels, tfes, parametrization, username)
         else:
            raise web.seeother('/')
 
@@ -158,7 +168,8 @@ class auditoriums:
     def GET(self):
         if session.get('username', False):
             auditoriums = Room.select()
-            return render.auditoriums(auditoriums)
+            username = session.get('username', False)
+            return render.auditoriums(auditoriums, username)
         else:
            raise web.seeother('/')
 

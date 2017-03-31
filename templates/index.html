@@ -1,3 +1,4 @@
+$def with (username)
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -84,7 +85,7 @@ desired effect
               <!-- The user image in the navbar-->
               <img src="static/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
-              <span class="hidden-xs">Secrétaire 2</span>
+              <span class="hidden-xs">$username</span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
@@ -92,24 +93,16 @@ desired effect
                 <img src="static/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                 <p>
-                  Secrétaire 2 - Secrétaire
-                  <small>Member since Nov. 2012</small>
+                  $username
                 </p>
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profil</a>
-                </div>
-                <div class="pull-right">
+                <div class="text-center">
                   <a href="/logout" class="btn btn-default btn-flat">Se déconnecter</a>
                 </div>
               </li>
             </ul>
-          </li>
-          <!-- Control Sidebar Toggle Button -->
-          <li>
-            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
           </li>
         </ul>
       </div>
@@ -141,17 +134,7 @@ desired effect
             <li><a href="auditoriums"><i class="fa fa-circle-o"></i>Auditoires</a></li>
           </ul>
         </li>
-        <li class="treeview">
-          <a href="#"><i class="fa fa-calendar"></i> <span>Scheduler</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <!-- <li><a href="#"><i class="fa fa-circle-o"></i>My schedule</a></li> -->
-            <li><a href="scheduler"><i class="fa fa-circle-o"></i>General scheduler</a></li>
-          </ul>
-        </li>
+        <li><a href="scheduler"><i class="fa fa-calendar"></i> <span>Scheduler</span></a></li>
       </ul>
       <!-- /.sidebar-menu -->
     </section>
@@ -164,7 +147,7 @@ desired effect
     <section class="content-header">
       <h1>
         Dashboard
-        <small>Control Panel</small>
+        <small>Panel de contrôle</small>
       </h1>
       <!-- 
       <ol class="breadcrumb">
@@ -209,37 +192,11 @@ desired effect
   <footer class="main-footer">
     <!-- To the right -->
     <div class="pull-right hidden-xs">
-      Version 0.1
+      Version 1.0
     </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; 2016 <a href="http://www.uclouvain.be">UCL</a>.</strong> All rights reserved.
   </footer>
-
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <form method="post">
-        <h3 class="control-sidebar-heading">General Settings</h3>
-
-        <div class="form-group">
-          <label class="control-sidebar-subheading">
-            Report panel usage
-            <input type="checkbox" class="pull-right" checked>
-          </label>
-
-          <p>
-            Some information about this general settings option
-          </p>
-        </div>
-        <!-- /.form-group -->
-      </form>
-    </div>
-  </aside>
-  <!-- /.control-sidebar -->
-  <!-- Add the sidebar's background. This div must be placed
-       immediately after the control sidebar -->
-  <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
 
