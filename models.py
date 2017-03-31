@@ -62,18 +62,18 @@ class Disponibility(SQLObject):
 	class sqlmeta:
 		table = 'disponibility'
 
-	session_0 = BoolCol(default=False)
-	session_1 = BoolCol(default=False)
-	session_2 = BoolCol(default=False)
-	session_3 = BoolCol(default=False)
-	session_4 = BoolCol(default=False)
-	session_5 = BoolCol(default=False)
-	session_6 = BoolCol(default=False)
-	session_7 = BoolCol(default=False)
-	session_8 = BoolCol(default=False)
-	session_9 = BoolCol(default=False)
-	session_10 = BoolCol(default=False)
-	session_11 = BoolCol(default=False)
+	session_0 = BoolCol(default=True)
+	session_1 = BoolCol(default=True)
+	session_2 = BoolCol(default=True)
+	session_3 = BoolCol(default=True)
+	session_4 = BoolCol(default=True)
+	session_5 = BoolCol(default=True)
+	session_6 = BoolCol(default=True)
+	session_7 = BoolCol(default=True)
+	session_8 = BoolCol(default=True)
+	session_9 = BoolCol(default=True)
+	session_10 = BoolCol(default=True)
+	session_11 = BoolCol(default=True)
 
 class Student(SQLObject):
 
@@ -141,9 +141,8 @@ if __name__ == "__main__":
 	User.createTable()
 	Sessions.dropTable(ifExists=True)
 	Sessions.createTable()
-	pwdhash = hashlib.md5("pass".encode('utf-8')).hexdigest()
+	pwdhash = hashlib.md5("Efj4Snf76g2DG".encode('utf-8')).hexdigest()
 	user = User(email="admin@a.com", password=pwdhash, permission=1)
-	user = User(email="test@a.com", password=pwdhash)
 	Disponibility.dropTable(ifExists=True)
 	Disponibility.createTable()
 	Student.dropTable(ifExists=True)
