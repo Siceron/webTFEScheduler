@@ -195,6 +195,7 @@ desired effect
               <button class="btn btn-primary" onclick="csvExport()">CSV</button>
               <button class="btn btn-primary" onclick="excelExport()">EXCEL</button>
               <button class="btn btn-primary" onclick="createUser()">Ajout utilisateur</button>
+              <button class="btn btn-primary" onclick="resetDb()">Reset db</button>
             </div>
           </div>
           <!-- /.box -->
@@ -483,6 +484,17 @@ desired effect
     document.getElementById("password").value = "";
     document.getElementById("permission").value = "0";
     $$('#userModal').modal("show");
+  }
+
+  function resetDb() {
+    if(confirm("Voulez-vous vraiment écraser la db ?")){
+      $$.ajax({
+        url: "reset_db",
+        type : 'GET'
+      }).done(function( msg ) {
+        location.reload();
+      });
+    }
   }
 </script>
 

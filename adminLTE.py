@@ -49,7 +49,8 @@ urls = (
     '/csv_export', 'csv_export',
     '/excel_export', 'excel_export',
     '/set_conflict', 'set_conflict',
-    '/set_user', 'set_user'
+    '/set_user', 'set_user',
+    '/reset_db', 'reset_db'
 )
 
 def load_sqlo(handler=None):
@@ -501,6 +502,28 @@ class set_user:
         if User.select(User.q.email==x.email).count() == 0:
             pwdhash = hashlib.md5(x.password.encode('utf-8')).hexdigest()
             User(email=x.email, password=pwdhash, permission=int(x.permission))
+
+class reset_db:
+    def GET(self):
+        Sessions.dropTable(ifExists=True)
+        Sessions.createTable()
+        Disponibility.dropTable(ifExists=True)
+        Disponibility.createTable()
+        Student.dropTable(ifExists=True)
+        Student.createTable()
+        Person.dropTable(ifExists=True)
+        Person.createTable()
+        Tfe.dropTable(ifExists=True)
+        Tfe.createTable()
+        Tfe_rel_student.dropTable(ifExists=True)
+        Tfe_rel_student.createTable()
+        Tfe_rel_person.dropTable(ifExists=True)
+        Tfe_rel_person.createTable()
+        Room.dropTable(ifExists=True)
+        Room.createTable()
+        Parametrization.dropTable(ifExists=True)
+        Parametrization.createTable()
+        return "ok"
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
