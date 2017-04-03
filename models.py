@@ -8,7 +8,7 @@ class User(SQLObject):
 	class sqlmeta:
 		table = 'user'
 
-	email = StringCol()
+	email = StringCol(unique=True)
 	password = StringCol()
 	permission = IntCol(default=0)
 

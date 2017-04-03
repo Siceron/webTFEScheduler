@@ -502,6 +502,8 @@ class set_user:
         if User.select(User.q.email==x.email).count() == 0:
             pwdhash = hashlib.md5(x.password.encode('utf-8')).hexdigest()
             User(email=x.email, password=pwdhash, permission=int(x.permission))
+        raise web.seeother('/index')
+
 
 class reset_db:
     def GET(self):
