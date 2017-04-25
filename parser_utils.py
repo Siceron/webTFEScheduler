@@ -2,6 +2,7 @@ import csv
 import os
 from random import randint
 from models import *
+import re
 
 def get_rand_bool():
     if(randint(0,3) == 0):
@@ -32,16 +33,16 @@ def populate_db(input):
 
     """ Read csv file """
     header = True
-    f = open(filedir +'/'+ filename, 'rt') # opens the csv file
-    try:
-        reader = csv.reader(f, delimiter=';')  # creates the reader object
-        for row in reader:   # iterates the rows of the file in orders
-            if header:
-                if (row[0] != "Code" or row[1] != "Titre" or row[2] != "Etudiants" or row[3] != "Promoteurs" or row[4] != "Lecteurs" or row[20] != "Mails"):
-                    return "Erreur : Mauvais fichier"
-                header = False
-            else:
-                if row[3] != "" and row[4] != "":
+    with open(filedir +'/'+ filename, 'rt') as f: # opens the csv file
+        try:
+            reader = csv.reader(f, delimiter=';')  # creates the reader object
+            missing_count = 0
+            for row in reader:   # iterates the rows of the file in orders
+                if header:
+                    if (row[0] != "Code" or row[1] != "Titre" or row[2] != "Etudiants" or row[3] != "Promoteurs" or row[4] != "Lecteurs" or row[20] != "Mails"):
+                        return "Erreur : Mauvais fichier"
+                    header = False
+                else:
                     #mails = row[20].split(" , ")
                     if Tfe.select(Tfe.q.code == row[0]).count() == 0:
                         confidential = False
@@ -65,21 +66,47 @@ def populate_db(input):
                                 etudiant = Student(email=emails[email_count], last_name=etu_name[0],name=firstname, faculty=fac)
                                 tfe_rel_student = Tfe_rel_student(tfe=memoire, student=etudiant)
                             email_count += 1
-                        for prom in row[3].split(" - "):
-                            prom_name = prom.split(", ")
-                            if Person.select(Person.q.email == emails[email_count]).count() == 0:
-                                if random_disp==True:
-                                    person = Person(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=get_rand_disp())
-                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")   
-                                else:
-                                    person = Person(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=Disponibility())
-                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")
+                        if row[3] == "":
+                            if random_disp==True:
+                                person = Person(email="missing"+str(missing_count)+"@missing.com", last_name="missing",name="missing", disponibility=get_rand_disp())
+                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")
                             else:
-                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=Person.select(Person.q.email == emails[email_count])[0], title="Promoteur")
-                            email_count += 1
-                        for lect in row[4].split(" - "):
-                            lect_name = lect.split(", ")
-                            if len(lect_name) == 2:
+                                person = Person(email="missing"+str(missing_count)+"@missing.com", last_name="missing",name="missing", disponibility=Disponibility())
+                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")
+                            missing_count += 1
+                        else:
+                            for prom in re.sub(r'\([^)]*\)', '', row[3]).split(" - "):
+                                prom_name = prom.split(", ")
+                                if Person.select(Person.q.email == emails[email_count]).count() == 0:
+                                    if len(prom_name) == 2:
+                                        if random_disp==True:
+                                            person = Person(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=get_rand_disp())
+                                            tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")   
+                                        else:
+                                            person = Person(email=emails[email_count], last_name=prom_name[0],name=prom_name[1], disponibility=Disponibility())
+                                            tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")
+                                    else:
+                                        prom_name = re.sub(r'\([^)]*\)', '', prom).split(" ")
+                                        if random_disp==True:
+                                            person = Person(email=emails[email_count], last_name=" ".join(prom_name[1:]),name=prom_name[0], disponibility=get_rand_disp())
+                                            tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")   
+                                        else:
+                                            person = Person(email=emails[email_count], last_name=" ".join(prom_name[1:]),name=prom_name[0], disponibility=Disponibility())
+                                            tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")
+                                else:
+                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=Person.select(Person.q.email == emails[email_count])[0], title="Promoteur")
+                                email_count += 1
+                        if row[4] == "":
+                            if random_disp==True:
+                                person = Person(email="missing"+str(missing_count)+"@missing.com", last_name="missing",name="missing", disponibility=get_rand_disp())
+                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
+                            else:
+                                person = Person(email="missing"+str(missing_count)+"@missing.com", last_name="missing",name="missing", disponibility=Disponibility())
+                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
+                            missing_count += 1
+                        else:
+                            for lect in re.sub(r'\([^)]*\)', '', row[4]).split(" - "):
+                                lect_name = lect.split(", ")
                                 if Person.select(Person.q.email == emails[email_count]).count() == 0:
                                     if len(lect_name) == 2:
                                         lect_descr = lect_name[1].split(' ')
@@ -92,16 +119,13 @@ def populate_db(input):
                                         email_count += 1
                                     else:
                                         lect_name = lect.split(' ')
-                                        if len(lect_name) == 4 or len(lect_name) == 3:
-                                            if random_disp==True:
-                                                person = Person(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=get_rand_disp())
-                                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
-                                            else:
-                                                person = Person(email=emails[email_count], last_name=lect_name[2],name=lect_name[1], disponibility=Disponibility())
-                                                tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
-                                            email_count += 1
+                                        if random_disp==True:
+                                            person = Person(email=emails[email_count], last_name=" ".join(lect_name[1:]),name=lect_name[0], disponibility=get_rand_disp())
+                                            tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
                                         else:
-                                            print("discarded : "+row[0])
+                                            person = Person(email=emails[email_count], last_name=" ".join(lect_name[1:]),name=lect_name[0], disponibility=Disponibility())
+                                            tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
+                                        email_count += 1
                                 else:
                                     tfe_rel_person = Tfe_rel_person(tfe=memoire, person=Person.select(Person.q.email == emails[email_count])[0], title="Lecteur")
                                     email_count += 1
@@ -122,13 +146,11 @@ def populate_db(input):
                         print(row[18])
                         print(row[19])
                         print(row[20])"""
-                else:
-                    print("discarded : "+row[0])
-    except:
-        return "Erreur : Mauvais fichier"
-    finally:
-        f.close()      # closing
-        os.remove(filedir +'/'+ filename)
+        except:
+            return "Erreur : Mauvais fichier"
+        finally:
+            f.close()      # closing
+            os.remove(filedir +'/'+ filename)
 
 
 
