@@ -96,6 +96,7 @@ class login:
 class index:
 
     def GET(self):
+        f=''
         if session.get('username', False):
             user = User.select(User.q.email == session.get('username', False))[0]
             if(user.permission == 1):
@@ -103,7 +104,7 @@ class index:
                 rooms = math.ceil(tfe_nbr/(3*12))
                 parametrization = Parametrization.select().count()
                 username = session.get('username', False)
-                return render.index_admin(rooms, parametrization, username)
+                return render.index_admin(rooms, parametrization, username,f)
             else:
                 username = session.get('username', False)
                 return render.index(username)
@@ -112,12 +113,26 @@ class index:
 
     def POST(self):
         """ Store csv file """
+        f=''
         x = web.input(myfile={},availabiltyfile = {})
         if x.get('myfile') != {}:
             populate_db(x)
         else:
-            csv_availabalities_to_db(x)
-        raise web.seeother('/index')
+            f = csv_availabalities_to_db(x)
+
+        if session.get('username', False):
+            user = User.select(User.q.email == session.get('username', False))[0]
+            if(user.permission == 1):
+                tfe_nbr = Tfe.select().count()
+                rooms = math.ceil(tfe_nbr/(3*12))
+                parametrization = Parametrization.select().count()
+                username = session.get('username', False)
+                return render.index_admin(rooms, parametrization, username,f)
+            else:
+                username = session.get('username', False)
+                return render.index(username)
+        else:
+           raise web.seeother('/')
 
 class scheduler:
     def GET(self):
