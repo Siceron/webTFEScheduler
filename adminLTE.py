@@ -214,6 +214,7 @@ class executescheduler:
         set_commission(data_commission, "GBIO")
         set_commission(data_commission, "FYAP")
         set_commission(data_commission, "KIMA")
+        set_commission(data_commission, "NANO")
         set_commission(data_commission, "GCE")
         set_commission(data_commission, "INFO")
         set_commission(data_commission, "SINF")
