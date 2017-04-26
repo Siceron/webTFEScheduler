@@ -184,6 +184,27 @@ desired effect
               </div>
             </form>
           </div>
+
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Importer des disponibilités</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form method="POST" enctype="multipart/form-data" action="">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="availabiltyfile">Entrez un fichier .csv</label>
+                  <input type="file" id="availabiltyfile" name="availabiltyfile">
+                </div>
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
           <!-- /.box -->
           <div class="box box-primary">
             <div class="box-header with-border">
@@ -196,6 +217,7 @@ desired effect
               <button class="btn btn-primary" onclick="excelExport()">EXCEL</button>
               <button class="btn btn-primary" onclick="createUser()">Ajout utilisateur</button>
               <button class="btn btn-primary" onclick="resetDb()">Reset db</button>
+              <button class="btn btn-primary" onclick="resetAvailabilities()">Reset des disponibilités</button>
             </div>
           </div>
           <!-- /.box -->
@@ -490,6 +512,17 @@ desired effect
     if(confirm("Voulez-vous vraiment écraser la db ?")){
       $$.ajax({
         url: "reset_db",
+        type : 'GET'
+      }).done(function( msg ) {
+        location.reload();
+      });
+    }
+  }
+
+  function resetAvailabilities() {
+    if(confirm("Etes-vous sûr de vouloir remettre les disponibilités de tous à zéro ?")){
+      $$.ajax({
+        url: "reset_availabilities",
         type : 'GET'
       }).done(function( msg ) {
         location.reload();

@@ -2,6 +2,7 @@ import csv
 import os
 from random import randint
 from models import *
+from availabilities import set_availabilities
 import re
 
 def get_rand_bool():
@@ -154,3 +155,23 @@ def populate_db(input):
 
 
 
+def csv_availabalities_to_db(input):
+    filedir = 'files'  # change this to the directory you want to store the file in.
+    if 'availabiltyfile' in input:  # to check if the file-object is created
+        if input.availabiltyfile.filename == "":
+            return "Erreur : Pas de fichier"
+        filepath = input.availabiltyfile.filename.replace('\\', '/')  # replaces the windows-style slashes with linux ones.
+        filename = filepath.split('/')[-1]  # splits the and chooses the last part (the filename with extension)
+        fout = open(filedir + '/' + filename, 'wb')  # creates the file where the uploaded file should be stored
+        fout.write(input.availabiltyfile.file.read())  # writes the uploaded file to the newly created file.
+        fout.close()  # closes the file, upload complete.
+    with open(filedir + '/' + filename, 'rt') as f:  # opens the csv file
+        try:
+            reader = csv.reader(f, delimiter=',')  # creates the reader object
+            for elem in reader:
+                set_availabilities(elem)
+        except:
+            return "Erreur : Mauvais fichier"
+        finally:
+            f.close()  # closing
+            os.remove(filedir + '/' + filename)
