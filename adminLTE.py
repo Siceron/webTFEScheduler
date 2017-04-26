@@ -50,7 +50,8 @@ urls = (
     '/excel_export', 'excel_export',
     '/set_conflict', 'set_conflict',
     '/set_user', 'set_user',
-    '/reset_db', 'reset_db'
+    '/reset_db', 'reset_db',
+    '/reset_availabilities','reset_availabilities'
 )
 
 def load_sqlo(handler=None):
@@ -111,8 +112,11 @@ class index:
 
     def POST(self):
         """ Store csv file """
-        x = web.input(myfile={})
-        populate_db(x)
+        x = web.input(myfile={},availabiltyfile = {})
+        if x.get('myfile') != {}:
+            populate_db(x)
+        else:
+            csv_availabalities_to_db(x)
         raise web.seeother('/index')
 
 class scheduler:
@@ -527,6 +531,21 @@ class reset_db:
         Parametrization.dropTable(ifExists=True)
         Parametrization.createTable()
         return "ok"
+
+class reset_availabilities:
+    def GET(self):
+        Disponibility.dropTable(ifExists=True)
+        Disponibility.createTable()
+        for e in Person.select():
+            disponibility = Disponibility(session_0=True, session_1=True,
+                                          session_2=True, session_3=True,
+                                          session_4=True, session_5=True,
+                                          session_6=True, session_7=True,
+                                          session_8=True,
+                                          session_9=True, session_10=True,
+                                          session_11=True)
+            e.disponibility = disponibility
+        raise web.seeother('/index')
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
