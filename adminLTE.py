@@ -51,7 +51,8 @@ urls = (
     '/set_conflict', 'set_conflict',
     '/set_user', 'set_user',
     '/reset_db', 'reset_db',
-    '/reset_availabilities','reset_availabilities'
+    '/reset_availabilities','reset_availabilities',
+    '/reset_tfes', 'reset_tfes'
 )
 
 def load_sqlo(handler=None):
@@ -545,6 +546,13 @@ class reset_availabilities:
                                           session_9=True, session_10=True,
                                           session_11=True)
             e.disponibility = disponibility
+        raise web.seeother('/index')
+
+class reset_tfes:
+    def GET(self):
+        tfes = Tfe.select()
+        for tfe in tfes:
+            tfe.session = -1
         raise web.seeother('/index')
 
 if __name__ == "__main__":

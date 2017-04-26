@@ -217,7 +217,9 @@ desired effect
               <button class="btn btn-primary" onclick="excelExport()">EXCEL</button>
               <button class="btn btn-primary" onclick="createUser()">Ajout utilisateur</button>
               <button class="btn btn-primary" onclick="resetDb()">Reset db</button>
+              <p></p>
               <button class="btn btn-primary" onclick="resetAvailabilities()">Reset des disponibilités</button>
+              <button class="btn btn-primary" onclick="resetTfes()">Reset horaires</button>
             </div>
           </div>
           <!-- /.box -->
@@ -523,6 +525,17 @@ desired effect
     if(confirm("Etes-vous sûr de vouloir remettre les disponibilités de tous à zéro ?")){
       $$.ajax({
         url: "reset_availabilities",
+        type : 'GET'
+      }).done(function( msg ) {
+        location.reload();
+      });
+    }
+  }
+
+  function resetTfes() {
+    if(confirm("Etes-vous sûr de vouloir remettre l'horaire à zéro ?")){
+      $$.ajax({
+        url: "reset_tfes",
         type : 'GET'
       }).done(function( msg ) {
         location.reload();
