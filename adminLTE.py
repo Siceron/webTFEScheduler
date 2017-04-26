@@ -390,6 +390,9 @@ class set_person:
                 person.disponibility.session_9 = isChecked(x, 's9')
                 person.disponibility.session_10 = isChecked(x, 's10')
                 person.disponibility.session_11 = isChecked(x, 's11')
+                for rel in Tfe_rel_person.select(Tfe_rel_person.q.person == person):
+                    if(get_conflicts_json(rel.tfe.code, rel.tfe.session)['is_conflicts']):
+                        rel.tfe.session = -1
         raise web.seeother('/person')
 
 class delete_person:
