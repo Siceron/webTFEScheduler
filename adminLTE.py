@@ -393,6 +393,7 @@ class set_person:
                 for rel in Tfe_rel_person.select(Tfe_rel_person.q.person == person):
                     if(get_conflicts_json(rel.tfe.code, rel.tfe.session)['is_conflicts']):
                         rel.tfe.session = -1
+                        rel.tfe.log = datetime.now()
         raise web.seeother('/person')
 
 class delete_person:
