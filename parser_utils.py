@@ -61,10 +61,10 @@ def populate_db(input):
                         for etu in row[2].split(" - "):
                             etu_name = etu.split(", ")
                             etu_fac = etu_name[1].split(' ')
-                            if Student.select(Student.q.email == emails[email_count].strip()).count() == 0:
+                            if Student.select(Student.q.email == emails[email_count].lower().strip()).count() == 0:
                                 firstname = etu_name[1][:etu_name[1].find("(")-1]
                                 fac = etu_name[1][etu_name[1].find("(")+1:etu_name[1].find(")")]
-                                etudiant = Student(email=emails[email_count].strip(), last_name=etu_name[0],name=firstname, faculty=fac)
+                                etudiant = Student(email=emails[email_count].lower().strip(), last_name=etu_name[0],name=firstname, faculty=fac)
                                 tfe_rel_student = Tfe_rel_student(tfe=memoire, student=etudiant)
                             email_count += 1
                         if row[3] == "":
@@ -78,24 +78,24 @@ def populate_db(input):
                         else:
                             for prom in re.sub(r'\([^)]*\)', '', row[3]).split(" - "):
                                 prom_name = prom.split(", ")
-                                if Person.select(Person.q.email == emails[email_count].strip()).count() == 0:
+                                if Person.select(Person.q.email == emails[email_count].lower().strip()).count() == 0:
                                     if len(prom_name) == 2:
                                         if random_disp==True:
-                                            person = Person(email=emails[email_count].strip(), last_name=prom_name[0],name=prom_name[1], disponibility=get_rand_disp())
+                                            person = Person(email=emails[email_count].lower().strip(), last_name=prom_name[0],name=prom_name[1], disponibility=get_rand_disp())
                                             tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")   
                                         else:
-                                            person = Person(email=emails[email_count].strip(), last_name=prom_name[0],name=prom_name[1], disponibility=Disponibility())
+                                            person = Person(email=emails[email_count].lower().strip(), last_name=prom_name[0],name=prom_name[1], disponibility=Disponibility())
                                             tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")
                                     else:
                                         prom_name = re.sub(r'\([^)]*\)', '', prom).split(" ")
                                         if random_disp==True:
-                                            person = Person(email=emails[email_count].strip(), last_name=" ".join(prom_name[1:]),name=prom_name[0], disponibility=get_rand_disp())
+                                            person = Person(email=emails[email_count].lower().strip(), last_name=" ".join(prom_name[1:]),name=prom_name[0], disponibility=get_rand_disp())
                                             tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")   
                                         else:
-                                            person = Person(email=emails[email_count].strip(), last_name=" ".join(prom_name[1:]),name=prom_name[0], disponibility=Disponibility())
+                                            person = Person(email=emails[email_count].lower().strip(), last_name=" ".join(prom_name[1:]),name=prom_name[0], disponibility=Disponibility())
                                             tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Promoteur")
                                 else:
-                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=Person.select(Person.q.email == emails[email_count].strip())[0], title="Promoteur")
+                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=Person.select(Person.q.email == emails[email_count].lower().strip())[0], title="Promoteur")
                                 email_count += 1
                         if row[4] == "":
                             if random_disp==True:
@@ -108,27 +108,27 @@ def populate_db(input):
                         else:
                             for lect in re.sub(r'\([^)]*\)', '', row[4]).split(" - "):
                                 lect_name = lect.split(", ")
-                                if Person.select(Person.q.email == emails[email_count].strip()).count() == 0:
+                                if Person.select(Person.q.email == emails[email_count].lower().strip()).count() == 0:
                                     if len(lect_name) == 2:
                                         lect_descr = lect_name[1].split(' ')
                                         if random_disp==True:
-                                            person = Person(email=emails[email_count].strip(), last_name=lect_name[0],name=lect_descr[0], disponibility=get_rand_disp())
+                                            person = Person(email=emails[email_count].lower().strip(), last_name=lect_name[0],name=lect_descr[0], disponibility=get_rand_disp())
                                             tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
                                         else:
-                                            person = Person(email=emails[email_count].strip(), last_name=lect_name[0],name=lect_descr[0], disponibility=Disponibility())
+                                            person = Person(email=emails[email_count].lower().strip(), last_name=lect_name[0],name=lect_descr[0], disponibility=Disponibility())
                                             tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
                                         email_count += 1
                                     else:
                                         lect_name = lect.split(' ')
                                         if random_disp==True:
-                                            person = Person(email=emails[email_count].strip(), last_name=" ".join(lect_name[1:]),name=lect_name[0], disponibility=get_rand_disp())
+                                            person = Person(email=emails[email_count].lower().strip(), last_name=" ".join(lect_name[1:]),name=lect_name[0], disponibility=get_rand_disp())
                                             tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
                                         else:
-                                            person = Person(email=emails[email_count].strip(), last_name=" ".join(lect_name[1:]),name=lect_name[0], disponibility=Disponibility())
+                                            person = Person(email=emails[email_count].lower().strip(), last_name=" ".join(lect_name[1:]),name=lect_name[0], disponibility=Disponibility())
                                             tfe_rel_person = Tfe_rel_person(tfe=memoire, person=person, title="Lecteur")
                                         email_count += 1
                                 else:
-                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=Person.select(Person.q.email == emails[email_count].strip())[0], title="Lecteur")
+                                    tfe_rel_person = Tfe_rel_person(tfe=memoire, person=Person.select(Person.q.email == emails[email_count].lower().strip())[0], title="Lecteur")
                                     email_count += 1
                         """print(row[0])
                         print(row[1])
