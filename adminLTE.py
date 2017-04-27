@@ -120,7 +120,6 @@ class index:
             populate_db(x)
         else:
             f = csv_availabalities_to_db(x)
-
         if session.get('username', False):
             user = User.select(User.q.email == session.get('username', False))[0]
             if(user.permission == 1):

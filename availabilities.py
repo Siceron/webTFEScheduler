@@ -1,3 +1,5 @@
+import os
+
 from models import *
 import sys
 import logging
@@ -11,7 +13,7 @@ def set_availabilities(table):
     person = Person.select(Person.q.email == mail).getOne(None)
     if person is None:
         logging.info('The email ' + mail+' is not present in the database' )
-        return 'The email ' + mail+' is not present in the database'
+        return 'The email ' + mail+' is not present in the database.'+os.linesep
     else:
         f=''
         allTrue = True
@@ -22,18 +24,16 @@ def set_availabilities(table):
                 i= int(i)
                 if not value:
                     allTrue=False
+                table[i+1] = str(table[i+1]).lower()
+                print(table[i+1])
                 val = (table[i+1] == "True" or table[i+1]=="TRUE" or table[i+1]=="true" or table[i+1]=="1" or table[i+1]=="ok")
+                print(str(value) + "- "+ str(val))
                 if str(value) !=str(val):
-                    print("check")
-                    print(value)
-                    print(table[i+1])
-                    print("end")
                     identique=False
                     logging.info(mail + ' : mise à jour')
-                    f = mail + ' : mise à jour'
-                    break
+                    f = mail + ' : mise à jour.'+os.linesep
         if not allTrue and identique:
-            f = "Aucun changement"
+            f = "Aucun changement."+os.linesep
 
         if allTrue or not identique:
             person.disponibility.session_0 = (table[1] == "True" or table[1]=="TRUE" or table[1]=="true" or table[1]=="1" or table[1]=="ok")
