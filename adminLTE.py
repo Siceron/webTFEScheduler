@@ -51,7 +51,8 @@ urls = (
     '/set_conflict', 'set_conflict',
     '/set_user', 'set_user',
     '/reset_db', 'reset_db',
-    '/reset_availabilities','reset_availabilities'
+    '/reset_availabilities','reset_availabilities',
+    '/reset_tfes', 'reset_tfes'
 )
 
 def load_sqlo(handler=None):
@@ -229,6 +230,7 @@ class executescheduler:
         set_commission(data_commission, "GBIO")
         set_commission(data_commission, "FYAP")
         set_commission(data_commission, "KIMA")
+        set_commission(data_commission, "NANO")
         set_commission(data_commission, "GCE")
         set_commission(data_commission, "INFO")
         set_commission(data_commission, "SINF")
@@ -403,6 +405,10 @@ class set_person:
                 person.disponibility.session_9 = isChecked(x, 's9')
                 person.disponibility.session_10 = isChecked(x, 's10')
                 person.disponibility.session_11 = isChecked(x, 's11')
+                for rel in Tfe_rel_person.select(Tfe_rel_person.q.person == person):
+                    if(get_conflicts_json(rel.tfe.code, rel.tfe.session)['is_conflicts']):
+                        rel.tfe.session = -1
+                        rel.tfe.log = datetime.now()
         raise web.seeother('/person')
 
 class delete_person:
@@ -559,6 +565,13 @@ class reset_availabilities:
                                           session_9=True, session_10=True,
                                           session_11=True)
             e.disponibility = disponibility
+        raise web.seeother('/index')
+
+class reset_tfes:
+    def GET(self):
+        tfes = Tfe.select()
+        for tfe in tfes:
+            tfe.session = -1
         raise web.seeother('/index')
 
 if __name__ == "__main__":
