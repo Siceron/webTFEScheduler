@@ -156,7 +156,7 @@ def populate_db(input):
 
 
 def csv_availabalities_to_db(input):
-    feedback = ""
+    feedback = []
     filedir = 'files'  # change this to the directory you want to store the file in.
     if 'availabiltyfile' in input:  # to check if the file-object is created
         if input.availabiltyfile.filename == "":
@@ -168,11 +168,11 @@ def csv_availabalities_to_db(input):
         fout.close()  # closes the file, upload complete.
     with open(filedir + '/' + filename, 'rt') as f:  # opens the csv file
         try:
-            reader = csv.reader(f, delimiter=',')  # creates the reader object
+            reader = csv.reader(f, delimiter=';')  # creates the reader object
             for elem in reader:
                 feed = set_availabilities(elem)
                 if feed !="":
-                    feedback = feedback + feed + "\n"
+                    feedback.append(feed + "\n")
             return feedback
         except:
             return "Erreur : Mauvais fichier"
