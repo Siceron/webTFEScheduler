@@ -32,6 +32,8 @@ def populate_db(input):
     if 'randomdisp' in input:
         random_disp = True
 
+    is_error = False
+
     """ Read csv file """
     header = True
     with open(filedir +'/'+ filename, 'rt') as f: # opens the csv file
@@ -40,8 +42,8 @@ def populate_db(input):
             missing_count = 0
             for row in reader:   # iterates the rows of the file in orders
                 if header:
-                    if (row[0] != "Code" or row[1] != "Titre" or row[2] != "Etudiants" or row[3] != "Promoteurs" or row[4] != "Lecteurs" or row[20] != "Mails"):
-                        return "Erreur : Mauvais fichier"
+                    if (row[0] != "Code" or row[1] != "Titre" or row[2] != "Etudiants" or row[3] != "Promoteurs" or row[4] != "Lecteurs" or row[21] != "Mails"):
+                        is_error = True
                     header = False
                 else:
                     #mails = row[20].split(" , ")
@@ -56,7 +58,7 @@ def populate_db(input):
                         if row[7] == "y":
                             open_hub = True
                         memoire = Tfe(code=row[0], title=row[1], confidential=confidential, cpme=cpme, open_hub=open_hub)
-                        emails = row[20].split(" , ")
+                        emails = row[21].split(" , ")
                         email_count = 0
                         for etu in row[2].split(" - "):
                             etu_name = etu.split(", ")
@@ -148,10 +150,11 @@ def populate_db(input):
                         print(row[19])
                         print(row[20])"""
         except:
-            return "Erreur : Mauvais fichier"
+            is_error = True
         finally:
             f.close()      # closing
             os.remove(filedir +'/'+ filename)
+            return is_error
 
 
 
