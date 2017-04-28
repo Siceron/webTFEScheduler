@@ -32,7 +32,7 @@ def populate_db(input):
     if 'randomdisp' in input:
         random_disp = True
 
-    is_error = False
+    return_result = "ok"
 
     """ Read csv file """
     header = True
@@ -43,7 +43,9 @@ def populate_db(input):
             for row in reader:   # iterates the rows of the file in orders
                 if header:
                     if (row[0] != "Code" or row[1] != "Titre" or row[2] != "Etudiants" or row[3] != "Promoteurs" or row[4] != "Lecteurs" or row[21] != "Mails"):
-                        is_error = True
+                        print("hello")
+                        return_result = "CSV header format not respected"
+                        print(return_result)
                     header = False
                 else:
                     #mails = row[20].split(" , ")
@@ -149,12 +151,14 @@ def populate_db(input):
                         print(row[18])
                         print(row[19])
                         print(row[20])"""
-        except:
-            is_error = True
+        except Exception as e:
+            print("error")
+            print(str(e))
+            return_result = str(e)
         finally:
             f.close()      # closing
             os.remove(filedir +'/'+ filename)
-            return is_error
+            return return_result
 
 
 

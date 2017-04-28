@@ -118,8 +118,9 @@ class index:
         x = web.input(myfile={},availabiltyfile = {})
         if x.get('myfile') != {}:
             return_val = populate_db(x)
-            if(return_val):
-                return render.message("Erreur format de fichier")
+            print(return_val)
+            if(return_val != "ok"):
+                return render.message(return_val)
         else:
             f = csv_availabalities_to_db(x)
         if session.get('username', False):
