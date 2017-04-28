@@ -255,7 +255,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     $$('#external-events .fc-event').each(function() {
 
-      var commission = get_commission($$.trim($$(this).text()));
+      var commission = $$.trim($$(this).text()).split("---")[1];
+
+      $$(this).text($$.trim($$(this).text()).split("---")[0]);
 
       // store data so the calendar knows to render an event upon drop
       $$(this).data('event', {
@@ -800,7 +802,7 @@ desired effect
             <div id='external-events-listing'>
               $for tfe in tfes:
                 $if tfe.session == -1:
-                  <div class='fc-event'>$tfe.code</div>
+                  <div class='fc-event'>$tfe.code---$tfe.commission</div>
             </div>
           </div>
       </div>
