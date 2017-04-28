@@ -58,7 +58,7 @@ def populate_db(input):
                         if row[7] == "y":
                             open_hub = True
                         memoire = Tfe(code=row[0], title=row[1], confidential=confidential, cpme=cpme, open_hub=open_hub)
-                        emails = row[21].split(" , ")
+                        emails = row[21].split(",")
                         email_count = 0
                         for etu in row[2].split(" - "):
                             etu_name = etu.split(", ")
