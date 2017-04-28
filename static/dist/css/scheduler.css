@@ -78,7 +78,8 @@
 
 #calendar {
   float: right;
-  width: 900px;
+  width: 83%;
+  margin: 0 auto;
 }
 
 .default-commission {
