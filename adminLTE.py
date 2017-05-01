@@ -117,7 +117,10 @@ class index:
         f=''
         x = web.input(myfile={},availabiltyfile = {})
         if x.get('myfile') != {}:
-            populate_db(x)
+            return_val = populate_db(x)
+            print(return_val)
+            if(return_val != "ok"):
+                return render.message(return_val)
         else:
             f = csv_availabalities_to_db(x)
         if session.get('username', False):
