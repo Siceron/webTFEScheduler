@@ -348,6 +348,21 @@ class delete_tfe:
     def POST(self):
         x = web.input()
         tfe = Tfe.select(Tfe.q.code == x.code)[0]
+
+        # Delete student relations
+        student_relations = []
+        for rel in Tfe_rel_student.select(Tfe_rel_student.q.tfe == tfe):
+            student_relations.append(rel)
+        for rel in student_relations:
+            rel.delete(rel.id)
+
+        # Delete person relations
+        person_relations = []
+        for rel in Tfe_rel_person.select(Tfe_rel_person.q.tfe == tfe):
+            person_relations.append(rel)
+        for rel in person_relations:
+            rel.delete(rel.id)
+            
         tfe.delete(tfe.id)
         return "ok"
 
