@@ -423,7 +423,7 @@ class set_person:
                 person.disponibility.session_10 = isChecked(x, 's10')
                 person.disponibility.session_11 = isChecked(x, 's11')
                 for rel in Tfe_rel_person.select(Tfe_rel_person.q.person == person):
-                    if(get_conflicts_json(rel.tfe.code, rel.tfe.session)['is_conflicts']):
+                    if(is_conflicts_after_person_modifs(rel)):
                         rel.tfe.session = -1
                         rel.tfe.log = datetime.now()
         raise web.seeother('/person')
