@@ -54,6 +54,10 @@ def not_disponible_json(code, session):
             not_disponible_list.append(not_disponible)
     return not_disponible_list
 
+def is_conflicts_after_person_modifs(rel):
+    disponibility = get_disponibility(rel.person.disponibility)
+    return (disponibility[rel.tfe.session%12] == False)
+
 def get_person_dictionnary(code):
     dictionnary = dict()
     from_tfe = Tfe.select(Tfe.q.code == code)[0].code
