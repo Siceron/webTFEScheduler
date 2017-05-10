@@ -60,7 +60,7 @@ def show_tfes_in_conflict():
                         if session != (session%12)+(i*12) and (session%12)+(i*12) in person_dictionnary and rel.person.email in person_dictionnary[(session%12)+(i*12)]:
                             conflicts = True
                             for t in Tfe.select(Tfe.q.session == (session%12)+(i*12)):
-                                if Tfe_rel_person.select(Tfe_rel_person.q.person == rel.person).count() != 0:
+                                if Tfe_rel_person.select(AND(Tfe_rel_person.q.person == rel.person, Tfe_rel_person.q.tfe == t)).count() != 0:
                                     parallel_list.append(rel.person.email+" from "+t.code)
 
             if conflicts:
