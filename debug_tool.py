@@ -65,7 +65,8 @@ def show_tfes_in_conflict():
 
             if conflicts:
                 print(tfe.code+" : ")
-                print("\tNot available : "+str(not_disponible_list))
-                print("\tParallel : "+str(parallel_list))
+                for j in parallel_list:
+                    print("\t - "+j)
+                print("")
 
 show_tfes_in_conflict()
