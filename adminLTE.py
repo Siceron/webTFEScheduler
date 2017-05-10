@@ -425,7 +425,10 @@ class set_person:
                 for rel in Tfe_rel_person.select(Tfe_rel_person.q.person == person):
                     if(is_conflicts_after_person_modifs(rel)):
                         rel.tfe.session = -1
+                        rel.tfe.conflict = False
                         rel.tfe.log = datetime.now()
+                    if (get_conflicts_json(rel.tfe.code, rel.tfe.session)['is_conflicts']) == False:
+                        rel.tfe.conflict = False
         raise web.seeother('/person')
 
 class delete_person:
@@ -480,7 +483,12 @@ class set_tfe_rel_person:
             person = Person.select(Person.q.email == x.person.strip())[0]
             tfe = Tfe.select(Tfe.q.code == x.tfe.strip())[0]
             if Tfe_rel_person.select(AND(Tfe_rel_person.q.person == person, Tfe_rel_person.q.tfe == tfe)).count() == 0:
-                Tfe_rel_person(tfe=tfe, person=person, title=x.title)
+                rel = Tfe_rel_person(tfe=tfe, person=person, title=x.title)
+                if is_conflicts_after_new_rel(rel):
+                    tfe.session = -1
+                    tfe.conflict = False
+                    tfe.log = datetime.now()
+
         raise web.seeother('/person')
 
 class delete_tfe_rel_person:
@@ -490,6 +498,8 @@ class delete_tfe_rel_person:
         tfe = Tfe.select(Tfe.q.code == x.tfe)[0]
         rel = Tfe_rel_person.select(AND(Tfe_rel_person.q.person == person, Tfe_rel_person.q.tfe == tfe))[0]
         rel.delete(rel.id)
+        if get_conflicts_json(tfe.code, tfe.session)['is_conflicts'] == False:
+            tfe.conflict = False
         return "ok"
 
 class is_up_to_date:
@@ -589,6 +599,7 @@ class reset_tfes:
         tfes = Tfe.select()
         for tfe in tfes:
             tfe.session = -1
+            tfe.conflict = False
         raise web.seeother('/index')
 
 if __name__ == "__main__":

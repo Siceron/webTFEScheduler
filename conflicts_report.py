@@ -55,8 +55,24 @@ def not_disponible_json(code, session):
     return not_disponible_list
 
 def is_conflicts_after_person_modifs(rel):
-    disponibility = get_disponibility(rel.person.disponibility)
-    return (disponibility[rel.tfe.session%12] == False)
+    if rel.prevented :
+        return False
+    else:
+        disponibility = get_disponibility(rel.person.disponibility)
+        return (disponibility[rel.tfe.session%12] == False)
+
+def is_conflicts_after_new_rel(rel):
+    conflicts = False
+    if Parametrization.select().count() != 0:
+        disponibility = get_disponibility(rel.person.disponibility)
+        conflicts = (disponibility[rel.tfe.session%12] == False)
+        person_dictionnary = get_person_dictionnary(rel.tfe.code)
+        session = rel.tfe.session
+        for i in range(0, Parametrization.select()[0].rooms_number):
+            if session != (session%12)+(i*12) and (session%12)+(i*12) in person_dictionnary and rel.person.email in person_dictionnary[(session%12)+(i*12)]:
+                conflicts = True
+                break
+    return conflicts
 
 def get_person_dictionnary(code):
     dictionnary = dict()
@@ -92,17 +108,25 @@ def parallel_json(code, session, rooms):
                 break
     return parallel_list
 
-
 def get_conflicts_json(code, session):
     global is_conflicts
     is_conflicts = False
-    max_tfes = max_tfes_json(int(session))
-    not_disponible = not_disponible_json(code, int(session))
-    parallel = parallel_json(code, int(session), 5)
-    result = {
-        "is_conflicts": is_conflicts,
-        "max_tfes": max_tfes,
-        "not_disponible": not_disponible,
-        "parallel": parallel
-    }
-    return result
+    if Parametrization.select().count() != 0:
+        max_tfes = max_tfes_json(int(session))
+        not_disponible = not_disponible_json(code, int(session))
+        parallel = parallel_json(code, int(session), Parametrization.select()[0].rooms_number)
+        result = {
+            "is_conflicts": is_conflicts,
+            "max_tfes": max_tfes,
+            "not_disponible": not_disponible,
+            "parallel": parallel
+        }
+        return result
+    else:
+        result = {
+            "is_conflicts": False,
+            "max_tfes": [],
+            "not_disponible": [],
+            "parallel": []
+        }
+        return result
