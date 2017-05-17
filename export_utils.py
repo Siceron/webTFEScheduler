@@ -1,4 +1,5 @@
 from models import *
+from datetime import datetime
 import os
 import glob
 import csv
@@ -13,11 +14,11 @@ def get_day(session):
     if session == -1:
         return "TBD"
     elif modulo >= 0 and modulo <= 3:
-        return str(Parametrization.select()[0].day_1)
+        return str(Parametrization.select()[0].day_1.strftime('%d-%m-%Y'))
     elif modulo >= 4 and modulo <= 7:
-        return str(Parametrization.select()[0].day_2)
+        return str(Parametrization.select()[0].day_2.strftime('%d-%m-%Y'))
     elif modulo >= 8 and modulo <= 11:
-        return str(Parametrization.select()[0].day_3)
+        return str(Parametrization.select()[0].day_3.strftime('%d-%m-%Y'))
 
 def get_hour(session):
     modulo = session % 12
