@@ -25,13 +25,13 @@ def get_hour(session):
     if session == -1:
         return "TBD"
     elif modulo == 0 or modulo == 4 or modulo == 8:
-        return "8h"
+        return "08:00-10:30"
     elif modulo == 1 or modulo == 5 or modulo == 9:
-        return "10h45"
+        return "10:45-13:15"
     elif modulo == 2 or modulo == 6 or modulo == 10:
-        return "14h"
+        return "14:00-16:30"
     else:
-        return "16h45"
+        return "16:45-19:15"
 
 def get_auditorium(session):
     return Room.select()[math.floor(session/12)].title
