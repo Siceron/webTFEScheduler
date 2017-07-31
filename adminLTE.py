@@ -1,6 +1,9 @@
 import web
 import sys
 import math
+
+from sqlobject.sqlbuilder import *
+
 from models import *
 from json_utils import *
 from parser_utils import *
@@ -52,7 +55,8 @@ urls = (
     '/set_user', 'set_user',
     '/reset_db', 'reset_db',
     '/reset_availabilities','reset_availabilities',
-    '/reset_tfes', 'reset_tfes'
+    '/reset_tfes', 'reset_tfes',
+    '/public/schedule','public_schedule'
 )
 
 def load_sqlo(handler=None):
@@ -601,6 +605,12 @@ class reset_tfes:
             tfe.session = -1
             tfe.conflict = False
         raise web.seeother('/index')
+
+class public_schedule:
+    def GET(self):
+        tfes = tfes_full_json()
+
+        return render.public_schedule(tfes)
 
 if __name__ == "__main__":
     app = web.application(urls, globals())
