@@ -95,6 +95,7 @@ def tfes_full_json():
         for rel in Tfe_rel_person.select(AND(Tfe_rel_person.q.tfe==tfe, Tfe_rel_person.q.title=="Lecteur")):
             readers.append(rel.person.email)
         tfe_as_dict = {
+            "id" : tfe.id,
             "code" : tfe.code,
             "title" : tfe.title,
             "moderator" : tfe.moderator,
@@ -102,6 +103,7 @@ def tfes_full_json():
             "confidential" : tfe.confidential,
             "cpme" : tfe.cpme,
             "open_hub" : tfe.open_hub,
+            "session": tfe.session,
             "students" : "\n".join(students),
             "advisors" : "\n".join(advisors),
             "readers" : "\n".join(readers)
