@@ -1,4 +1,5 @@
 from models import *
+from datetime import datetime
 import os
 import glob
 import csv
@@ -13,24 +14,24 @@ def get_day(session):
     if session == -1:
         return "TBD"
     elif modulo >= 0 and modulo <= 3:
-        return str(Parametrization.select()[0].day_1)
+        return str(Parametrization.select()[0].day_1.strftime('%d-%m-%Y'))
     elif modulo >= 4 and modulo <= 7:
-        return str(Parametrization.select()[0].day_2)
+        return str(Parametrization.select()[0].day_2.strftime('%d-%m-%Y'))
     elif modulo >= 8 and modulo <= 11:
-        return str(Parametrization.select()[0].day_3)
+        return str(Parametrization.select()[0].day_3.strftime('%d-%m-%Y'))
 
 def get_hour(session):
     modulo = session % 12
     if session == -1:
         return "TBD"
     elif modulo == 0 or modulo == 4 or modulo == 8:
-        return "8:30"
+        return "08:00-10:30"
     elif modulo == 1 or modulo == 5 or modulo == 9:
-        return "10:45"
+        return "10:45-13:15"
     elif modulo == 2 or modulo == 6 or modulo == 10:
-        return "14:00"
+        return "14:00-16:30"
     else:
-        return "16:45"
+        return "16:45-19:15"
 
 def get_auditorium(session):
     return Room.select()[math.floor(session/12)].title

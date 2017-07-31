@@ -175,7 +175,7 @@ class person:
     def GET(self):
         if session.get('username', False):
             tfes = Tfe.select(orderBy="code")
-            persons = Person.select()
+            persons = Person.select(orderBy="email")
             rels = Tfe_rel_person.select()
             username = session.get('username', False)
             if Parametrization.select().count() == 0:
@@ -331,11 +331,11 @@ class set_tfe:
     def POST(self):
         x = web.input()
         if x.code.strip() != "" and x.title.strip() != "":
-            if Tfe.select(Tfe.q.code == x.code).count() == 0:
-                Tfe(code=x.code, title=x.title, commission=x.commission, moderator=x.moderator, \
+            if Tfe.select(Tfe.q.code == x.code.strip()).count() == 0:
+                Tfe(code=x.code.strip(), title=x.title, commission=x.commission, moderator=x.moderator, \
                     confidential=isChecked(x, 'confidential'), cpme=isChecked(x, 'cpme'), open_hub=isChecked(x, 'openhub'))
             else:
-                tfe = Tfe.select(Tfe.q.code == x.code)[0]
+                tfe = Tfe.select(Tfe.q.code == x.code.strip())[0]
                 tfe.title = x.title
                 tfe.commission = x.commission
                 tfe.moderator = x.moderator
@@ -370,10 +370,10 @@ class set_student:
     def POST(self):
         x = web.input()
         if x.email.strip() != "" and x.lastname.strip() != "" and x.firstname.strip() != "" and x.faculty.strip() != "":
-            if Student.select(Student.q.email == x.email).count() == 0:
-                Student(email=x.email, name=x.firstname, last_name=x.lastname, faculty=x.faculty)
+            if Student.select(Student.q.email == x.email.strip()).count() == 0:
+                Student(email=x.email.strip(), name=x.firstname, last_name=x.lastname, faculty=x.faculty)
             else:
-                student = Student.select(Student.q.email == x.email)[0]
+                student = Student.select(Student.q.email == x.email.strip())[0]
                 student.name = x.firstname
                 student.last_name = x.lastname
                 student.faculty = x.faculty
@@ -382,7 +382,7 @@ class set_student:
 class delete_student:
     def POST(self):
         x = web.input()
-        student = Student.select(Student.q.email == x.email)[0]
+        student = Student.select(Student.q.email == x.email.strip())[0]
         tfe_relations = []
         for rel in Tfe_rel_student.select(Tfe_rel_student.q.student == student):
             tfe_relations.append(rel)
@@ -401,13 +401,13 @@ class set_person:
     def POST(self):
         x = web.input()
         if x.email.strip() != "" and x.firstname.strip() != "" and x.lastname.strip() != "":
-            if Person.select(Person.q.email == x.email).count() == 0:
+            if Person.select(Person.q.email == x.email.strip()).count() == 0:
                 disponibility = Disponibility(session_0=isChecked(x, 's0'), session_1=isChecked(x, 's1'), session_2=isChecked(x, 's2'), session_3=isChecked(x, 's3'),\
                 session_4=isChecked(x, 's4'), session_5=isChecked(x, 's5'), session_6=isChecked(x, 's6'), session_7=isChecked(x, 's7'), session_8=isChecked(x, 's8'),\
                 session_9=isChecked(x, 's9'), session_10=isChecked(x, 's10'), session_11=isChecked(x, 's11'))
-                Person(email=x.email, name=x.firstname, last_name=x.lastname, disponibility=disponibility)
+                Person(email=x.email.strip(), name=x.firstname, last_name=x.lastname, disponibility=disponibility)
             else:
-                person = Person.select(Person.q.email == x.email)[0]
+                person = Person.select(Person.q.email == x.email.strip())[0]
                 person.name = x.firstname
                 person.last_name = x.lastname
                 person.disponibility.session_0 = isChecked(x, 's0')
@@ -423,15 +423,18 @@ class set_person:
                 person.disponibility.session_10 = isChecked(x, 's10')
                 person.disponibility.session_11 = isChecked(x, 's11')
                 for rel in Tfe_rel_person.select(Tfe_rel_person.q.person == person):
-                    if(get_conflicts_json(rel.tfe.code, rel.tfe.session)['is_conflicts']):
+                    if(is_conflicts_after_person_modifs(rel)):
                         rel.tfe.session = -1
+                        rel.tfe.conflict = False
                         rel.tfe.log = datetime.now()
+                    if (get_conflicts_json(rel.tfe.code, rel.tfe.session)['is_conflicts']) == False:
+                        rel.tfe.conflict = False
         raise web.seeother('/person')
 
 class delete_person:
     def POST(self):
         x = web.input()
-        person = Person.select(Person.q.email == x.email)[0]
+        person = Person.select(Person.q.email == x.email.strip())[0]
         disponibility = person.disponibility
         tfe_relations = []
         for rel in Tfe_rel_person.select(Tfe_rel_person.q.person == person):
@@ -463,7 +466,7 @@ class get_tfe_rel_student:
 class set_tfe_rel_student:
     def POST(self):
         x = web.input()
-        student = Student.select(Student.q.email == x.email)[0]
+        student = Student.select(Student.q.email == x.email.strip())[0]
         if x.tfe == "":
             if Tfe_rel_student.select(Tfe_rel_student.q.student == student).count() != 0:
                 rel = Tfe_rel_student.select(Tfe_rel_student.q.student == student)[0]
@@ -476,11 +479,16 @@ class set_tfe_rel_student:
 class set_tfe_rel_person:
     def POST(self):
         x = web.input()
-        if Person.select(Person.q.email == x.person).count() != 0 and Tfe.select(Tfe.q.code == x.tfe).count() != 0:
-            person = Person.select(Person.q.email == x.person)[0]
-            tfe = Tfe.select(Tfe.q.code == x.tfe)[0]
+        if Person.select(Person.q.email == x.person.strip()).count() != 0 and Tfe.select(Tfe.q.code == x.tfe.strip()).count() != 0:
+            person = Person.select(Person.q.email == x.person.strip())[0]
+            tfe = Tfe.select(Tfe.q.code == x.tfe.strip())[0]
             if Tfe_rel_person.select(AND(Tfe_rel_person.q.person == person, Tfe_rel_person.q.tfe == tfe)).count() == 0:
-                Tfe_rel_person(tfe=tfe, person=person, title=x.title)
+                rel = Tfe_rel_person(tfe=tfe, person=person, title=x.title)
+                if is_conflicts_after_new_rel(rel):
+                    tfe.session = -1
+                    tfe.conflict = False
+                    tfe.log = datetime.now()
+
         raise web.seeother('/person')
 
 class delete_tfe_rel_person:
@@ -490,6 +498,8 @@ class delete_tfe_rel_person:
         tfe = Tfe.select(Tfe.q.code == x.tfe)[0]
         rel = Tfe_rel_person.select(AND(Tfe_rel_person.q.person == person, Tfe_rel_person.q.tfe == tfe))[0]
         rel.delete(rel.id)
+        if get_conflicts_json(tfe.code, tfe.session)['is_conflicts'] == False:
+            tfe.conflict = False
         return "ok"
 
 class is_up_to_date:
@@ -589,6 +599,7 @@ class reset_tfes:
         tfes = Tfe.select()
         for tfe in tfes:
             tfe.session = -1
+            tfe.conflict = False
         raise web.seeother('/index')
 
 if __name__ == "__main__":
