@@ -88,48 +88,66 @@ desired effect
     <section class="content">
       <div class="box">
         <div class="box-body">
-              <table id="auditorium-table" class="table table-bordered table-hover">
+              <table id="tfes-table" class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                  <th>Comission</th>
-                  <th>Code</th>
-                  <th>Modérateur</th>
-                  <th>Etudiants</th>
-                  <th>Promoteurs</th>
-                  <th>Lecteurs</th>
-                  <th>Titre</th>
-                  <th>Confidentiel</th>
-                  <th>CPME</th>
-                  <th>OpenHub</th>
+                    <th>Code</th>
+                    <th>Titre</th>
+                    <th>Comission</th>
+                    <th>Etudiants</th>
+                    <th>Promoteurs</th>
+                    <th>Lecteurs</th>
+                    <th>Modérateur</th>
+                    <th>Jour</th>
+                    <th>Heure</th>
+                    <th>Auditoire</th>
+                    <th>Confidentiel</th>
+                    <th>CPME</th>
+                    <th>OpenHub</th>
                 </tr>
                 </thead>
                 <tbody>
                 $for auditorium in auditoriums:
                   <tr>
-                    <td>$auditorium['commission']</td>
-                    <td>$auditorium['code']</td>
-                    <td>$auditorium['moderator']</td>
-                    <td>$auditorium['students']</td>
-                    <td>$auditorium['advisors']</td>
-                    <td>$auditorium['readers']</td>
-                    <td>$auditorium['title']</td>
-                    <td>$auditorium['confidential']</td>
-                    <td>$auditorium['cpme']</td>
-                    <td>$auditorium['open_hub']</td>
+                      <td>$auditorium['code']</td>
+                      <td>$auditorium['title']</td>
+                      <td>$auditorium['commission']</td>
+                      <td>$auditorium['students']</td>
+                      <td>$auditorium['advisors']</td>
+                      <td>$auditorium['readers']</td>
+                      <td>$auditorium['moderator']</td>
+                      <td>$auditorium['day']</td>
+                      <td>$auditorium['hour']</td>
+                      <td>$auditorium['auditorium']</td>
+                      $if auditorium['confidential']:
+                        <td>Oui</td>
+                      $else:
+                        <td>Non</td>
+                      $if auditorium['cpme']:
+                        <td>Oui</td>
+                      $else:
+                        <td>Non</td>
+                      $if auditorium['open_hub']:
+                        <td>Oui</td>
+                      $else:
+                        <td>Non</td>
                   </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                  <th>Comission</th>
-                  <th>Code</th>
-                  <th>Modérateur</th>
-                  <th>Etudiants</th>
-                  <th>Promoteurs</th>
-                  <th>Lecteurs</th>
-                  <th>Titre</th>
-                  <th>Confidentiel</th>
-                  <th>CPME</th>
-                  <th>OpenHub</th>
+                    <th>Code</th>
+                    <th>Titre</th>
+                    <th>Comission</th>
+                    <th>Etudiants</th>
+                    <th>Promoteurs</th>
+                    <th>Lecteurs</th>
+                    <th>Modérateur</th>
+                    <th>Jour</th>
+                    <th>Heure</th>
+                    <th>Auditoire</th>
+                    <th>Confidentiel</th>
+                    <th>CPME</th>
+                    <th>OpenHub</th>
                 </tr>
                 </tfoot>
               </table>
@@ -167,12 +185,70 @@ desired effect
 <script src="../static/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
 <script>
+$$(function () {
+    // Setup - add a text input to each footer cell
+    $$('#tfes-table thead th').each( function () {
+        var title = $$(this).text();
+        $$(this).html( '<input type="text" placeholder="'+title+'" />' );
+    } );
+
+    var table = $$("#tfes-table").DataTable({
+      "language":
+      {
+        "sProcessing":     "Traitement en cours...",
+        "sSearch":         "Rechercher&nbsp;:",
+        "sLengthMenu":     "Afficher _MENU_ &eacute;l&eacute;ments",
+        "sInfo":           "Affichage de l'&eacute;l&eacute;ment _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+        "sInfoEmpty":      "Affichage de l'&eacute;l&eacute;ment 0 &agrave; 0 sur 0 &eacute;l&eacute;ment",
+        "sInfoFiltered":   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+        "sInfoPostFix":    "",
+        "sLoadingRecords": "Chargement en cours...",
+        "sZeroRecords":    "Aucun &eacute;l&eacute;ment &agrave; afficher",
+        "sEmptyTable":     "Aucune donn&eacute;e disponible dans le tableau",
+        "oPaginate": {
+          "sFirst":      "Premier",
+          "sPrevious":   "Pr&eacute;c&eacute;dent",
+          "sNext":       "Suivant",
+          "sLast":       "Dernier"
+        },
+        "oAria": {
+          "sSortAscending":  ": activer pour trier la colonne par ordre croissant",
+          "sSortDescending": ": activer pour trier la colonne par ordre d&eacute;croissant"
+        }
+      },
+      "paging": true,
+      "lengthChange": true,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "scrollX": true
+    });
+
+    // Apply the search
+    table.columns().every( function () {
+        var that = this;
+
+        $$( 'input', this.header() ).on( 'keyup change', function () {
+            if ( that.search() !== this.value ) {
+                that
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+     $$('#tfes-table tbody').on( 'click', 'tr', function () {
+        if ( $$(this).hasClass('tfe-selected') ) {
+            $$(this).removeClass('tfe-selected');
+        }
+        else {
+            table.$$('tr.tfe-selected').removeClass('tfe-selected');
+            $$(this).addClass('tfe-selected');
+        }
+    });
+
+});
 
 </script>
-
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
-     Both of these plugins are recommended to enhance the
-     user experience. Slimscroll is required when using the
-     fixed layout. -->
 </body>
 </html>

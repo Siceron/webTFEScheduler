@@ -609,6 +609,10 @@ class reset_tfes:
 class public_schedule:
     def GET(self):
         tfes = tfes_full_json()
+        for tfe in tfes:
+            tfe['auditorium']=get_auditorium(tfe['session'])
+            tfe['day']=get_day(tfe['session'])
+            tfe['hour']=get_hour(tfe['session'])
 
         return render.public_schedule(tfes)
 
